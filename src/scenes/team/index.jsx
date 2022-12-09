@@ -1,5 +1,4 @@
 import { Box, Typography, useTheme } from "@mui/material";
-import { DataGrid , GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { usersData } from '../../data/mockData'
 
@@ -10,6 +9,7 @@ import {
 } from "@mui/icons-material";
 
 import Header from "../../components/Header";
+import MainTable from "../../components/mainTable";
 
 const Team = () => {
   const theme = useTheme()
@@ -66,48 +66,10 @@ const Team = () => {
   return (
     <Box m="20px">
       <Header title="TEAM" subtitle="Team data" />
-      <Box
-        m="40px 0 0 0"
-        height="95vh"
-        backgroundColor= {colors.primary[700]}
-        borderRadius= "5px"
-        sx={{
-          "& .MuiDataGrid-root" : {
-            border: "none"
-          } ,
-          "& .MuiDataGrid-cell" : {
-            borderBottom: "none"
-          } ,
-          "& .MuiDataGrid-virtualScroller" : {
-            transform: "none"
-          },
-          "& .MuiDataGrid-footerContainer" : {
-            borderTop: "none",
-          },
-          "& .MuiDataGrid-toolbarContainer .MuiButton-text" : {
-            color: `${colors.grey[100]} !important`,
-          },
-
-        }}
-      >
-        <DataGrid 
-          rows={usersData}
-          columns={columns}
-          disableDensitySelector
-          disableColumnFilter
-          components={{ Toolbar: GridToolbar}}
-          componentsProps={{
-            toolbar: {
-              csvOptions: { disableToolbarButton: true },
-              printOptions: { disableToolbarButton: true },
-              showQuickFilter: true,
-              quickFilterProps: { debounceMs: 500 },
-            },
-          }}
-          autoPageSize
-          pagination
-        />
-      </Box>
+      <MainTable 
+        columns={columns}
+        data={usersData}
+      />
     </Box>
   )
 }
