@@ -9,15 +9,14 @@ import {
   useTheme,
   Snackbar,
   Alert,
-} from "@mui/material";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import { Add, Close } from "@mui/icons-material";
-import { tokens } from "../../theme";
-import { useState } from "react";
-import { productsCategories } from "../../data/products";
+  useMediaQuery,
+} from "@mui/material"
+import { Add, Close } from "@mui/icons-material"
+import { tokens } from "../../theme"
+import { useState } from "react"
+import { productsCategories } from "../../data/products"
 
-
-const ProductsForm = ({ next, back, data, updateData}) => {
+const ProductsForm = ({ next, back, data, updateData }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -36,49 +35,48 @@ const ProductsForm = ({ next, back, data, updateData}) => {
     var valid = true;
     products.forEach((product) => {
       if (product.type === "" || product.name === "" || product.amount === "")
-        valid = false
+        valid = false;
     });
     if (!valid) {
-      setError(true)
-      console.log("Not Valid")
-      return
+      setError(true);
+      return;
     }
-    updateData(products)
-    next()
+    updateData(products);
+    next();
   };
 
   const handleBack = () => {
-    updateData(products)
-    back()
-  }
+    updateData(products);
+    back();
+  };
 
   const handleSelectChange = (event, index) => {
-    const type = event.target.value
-    var data = [...products]
+    const type = event.target.value;
+    var data = [...products];
     const productCategory = productsCategories.filter(
       ({ name }) => name === type
-    )[0]
-    data[index].type = type
-    data[index].options = productCategory.products
-    setProducts(data)
-  }
+    )[0];
+    data[index].type = type;
+    data[index].options = productCategory.products;
+    setProducts(data);
+  };
 
   const handleFormChange = (index, event) => {
-    var data = [...products]
-    data[index][event.target.name] = event.target.value
-    setProducts(data)
-  }
+    var data = [...products];
+    data[index][event.target.name] = event.target.value;
+    setProducts(data);
+  };
 
   const removeProduct = (index) => {
-    var data = [...products]
-    data.splice(index, 1)
-    setProducts(data)
-  }
+    var data = [...products];
+    data.splice(index, 1);
+    setProducts(data);
+  };
 
   const addFields = () => {
-    let newfield = { type: "", name: "", amount: "", options: [""] }
-    setProducts([...products, newfield])
-  }
+    let newfield = { type: "", name: "", amount: "", options: [""] };
+    setProducts([...products, newfield]);
+  };
 
   return (
     <Box
@@ -129,12 +127,12 @@ const ProductsForm = ({ next, back, data, updateData}) => {
               <Select
                 labelId={`selectTypeLabel-${index}`}
                 label="Type"
-                value={input.type || ''}
+                value={input.type || ""}
                 onChange={(event) => handleSelectChange(event, index)}
                 sx={{
                   backgroundColor: `${colors.grey[900]}`,
                 }}
-                >
+              >
                 {/* <MenuItem disabled value=""></MenuItem> */}
                 {productsCategories.map((category) => (
                   <MenuItem key={category.name} value={category.name}>
@@ -158,12 +156,11 @@ const ProductsForm = ({ next, back, data, updateData}) => {
                 label="Product"
                 name="name"
                 onChange={(event) => handleFormChange(index, event)}
-                value={input.name || ''}
+                value={input.name || ""}
                 sx={{
                   backgroundColor: `${colors.grey[900]}`,
                 }}
               >
-                {/* <MenuItem disabled value=""></MenuItem> */}
                 {products[index].options.map((option) => (
                   <MenuItem key={option} value={option}>
                     {option}
@@ -283,7 +280,7 @@ const ProductsForm = ({ next, back, data, updateData}) => {
         </Button>
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default ProductsForm;
+export default ProductsForm

@@ -109,7 +109,7 @@ const Sidebar = ({isCollapsed, toggle}) => {
     <Box
         component="nav"
         height="100"
-        pt="75px"
+        // pt="70px"
         boxShadow="rgba(0, 0, 0, 0.24) 0px 3px 8px"
         sx={{
           "& .pro-sidebar-inner": {
@@ -136,13 +136,15 @@ const Sidebar = ({isCollapsed, toggle}) => {
         >
           <Menu>
               {/* USER */}
-              <Box mb="25px">
+              <Box 
+                pt="70px"            
+                mb="25px">
                 <Box display="flex" justifyContent="center" alignItems="center">
                   <img
                     alt="profile-user"
                     width="100px"
                     height="100px"
-                    src={`../assets/user.png`}
+                    src={`./images/user.png`}
                     style={{ cursor: "pointer", borderRadius: "50%" }}
                   />
                 </Box>

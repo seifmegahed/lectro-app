@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import { useState} from "react";
 import { projects } from "../../data/mockData";
 import {
   Box,
@@ -12,6 +12,7 @@ import {
 import Header from "../../components/Header";
 import Form from "./form";
 import ProductsForm from "./productsForm";
+import Study from "./study";
 
 const generateId = () => {
   const dateString = (date.getYear() - 100) * 100 + date.getMonth() + 1
@@ -24,7 +25,7 @@ const date = new Date()
 const id = generateId()
 
 export default function AddProject() {
-  
+
   const [projectDetails, setProjectDetails] = useState({
     id: id,
     date: date,
@@ -40,11 +41,7 @@ export default function AddProject() {
     { type: "", name: "", amount: "", options: [] },
   ]);
 
-  const [activeStep, setActiveStep] = useState();
-
-  useEffect(() => {
-    setActiveStep(0);
-  }, []);
+  const [activeStep, setActiveStep] = useState(0);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -90,17 +87,19 @@ export default function AddProject() {
     },
     {
       label: "Study",
-      element: `Try out different ad text to see what brings in the most customers,
-                and learn how to enhance your ads using features like ad extensions.
-                If you run into any problems with your ads, find out how to tell if
-                they're running and how to resolve approval issues.`,
+      element: (
+        <Study 
+          next={handleNext}
+          back={handleBack}
+          data={productsData}
+        />
+      ),
     },
     {
       label: "Finalize",
-      element: `Try out different ad text to see what brings in the most customers,
-                and learn how to enhance your ads using features like ad extensions.
-                If you run into any problems with your ads, find out how to tell if
-                they're running and how to resolve approval issues.`,
+      element: (
+        ''
+      ),
     },
   ];
 
