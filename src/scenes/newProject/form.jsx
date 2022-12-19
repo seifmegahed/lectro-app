@@ -1,11 +1,11 @@
-import { Box, Button, TextField, useTheme, Autocomplete } from "@mui/material";
+import { Box, TextField, useTheme, Autocomplete } from "@mui/material";
 
 import { Formik } from "formik";
 import * as yup from "yup";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import { tokens } from "../../theme";
 import { clients } from "../../data/accounts";
-
+import FormContainer from "../../components/FormContainer";
+import NavButton from "../../components/navButton";
 
 const userSchema = yup.object().shape({
   projectName: yup.string().required("required"),
@@ -16,16 +16,14 @@ const userSchema = yup.object().shape({
 });
 
 const Form = ({ next, data, updateData }) => {
-
   const initialValues = data;
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const isNonMobile = useMediaQuery("(min-width:600px)");
 
   const handleFormSubmit = (values) => {
-    updateData(values)
-    next()
-  }
+    updateData(values);
+    next();
+  };
 
   return (
     <Formik
@@ -43,20 +41,7 @@ const Form = ({ next, data, updateData }) => {
         handleSubmit,
       }) => (
         <form>
-          <Box
-            display="grid"
-            p="30px"
-            boxShadow="rgba(0, 0, 0, 0.24) 0px 3px 8px"
-            borderRadius="10px"
-            gap="20px"
-            gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-            sx={{
-              backgroundColor: `${colors.primary[700]}`,
-              "& > div": {
-                gridColumn: isNonMobile ? undefined : "span 4",
-              },
-            }}
-          >
+          <FormContainer>
             <Box
               display="flex"
               width="100%"
@@ -91,14 +76,14 @@ const Form = ({ next, data, updateData }) => {
             />
             <Autocomplete
               disablePortal
-              options={clients.map(client => client.name)}
+              options={clients.map((client) => client.name)}
               name="clientName"
               id="clientName"
-              value={values.clientName || ''}
+              value={values.clientName || ""}
               onChange={(e, value) => {
                 setFieldValue(
                   "clientName",
-                  value !== '' ? value : initialValues.clientName
+                  value !== "" ? value : initialValues.clientName
                 );
               }}
               sx={{
@@ -199,28 +184,11 @@ const Form = ({ next, data, updateData }) => {
             <Box
               display="flex"
               justifyContent="flex-end"
-              sx={{
-                gridColumn: "span 4",
-              }}
+              sx={{ gridColumn: "span 4" }}
             >
-              <Button
-                variant="cointained"
-                onClick={handleSubmit}
-                size="large"
-                sx={{
-                  width: "6rem",
-                  height: "2.5rem",
-                  color: "#fcfcfc",
-                  backgroundColor: `${colors.blueAccent[500]}`,
-                  "&:hover": {
-                    backgroundColor: `${colors.blueAccent[400]}`,
-                  },
-                }}
-              >
-                CONTINUE
-              </Button>
+              <NavButton cb={handleSubmit}>CONTINUE</NavButton>
             </Box>
-          </Box>
+          </FormContainer>
         </form>
       )}
     </Formik>

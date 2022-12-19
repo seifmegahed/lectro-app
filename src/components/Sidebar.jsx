@@ -1,15 +1,15 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { tokens } from "../theme";
+import { useState } from "react"
+import { Link } from "react-router-dom"
+import { tokens } from "../theme"
 
-import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
-import "react-pro-sidebar/dist/css/styles.css";
+import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar"
+import "react-pro-sidebar/dist/css/styles.css"
 
 import {
   Box,
   Typography,
   useTheme,
-} from "@mui/material";
+} from "@mui/material"
 
 const pages = {
   Sales: [
@@ -56,8 +56,8 @@ const pages = {
       path: "/purchase-requests",
     },
     {
-      title: "Receipt Vouchers",
-      path: "/reciept-vouchers",
+      title: "Recieve Items",
+      path: "/Recieve-item",
     },
     {
       title: "Return Vouchers",
@@ -78,7 +78,7 @@ const pages = {
       path: "repair",
     },
   ],
-};
+}
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -97,7 +97,8 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
       <Link to={to} />
     </MenuItem>
   );
-};
+}
+
 const pageKeys = Object.keys(pages);
 
 const Sidebar = ({isCollapsed, toggle}) => {
@@ -109,7 +110,6 @@ const Sidebar = ({isCollapsed, toggle}) => {
     <Box
         component="nav"
         height="100"
-        // pt="70px"
         boxShadow="rgba(0, 0, 0, 0.24) 0px 3px 8px"
         sx={{
           "& .pro-sidebar-inner": {
