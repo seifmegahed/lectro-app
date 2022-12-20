@@ -11,6 +11,8 @@ const FormContainer = ({ children }) => {
       p={isNonMobile ? "30px" : "15px"}
       boxShadow="rgba(0, 0, 0, 0.24) 0px 3px 8px"
       borderRadius="10px"
+      gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+
       gap="20px"
       sx={{
         backgroundColor: `${colors.primary[700]}`,
