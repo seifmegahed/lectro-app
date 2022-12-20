@@ -1,0 +1,65 @@
+Date : 2022-12-19 23:55:09
+Directory : c:\Users\ESS\dev\lectro-app\src
+Total : 28 files,  2783 codes, 19 comments, 179 blanks, all 2981 lines
+
+Languages
++------------------+------------+------------+------------+------------+------------+
+| language         | files      | code       | comment    | blank      | total      |
++------------------+------------+------------+------------+------------+------------+
+| JavaScript React |         21 |      1,892 |         13 |        149 |      2,054 |
+| JavaScript       |          6 |        866 |          3 |         23 |        892 |
+| CSS              |          1 |         25 |          3 |          7 |         35 |
++------------------+------------+------------+------------+------------+------------+
+
+Directories
++--------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                               | files      | code       | comment    | blank      | total      |
++--------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                  |         28 |      2,783 |         19 |        179 |      2,981 |
+| components                                                         |          7 |        441 |          4 |         35 |        480 |
+| data                                                               |          3 |        572 |          0 |          8 |        580 |
+| scenes                                                             |         14 |      1,451 |          9 |        114 |      1,574 |
+| scenes\clients                                                     |          3 |        307 |          2 |         24 |        333 |
+| scenes\contacts                                                    |          1 |         47 |          0 |          4 |         51 |
+| scenes\dashboard                                                   |          1 |         12 |          0 |          2 |         14 |
+| scenes\form                                                        |          1 |        209 |          6 |         10 |        225 |
+| scenes\invoices                                                    |          1 |         49 |          0 |          4 |         53 |
+| scenes\newProject                                                  |          4 |        658 |          0 |         52 |        710 |
+| scenes\projects                                                    |          2 |         99 |          1 |         11 |        111 |
+| scenes\team                                                        |          1 |         70 |          0 |          7 |         77 |
++--------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++--------------------------------------------------------------------+------------------+------------+------------+------------+------------+
+| filename                                                           | language         | code       | comment    | blank      | total      |
++--------------------------------------------------------------------+------------------+------------+------------+------------+------------+
+| c:\Users\ESS\dev\lectro-app\src\App.js                             | JavaScript       |         40 |          0 |          7 |         47 |
+| c:\Users\ESS\dev\lectro-app\src\components\FormContainer.jsx       | JavaScript React |         25 |          0 |          2 |         27 |
+| c:\Users\ESS\dev\lectro-app\src\components\Header.jsx              | JavaScript React |         27 |          0 |          3 |         30 |
+| c:\Users\ESS\dev\lectro-app\src\components\LabelContainer.jsx      | JavaScript React |         44 |          0 |          3 |         47 |
+| c:\Users\ESS\dev\lectro-app\src\components\Sidebar.jsx             | JavaScript React |        197 |          1 |         10 |        208 |
+| c:\Users\ESS\dev\lectro-app\src\components\Topbar.jsx              | JavaScript React |         67 |          3 |          7 |         77 |
+| c:\Users\ESS\dev\lectro-app\src\components\mainTable.jsx           | JavaScript React |         57 |          0 |          6 |         63 |
+| c:\Users\ESS\dev\lectro-app\src\components\navButton.jsx           | JavaScript React |         24 |          0 |          4 |         28 |
+| c:\Users\ESS\dev\lectro-app\src\data\accounts.js                   | JavaScript       |          9 |          0 |          0 |          9 |
+| c:\Users\ESS\dev\lectro-app\src\data\mockData.js                   | JavaScript       |        358 |          0 |          6 |        364 |
+| c:\Users\ESS\dev\lectro-app\src\data\products.js                   | JavaScript       |        205 |          0 |          2 |        207 |
+| c:\Users\ESS\dev\lectro-app\src\index.css                          | CSS              |         25 |          3 |          7 |         35 |
+| c:\Users\ESS\dev\lectro-app\src\index.js                           | JavaScript       |         13 |          0 |          0 |         13 |
+| c:\Users\ESS\dev\lectro-app\src\scenes\clients\form.jsx            | JavaScript React |        257 |          1 |         16 |        274 |
+| c:\Users\ESS\dev\lectro-app\src\scenes\clients\index.jsx           | JavaScript React |         31 |          1 |          4 |         36 |
+| c:\Users\ESS\dev\lectro-app\src\scenes\clients\table.jsx           | JavaScript React |         19 |          0 |          4 |         23 |
+| c:\Users\ESS\dev\lectro-app\src\scenes\contacts\index.jsx          | JavaScript React |         47 |          0 |          4 |         51 |
+| c:\Users\ESS\dev\lectro-app\src\scenes\dashboard\index.jsx         | JavaScript React |         12 |          0 |          2 |         14 |
+| c:\Users\ESS\dev\lectro-app\src\scenes\form\index.jsx              | JavaScript React |        209 |          6 |         10 |        225 |
+| c:\Users\ESS\dev\lectro-app\src\scenes\invoices\index.jsx          | JavaScript React |         49 |          0 |          4 |         53 |
+| c:\Users\ESS\dev\lectro-app\src\scenes\newProject\form.jsx         | JavaScript React |        197 |          0 |          7 |        204 |
+| c:\Users\ESS\dev\lectro-app\src\scenes\newProject\index.jsx        | JavaScript React |        121 |          0 |         14 |        135 |
+| c:\Users\ESS\dev\lectro-app\src\scenes\newProject\productsForm.jsx | JavaScript React |        222 |          0 |         21 |        243 |
+| c:\Users\ESS\dev\lectro-app\src\scenes\newProject\study.jsx        | JavaScript React |        118 |          0 |         10 |        128 |
+| c:\Users\ESS\dev\lectro-app\src\scenes\projects\index.jsx          | JavaScript React |         34 |          1 |          4 |         39 |
+| c:\Users\ESS\dev\lectro-app\src\scenes\projects\table.jsx          | JavaScript React |         65 |          0 |          7 |         72 |
+| c:\Users\ESS\dev\lectro-app\src\scenes\team\index.jsx              | JavaScript React |         70 |          0 |          7 |         77 |
+| c:\Users\ESS\dev\lectro-app\src\theme.js                           | JavaScript       |        241 |          3 |          8 |        252 |
+| Total                                                              |                  |      2,783 |         19 |        179 |      2,981 |
++--------------------------------------------------------------------+------------------+------------+------------+------------+------------+
