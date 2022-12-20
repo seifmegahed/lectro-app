@@ -7,8 +7,6 @@ import {
   Select,
   TextField,
   useTheme,
-  Snackbar,
-  Alert,
   useMediaQuery,
 } from "@mui/material";
 
@@ -19,22 +17,13 @@ import { productsCategories } from "../../data/products";
 import NavButton from "../../components/navButton";
 import FormContainer from "../../components/FormContainer";
 
-const ProductsForm = ({ next, back, data, updateData }) => {
+const ProductsForm = ({ next, back, data, updateData, triggerError }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   const [products, setProducts] = useState(data);
-
-  const [error, setError] = useState(false);
-
-  const vertical = "bottom";
-  const horizontal = "right";
-
-  const handleClose = () => {
-    setError(false);
-  };
 
   const handleNext = () => {
     var valid = true;
@@ -43,7 +32,7 @@ const ProductsForm = ({ next, back, data, updateData }) => {
         valid = false;
     });
     if (!valid) {
-      setError(true);
+      triggerError()
       return;
     }
     updateData(products);
@@ -83,20 +72,8 @@ const ProductsForm = ({ next, back, data, updateData }) => {
     setProducts([...products, newfield]);
   };
 
-
-
   return (
     <Box display="flex" flexDirection="column" gap="20px">
-          <Snackbar
-      open={error}
-      onClose={handleClose}
-      anchorOrigin={{ vertical, horizontal }}
-      autoHideDuration={3000}
-    >
-      <Alert severity="error">
-          Please Fill All Required Data
-          </Alert>
-    </Snackbar>
       {products.map((input, index) => (
         <FormContainer>
           <Box
