@@ -51,6 +51,7 @@ const ProductsForm = ({ next, back, data, updateData, triggerError }) => {
       ({ name }) => name === type
     )[0];
     data[index].type = type;
+    data[index].name = '';
     data[index].options = productCategory.products;
     setProducts(data);
   };
@@ -74,7 +75,7 @@ const ProductsForm = ({ next, back, data, updateData, triggerError }) => {
 
   return (
     <Box display="flex" flexDirection="column" gap="20px">
-      {products.map((input, index) => (
+      {products.map((product, index) => (
         <FormContainer>
           <Box
             sx={{
@@ -86,7 +87,7 @@ const ProductsForm = ({ next, back, data, updateData, triggerError }) => {
               <Select
                 labelId={`selectTypeLabel-${index}`}
                 label="Type"
-                value={input.type || ""}
+                value={product.type || ""}
                 onChange={(event) => handleSelectChange(event, index)}
                 sx={{
                   backgroundColor: `${colors.grey[900]}`,
@@ -106,15 +107,15 @@ const ProductsForm = ({ next, back, data, updateData, triggerError }) => {
             }}
           >
             <FormControl fullWidth>
-              <InputLabel id={`selectProductLabel-${index}`}>
+              <InputLabel id={`selectProductNameLabel-${index}`}>
                 Product
               </InputLabel>
               <Select
-                labelId={`selectProductLabel-${index}`}
+                labelId={`selectProductNameLabel-${index}`}
                 label="Product"
                 name="name"
                 onChange={(event) => handleFormChange(index, event)}
-                value={input.name || ""}
+                value={product.name || ""}
                 sx={{
                   backgroundColor: `${colors.grey[900]}`,
                 }}
@@ -135,7 +136,7 @@ const ProductsForm = ({ next, back, data, updateData, triggerError }) => {
             <TextField
               name="amount"
               label="Amount"
-              value={input.amount}
+              value={product.amount}
               onChange={(event) => handleFormChange(index, event)}
               sx={{
                 width: `${isNonMobile ? "25%" : "50%"}`,
