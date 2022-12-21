@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import { useState } from "react";
 import { projects } from "../../data/mockData";
 import {
   Box,
@@ -8,23 +8,25 @@ import {
   StepContent,
   Button,
   Typography,
+  Snackbar,
+  Alert
 } from "@mui/material";
 import Header from "../../components/Header";
 import Form from "./form";
 import ProductsForm from "./productsForm";
+import Study from "./study";
 
 const generateId = () => {
-  const dateString = (date.getYear() - 100) * 100 + date.getMonth() + 1
-  const projectNumber = String(projects.length + 1).padStart(4, "0")
-  const id = `LL${dateString}D${projectNumber}`
+  const dateString = (date.getYear() - 100) * 100 + date.getMonth() + 1;
+  const projectNumber = String(projects.length + 1).padStart(4, "0");
+  const id = `LL${dateString}D${projectNumber}`;
   return id;
-}
+};
 
-const date = new Date()
-const id = generateId()
+const date = new Date();
+const id = generateId();
 
 export default function AddProject() {
-  
   const [projectDetails, setProjectDetails] = useState({
     id: id,
     date: date,
@@ -34,17 +36,26 @@ export default function AddProject() {
     contactNumber: "",
     contactEmail: "",
     notes: "",
-  })
+  });
+
+  const [error, setError] = useState(false);
+
+  const vertical = "bottom";
+  const horizontal = "right";
+
+  const handleClose = () => {
+    setError(false);
+  };
+
+  const triggerError = () => {
+    setError(true)
+  }
 
   const [productsData, setProductsData] = useState([
     { type: "", name: "", amount: "", options: [] },
   ]);
 
-  const [activeStep, setActiveStep] = useState();
-
-  useEffect(() => {
-    setActiveStep(0);
-  }, []);
+  const [activeStep, setActiveStep] = useState(0);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -85,22 +96,19 @@ export default function AddProject() {
           back={handleBack}
           data={productsData}
           updateData={updateProductsData}
+          triggerError={triggerError}
         />
       ),
     },
     {
       label: "Study",
-      element: `Try out different ad text to see what brings in the most customers,
-                and learn how to enhance your ads using features like ad extensions.
-                If you run into any problems with your ads, find out how to tell if
-                they're running and how to resolve approval issues.`,
+      element: (
+        <Study next={handleNext} back={handleBack} data={productsData} />
+      ),
     },
     {
       label: "Finalize",
-      element: `Try out different ad text to see what brings in the most customers,
-                and learn how to enhance your ads using features like ad extensions.
-                If you run into any problems with your ads, find out how to tell if
-                they're running and how to resolve approval issues.`,
+      element: "",
     },
   ];
 
@@ -116,9 +124,7 @@ export default function AddProject() {
         {steps.map((step, index) => (
           <Step key={step.label}>
             <StepLabel>{step.label}</StepLabel>
-            <StepContent>
-              {step.element}
-            </StepContent>
+            <StepContent>{step.element}</StepContent>
           </Step>
         ))}
       </Stepper>
@@ -130,6 +136,14 @@ export default function AddProject() {
           </Button>
         </Box>
       )}
+      <Snackbar
+        open={error}
+        onClose={handleClose}
+        anchorOrigin={{ vertical, horizontal }}
+        autoHideDuration={3000}
+      >
+        <Alert severity="error">Please Fill All Required Data</Alert>
+      </Snackbar>
     </Box>
   );
 }
