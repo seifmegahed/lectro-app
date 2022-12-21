@@ -6,7 +6,6 @@ import {
   Step,
   StepLabel,
   StepContent,
-  Button,
   Typography,
   Snackbar,
   Alert,
@@ -64,17 +63,6 @@ export default function AddProject() {
     ]
   });
 
-  const [projectDetails, setProjectDetails] = useState({
-    id: generateId(),
-    date: new Date(),
-    projectName: "",
-    clientName: "",
-    contactPerson: "",
-    contactNumber: "",
-    contactEmail: "",
-    notes: "",
-  });
-
   const [error, setError] = useState(false);
 
   const vertical = "bottom";
@@ -92,24 +80,6 @@ export default function AddProject() {
     { type: "", name: "", amount: "", options: [] },
   ]);
 
-  const [activeStep, setActiveStep] = useState(0);
-
-  const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
-
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleReset = () => {
-    setActiveStep(0);
-  };
-
-  const updateProjectDetails = (data) => {
-    setProjectDetails(data);
-  };
-
   const updateProductsData = (data) => {
     setProductsData(data);
   };
@@ -121,7 +91,6 @@ export default function AddProject() {
         <Form
           dispatch={dispatch}
           project={project}
-          updateData={updateProjectDetails}
           />
           ),
         },
@@ -171,9 +140,6 @@ export default function AddProject() {
       {project.activeStep === steps.length && (
         <Box m="20px">
           <Typography>All steps completed - you&apos;re finished</Typography>
-          <Button onClick={handleReset} sx={{ mt: 1, mr: 1 }}>
-            Reset
-          </Button>
         </Box>
       )}
       <Snackbar
