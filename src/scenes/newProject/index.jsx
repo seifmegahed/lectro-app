@@ -69,22 +69,6 @@ function reducer(project, action) {
           return product
         })
       }
-    case ACTIONS.UPDATE_PRODUCT_TYPE:
-      return {
-        ...project,
-        products: project.products.map((product) => {
-          if (product.id === action.payload.id) {
-            return {
-              ...product,
-              type: action.payload.type,
-              options: action.payload.options,
-              name: "",
-              bom: [],
-            };
-          }
-          return product;
-        }),
-      };
     default:
       return project;
   }

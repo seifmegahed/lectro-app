@@ -138,10 +138,26 @@ const ProductForm = ({ product, dispatch, lastItem }) => {
     const options = productsCategories.filter(({ name }) => name === type)[0]
       .products;
 
-    dispatch({
-      type: ACTIONS.UPDATE_PRODUCT_TYPE,
-      payload: { type: type, options: options, id: id },
-    });
+      dispatch({ type: ACTIONS.UPDATE_PRODUCT, payload: {
+        id: id,
+        field: "type",
+        value: type
+      }})
+      dispatch({ type: ACTIONS.UPDATE_PRODUCT, payload: {
+        id: id,
+        field: "options",
+        value: options
+      }})
+      dispatch({ type: ACTIONS.UPDATE_PRODUCT, payload: {
+        id: id,
+        field: "name",
+        value: ""
+      }})
+      dispatch({ type: ACTIONS.UPDATE_PRODUCT, payload: {
+        id: id,
+        field: "bom",
+        value: []
+      }})
   };
 
   const handleNameChange = (id, event) => {
