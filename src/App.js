@@ -10,7 +10,7 @@ import Topbar from "./components/Topbar";
 import Sidebar from "./components/Sidebar";
 import Loading from "./components/Loading";
 
-const waitTimeMs = 3000;
+const waitTimeMs = 1000;
 
 const NewProject = lazy(() =>
   wait(waitTimeMs).then(() => import("./scenes/newProject"))
