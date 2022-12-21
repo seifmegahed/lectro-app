@@ -19,10 +19,12 @@ import {
   products as allProducts,
 } from "../../data/products";
 
+import {ACTIONS} from "./index"
+
 import NavButton from "../../components/navButton";
 import FormContainer from "../../components/FormContainer";
 
-const ProductsForm = ({ data, nav, updateData, triggerError }) => {
+const ProductsForm = ({ data, dispatch, updateData, triggerError }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -41,12 +43,12 @@ const ProductsForm = ({ data, nav, updateData, triggerError }) => {
       return;
     }
     updateData(products);
-    nav.next();
+    dispatch({type: ACTIONS.NEXT})
   };
 
   const handleBack = () => {
     updateData(products);
-    nav.back();
+    dispatch({type: ACTIONS.BACK})
   };
 
   const handleSelectChange = (index, event) => {
@@ -75,7 +77,6 @@ const ProductsForm = ({ data, nav, updateData, triggerError }) => {
     data[index].power = selectedProduct.power
     data[index].bom = selectedProduct.bom
     setProducts(data)
-    console.log(products)
   };
 
   const handleFormChange = (index, event) => {
@@ -160,7 +161,7 @@ const ProductsForm = ({ data, nav, updateData, triggerError }) => {
             <TextField
               label="Quantity"
               name="quantity"
-              value={product.quantity}
+              value={product.quantity || ''}
               onChange={(event) => handleFormChange(index, event)}
               sx={{
                 width: `${isNonMobile ? "25%" : "50%"}`,

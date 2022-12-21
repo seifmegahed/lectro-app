@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useReducer } from "react";
 import { projects } from "../../data/mockData";
 import {
   Box,
@@ -9,8 +9,9 @@ import {
   Button,
   Typography,
   Snackbar,
-  Alert
+  Alert,
 } from "@mui/material";
+
 import Header from "../../components/Header";
 import Form from "./form";
 import ProductsForm from "./productsForm";
@@ -26,10 +27,46 @@ const generateId = () => {
 const date = new Date();
 const id = generateId();
 
+export const ACTIONS = {
+  NEXT: "next",
+  BACK: "back",
+  UPDATE_DETAILS: "update_details",
+};
+
+function reducer(state, action) {
+  switch (action.type) {
+    case ACTIONS.NEXT:
+      return { ...state, activeStep: state.activeStep + 1 };
+    case ACTIONS.BACK:
+      return { ...state, activeStep: state.activeStep - 1 };
+    case ACTIONS.UPDATE_DETAILS:
+      return { ...state, details: action.payload };
+    default:
+      return state;
+  }
+};
+
 export default function AddProject() {
+  const [project, dispatch] = useReducer(reducer, { 
+    activeStep: 0 ,
+    details: {
+      id: id,
+      date: date,
+      projectName: "",
+      clientName: "",
+      contactPerson: "",
+      contactNumber: "",
+      contactEmail: "",
+      notes: "",
+    },
+    products: [
+
+    ]
+  });
+
   const [projectDetails, setProjectDetails] = useState({
-    id: id,
-    date: date,
+    id: generateId(),
+    date: new Date(),
     projectName: "",
     clientName: "",
     contactPerson: "",
@@ -48,8 +85,8 @@ export default function AddProject() {
   };
 
   const triggerError = () => {
-    setError(true)
-  }
+    setError(true);
+  };
 
   const [productsData, setProductsData] = useState([
     { type: "", name: "", amount: "", options: [] },
@@ -82,20 +119,19 @@ export default function AddProject() {
       label: "Project Details",
       element: (
         <Form
-          next={handleNext}
-          data={projectDetails}
+          dispatch={dispatch}
+          project={project}
           updateData={updateProjectDetails}
-        />
-      ),
-    },
-    {
-      label: "Add Products",
+          />
+          ),
+        },
+        {
+          label: "Add Products",
       element: (
         <ProductsForm
-          nav={{next: handleNext, back: handleBack }}
+          dispatch={dispatch}
           data={productsData}
           updateData={updateProductsData}
-          prototype={productPrototype}
           triggerError={triggerError}
         />
       ),
@@ -103,7 +139,11 @@ export default function AddProject() {
     {
       label: "Study",
       element: (
-        <Study next={handleNext} back={handleBack} data={productsData} />
+        <Study
+          dispatch={dispatch}
+          data={productsData}
+          updateData={updateProductsData}
+        />
       ),
     },
     {
@@ -120,7 +160,7 @@ export default function AddProject() {
       }}
     >
       <Header title="CREATE NEW PROJECT" />
-      <Stepper activeStep={activeStep} orientation="vertical">
+      <Stepper activeStep={project.activeStep} orientation="vertical">
         {steps.map((step, index) => (
           <Step key={step.label}>
             <StepLabel>{step.label}</StepLabel>
@@ -128,7 +168,7 @@ export default function AddProject() {
           </Step>
         ))}
       </Stepper>
-      {activeStep === steps.length && (
+      {project.activeStep === steps.length && (
         <Box m="20px">
           <Typography>All steps completed - you&apos;re finished</Typography>
           <Button onClick={handleReset} sx={{ mt: 1, mr: 1 }}>

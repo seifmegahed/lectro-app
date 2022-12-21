@@ -1,9 +1,4 @@
-import { 
-  Box, 
-  TextField, 
-  useTheme, 
-  Autocomplete,
-} from "@mui/material";
+import { Box, TextField, useTheme, Autocomplete } from "@mui/material";
 
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -11,6 +6,7 @@ import { tokens } from "../../theme";
 import { clients } from "../../data/accounts";
 import FormContainer from "../../components/FormContainer";
 import NavButton from "../../components/navButton";
+import { ACTIONS } from "./index";
 
 const userSchema = yup.object().shape({
   projectName: yup.string().required("required"),
@@ -20,14 +16,14 @@ const userSchema = yup.object().shape({
   notes: yup.string().required("required"),
 });
 
-const Form = ({ next, data, updateData }) => {
-  const initialValues = data;
+const Form = ({ dispatch, project }) => {
+  const initialValues = project.details;
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
   const handleFormSubmit = (values) => {
-    updateData(values);
-    next();
+    dispatch({ type: ACTIONS.UPDATE_DETAILS, payload: values });
+    dispatch({ type: ACTIONS.NEXT });
   };
 
   return (
@@ -192,7 +188,9 @@ const Form = ({ next, data, updateData }) => {
               sx={{ gridColumn: "span 4" }}
             >
               {/* For Faster Testing */}
-              <NavButton cb={next}>CONTINUE</NavButton>
+              <NavButton cb={() => dispatch({ type: ACTIONS.NEXT })}>
+                CONTINUE
+              </NavButton>
               {/* <NavButton cb={handleSubmit}>CONTINUE</NavButton> */}
             </Box>
           </FormContainer>
