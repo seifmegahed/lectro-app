@@ -13,11 +13,16 @@ import {
 import { Add, Close } from "@mui/icons-material";
 import { tokens } from "../../theme";
 import { useState } from "react";
-import { productsCategories } from "../../data/products";
+
+import {
+  productsCategories,
+  products as allProducts,
+} from "../../data/products";
+
 import NavButton from "../../components/navButton";
 import FormContainer from "../../components/FormContainer";
 
-const ProductsForm = ({ next, back, data, updateData, triggerError }) => {
+const ProductsForm = ({ data, nav, updateData, triggerError }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -28,32 +33,49 @@ const ProductsForm = ({ next, back, data, updateData, triggerError }) => {
   const handleNext = () => {
     var valid = true;
     products.forEach((product) => {
-      if (product.type === "" || product.name === "" || product.amount === "")
+      if (product.type === "" || product.name === "" || product.quantity === "")
         valid = false;
     });
     if (!valid) {
-      triggerError()
+      triggerError();
       return;
     }
     updateData(products);
-    next();
+    nav.next();
   };
 
   const handleBack = () => {
     updateData(products);
-    back();
+    nav.back();
   };
 
-  const handleSelectChange = (event, index) => {
+  const handleSelectChange = (index, event) => {
     const type = event.target.value;
     var data = [...products];
     const productCategory = productsCategories.filter(
       ({ name }) => name === type
     )[0];
-    data[index].type = type;
-    data[index].name = '';
-    data[index].options = productCategory.products;
+    const quantity = data[index].quantity
+    data[index] = {
+      type: type,
+      options: productCategory.products,
+      quantity: quantity,
+      name: "",
+    };
     setProducts(data);
+  };
+
+  const handleProductSelectChange = (index, event) => {
+    const productName = event.target.value;
+    var data = [...products];
+    const selectedProduct = allProducts.filter(
+      product => product.name === productName
+    )[0];
+    data[index].name = selectedProduct.name
+    data[index].power = selectedProduct.power
+    data[index].bom = selectedProduct.bom
+    setProducts(data)
+    console.log(products)
   };
 
   const handleFormChange = (index, event) => {
@@ -68,15 +90,17 @@ const ProductsForm = ({ next, back, data, updateData, triggerError }) => {
     setProducts(data);
   };
 
-  const addFields = () => {
-    let newfield = { type: "", name: "", amount: "", options: [""] };
-    setProducts([...products, newfield]);
+  const addProduct = () => {
+    setProducts((prevProducts) => [
+      ...prevProducts,
+      { name: "", type: "", quantity: "", options: [''] },
+    ]);
   };
 
   return (
     <Box display="flex" flexDirection="column" gap="20px">
       {products.map((product, index) => (
-        <FormContainer>
+        <FormContainer key={index}>
           <Box
             sx={{
               gridColumn: "span 2",
@@ -88,7 +112,7 @@ const ProductsForm = ({ next, back, data, updateData, triggerError }) => {
                 labelId={`selectTypeLabel-${index}`}
                 label="Type"
                 value={product.type || ""}
-                onChange={(event) => handleSelectChange(event, index)}
+                onChange={(event) => handleSelectChange(index, event)}
                 sx={{
                   backgroundColor: `${colors.grey[900]}`,
                 }}
@@ -114,7 +138,7 @@ const ProductsForm = ({ next, back, data, updateData, triggerError }) => {
                 labelId={`selectProductNameLabel-${index}`}
                 label="Product"
                 name="name"
-                onChange={(event) => handleFormChange(index, event)}
+                onChange={(event) => handleProductSelectChange(index, event)}
                 value={product.name || ""}
                 sx={{
                   backgroundColor: `${colors.grey[900]}`,
@@ -134,9 +158,9 @@ const ProductsForm = ({ next, back, data, updateData, triggerError }) => {
             sx={{ gridColumn: "span 4" }}
           >
             <TextField
-              name="amount"
-              label="Amount"
-              value={product.amount}
+              label="Quantity"
+              name="quantity"
+              value={product.quantity}
               onChange={(event) => handleFormChange(index, event)}
               sx={{
                 width: `${isNonMobile ? "25%" : "50%"}`,
@@ -147,7 +171,7 @@ const ProductsForm = ({ next, back, data, updateData, triggerError }) => {
               }}
             />
             {products.length - 1 === index ? (
-              <AddButton colors={colors} cb={addFields} />
+              <AddButton colors={colors} cb={addProduct} />
             ) : (
               <RemoveButton colors={colors} cb={() => removeProduct(index)} />
             )}

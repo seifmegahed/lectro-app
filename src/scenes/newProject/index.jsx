@@ -92,10 +92,10 @@ export default function AddProject() {
       label: "Add Products",
       element: (
         <ProductsForm
-          next={handleNext}
-          back={handleBack}
+          nav={{next: handleNext, back: handleBack }}
           data={productsData}
           updateData={updateProductsData}
+          prototype={productPrototype}
           triggerError={triggerError}
         />
       ),
