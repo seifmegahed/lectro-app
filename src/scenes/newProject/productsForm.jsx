@@ -12,29 +12,26 @@ import {
 
 import { Add, Close } from "@mui/icons-material";
 import { tokens } from "../../theme";
-import { useState } from "react";
 
 import {
   productsCategories,
   products as allProducts,
 } from "../../data/products";
 
-import {ACTIONS} from "./index"
+import { ACTIONS } from "./index";
 
 import NavButton from "../../components/navButton";
 import FormContainer from "../../components/FormContainer";
 
-const ProductsForm = ({ data, dispatch, updateData, triggerError }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-
-  const isNonMobile = useMediaQuery("(min-width:600px)");
-
-  const [products, setProducts] = useState(data);
+const ProductsForm = ({
+  project,
+  dispatch,
+  triggerError,
+}) => {
 
   const handleNext = () => {
     var valid = true;
-    products.forEach((product) => {
+    project.products.forEach((product) => {
       if (product.type === "" || product.name === "" || product.quantity === "")
         valid = false;
     });
@@ -42,142 +39,22 @@ const ProductsForm = ({ data, dispatch, updateData, triggerError }) => {
       triggerError();
       return;
     }
-    updateData(products);
-    dispatch({type: ACTIONS.NEXT})
+    dispatch({ type: ACTIONS.NEXT });
   };
 
   const handleBack = () => {
-    updateData(products);
-    dispatch({type: ACTIONS.BACK})
-  };
-
-  const handleSelectChange = (index, event) => {
-    const type = event.target.value;
-    var data = [...products];
-    const productCategory = productsCategories.filter(
-      ({ name }) => name === type
-    )[0];
-    const quantity = data[index].quantity
-    data[index] = {
-      type: type,
-      options: productCategory.products,
-      quantity: quantity,
-      name: "",
-    };
-    setProducts(data);
-  };
-
-  const handleProductSelectChange = (index, event) => {
-    const productName = event.target.value;
-    var data = [...products];
-    const selectedProduct = allProducts.filter(
-      product => product.name === productName
-    )[0];
-    data[index].name = selectedProduct.name
-    data[index].power = selectedProduct.power
-    data[index].bom = selectedProduct.bom
-    setProducts(data)
-  };
-
-  const handleFormChange = (index, event) => {
-    var data = [...products];
-    data[index][event.target.name] = event.target.value;
-    setProducts(data);
-  };
-
-  const removeProduct = (index) => {
-    var data = [...products];
-    data.splice(index, 1);
-    setProducts(data);
-  };
-
-  const addProduct = () => {
-    setProducts((prevProducts) => [
-      ...prevProducts,
-      { name: "", type: "", quantity: "", options: [''] },
-    ]);
+    dispatch({ type: ACTIONS.BACK });
   };
 
   return (
     <Box display="flex" flexDirection="column" gap="20px">
-      {products.map((product, index) => (
-        <FormContainer key={index}>
-          <Box
-            sx={{
-              gridColumn: "span 2",
-            }}
-          >
-            <FormControl fullWidth>
-              <InputLabel id={`selectTypeLabel-${index}`}>Type</InputLabel>
-              <Select
-                labelId={`selectTypeLabel-${index}`}
-                label="Type"
-                value={product.type || ""}
-                onChange={(event) => handleSelectChange(index, event)}
-                sx={{
-                  backgroundColor: `${colors.grey[900]}`,
-                }}
-              >
-                {productsCategories.map((category) => (
-                  <MenuItem key={category.name} value={category.name}>
-                    {category.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Box>
-          <Box
-            sx={{
-              gridColumn: "span 2",
-            }}
-          >
-            <FormControl fullWidth>
-              <InputLabel id={`selectProductNameLabel-${index}`}>
-                Product
-              </InputLabel>
-              <Select
-                labelId={`selectProductNameLabel-${index}`}
-                label="Product"
-                name="name"
-                onChange={(event) => handleProductSelectChange(index, event)}
-                value={product.name || ""}
-                sx={{
-                  backgroundColor: `${colors.grey[900]}`,
-                }}
-              >
-                {products[index].options.map((option) => (
-                  <MenuItem key={option} value={option}>
-                    {option}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Box>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            sx={{ gridColumn: "span 4" }}
-          >
-            <TextField
-              label="Quantity"
-              name="quantity"
-              value={product.quantity || ''}
-              onChange={(event) => handleFormChange(index, event)}
-              sx={{
-                width: `${isNonMobile ? "25%" : "50%"}`,
-                input: {
-                  backgroundColor: `${colors.grey[900]}`,
-                  borderRadius: "4px",
-                },
-              }}
-            />
-            {products.length - 1 === index ? (
-              <AddButton colors={colors} cb={addProduct} />
-            ) : (
-              <RemoveButton colors={colors} cb={() => removeProduct(index)} />
-            )}
-          </Box>
-        </FormContainer>
+      {project.products.map((product, index) => (
+        <ProductForm
+          key={product.id}
+          product={product}
+          dispatch={dispatch}
+          lastItem={project.products.length - 1 === index ? true : false}
+        />
       ))}
 
       <FormContainer>
@@ -239,6 +116,135 @@ const RemoveButton = ({ colors, cb }) => {
         }}
       />
     </Button>
+  );
+};
+
+const ProductForm = ({ product, dispatch, lastItem }) => {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+
+  const isNonMobile = useMediaQuery("(min-width:600px)");
+
+  const removeProduct = (id) => {
+    dispatch({ type: ACTIONS.REMOVE_PRODUCT, payload: { id: id } });
+  };
+
+  const addProduct = () => {
+    dispatch({ type: ACTIONS.ADD_PRODUCT });
+  };
+
+  const handleSelectChange = (id, event) => {
+    const type = event.target.value;
+    const options = productsCategories.filter(({ name }) => name === type)[0]
+      .products;
+
+    dispatch({
+      type: ACTIONS.UPDATE_PRODUCT_TYPE,
+      payload: { type: type, options: options, id: id },
+    });
+  };
+
+  const handleNameChange = (id, event) => {
+    const name = event.target.value;
+    const bom = allProducts.filter((product) => product.name === name)[0].bom;
+
+    dispatch({ type: ACTIONS.UPDATE_PRODUCT, payload: {
+      id: id,
+      field: "name",
+      value: name
+    }})
+    dispatch({ type: ACTIONS.UPDATE_PRODUCT, payload: {
+      id: id,
+      field: "bom",
+      value: bom
+    }})
+  };
+
+  const handleChange = (id, event) => {
+    dispatch({ type: ACTIONS.UPDATE_PRODUCT, payload: {
+      id: id,
+      field: event.target.name,
+      value: event.target.value
+    }})
+  }
+
+  return (
+    <FormContainer>
+      <Box
+        sx={{
+          gridColumn: "span 2",
+        }}
+      >
+        <FormControl fullWidth>
+          <InputLabel id={`selectTypeLabel-${product.id}`}>Type</InputLabel>
+          <Select
+            labelId={`selectTypeLabel-${product.id}`}
+            label="Type"
+            value={product.type || ""}
+            onChange={(event) => handleSelectChange(product.id, event)}
+            sx={{
+              backgroundColor: `${colors.grey[900]}`,
+            }}
+          >
+            {productsCategories.map((category) => (
+              <MenuItem key={category.name} value={category.name}>
+                {category.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Box>
+      <Box
+        sx={{
+          gridColumn: "span 2",
+        }}
+      >
+        <FormControl fullWidth>
+          <InputLabel id={`selectProductNameLabel-${product.id}`}>
+            Product
+          </InputLabel>
+          <Select
+            labelId={`selectProductNameLabel-${product.id}`}
+            label="Product"
+            value={product.name || ""}
+            onChange={((event) => handleNameChange(product.id, event))}
+            sx={{
+              backgroundColor: `${colors.grey[900]}`,
+            }}
+          >
+            {product.options.map((option) => (
+              <MenuItem key={option} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Box>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        sx={{ gridColumn: "span 4" }}
+      >
+        <TextField
+          label="Quantity"
+          name="quantity"
+          value={product.quantity || ""}
+          onChange={(event) => handleChange(product.id, event)}
+          sx={{
+            width: `${isNonMobile ? "25%" : "50%"}`,
+            input: {
+              backgroundColor: `${colors.grey[900]}`,
+              borderRadius: "4px",
+            },
+          }}
+        />
+        {lastItem ? (
+          <AddButton colors={colors} cb={addProduct} />
+        ) : (
+          <RemoveButton colors={colors} cb={() => removeProduct(product.id)} />
+        )}
+      </Box>
+    </FormContainer>
   );
 };
 

@@ -30,24 +30,80 @@ export const ACTIONS = {
   NEXT: "next",
   BACK: "back",
   UPDATE_DETAILS: "update_details",
+  ADD_PRODUCT: "add_product",
+  REMOVE_PRODUCT: "remove_product",
+  UPDATE_PRODUCT: "update_product",
+  UPDATE_PRODUCT_TYPE: "update_product_type",
 };
 
-function reducer(state, action) {
+function reducer(project, action) {
   switch (action.type) {
     case ACTIONS.NEXT:
-      return { ...state, activeStep: state.activeStep + 1 };
+      return { ...project, activeStep: project.activeStep + 1 };
     case ACTIONS.BACK:
-      return { ...state, activeStep: state.activeStep - 1 };
+      return { ...project, activeStep: project.activeStep - 1 };
     case ACTIONS.UPDATE_DETAILS:
-      return { ...state, details: action.payload };
+      return { ...project, details: action.payload };
+    case ACTIONS.ADD_PRODUCT:
+      return {
+        ...project,
+        products: [...project.products, addProduct()],
+      };    
+    case ACTIONS.REMOVE_PRODUCT:
+      return {
+        ...project,
+        products: project.products.filter(product => 
+          product.id !== action.payload.id  
+        ),
+      };
+    case ACTIONS.UPDATE_PRODUCT:
+      return {
+        ...project,
+        products: project.products.map((product) =>{
+          if (product.id === action.payload.id) {
+            return {
+              ...product,
+              [action.payload.field]: action.payload.value
+            }
+          }
+          return product
+        })
+      }
+    case ACTIONS.UPDATE_PRODUCT_TYPE:
+      return {
+        ...project,
+        products: project.products.map((product) => {
+          if (product.id === action.payload.id) {
+            return {
+              ...product,
+              type: action.payload.type,
+              options: action.payload.options,
+              name: "",
+              bom: [],
+            };
+          }
+          return product;
+        }),
+      };
     default:
-      return state;
+      return project;
   }
+}
+
+const addProduct = () => {
+  return {
+    id: Date.now(),
+    type: "",
+    name: "",
+    quantity: "",
+    options: [],
+    bom: [],
+  };
 };
 
 export default function AddProject() {
-  const [project, dispatch] = useReducer(reducer, { 
-    activeStep: 0 ,
+  const [project, dispatch] = useReducer(reducer, {
+    activeStep: 0,
     details: {
       id: id,
       date: date,
@@ -58,9 +114,7 @@ export default function AddProject() {
       contactEmail: "",
       notes: "",
     },
-    products: [
-
-    ]
+    products: [addProduct()],
   });
 
   const [error, setError] = useState(false);
@@ -87,18 +141,14 @@ export default function AddProject() {
   const steps = [
     {
       label: "Project Details",
-      element: (
-        <Form
-          dispatch={dispatch}
-          project={project}
-          />
-          ),
-        },
-        {
-          label: "Add Products",
+      element: <Form dispatch={dispatch} project={project} />,
+    },
+    {
+      label: "Add Products",
       element: (
         <ProductsForm
           dispatch={dispatch}
+          project={project}
           data={productsData}
           updateData={updateProductsData}
           triggerError={triggerError}
@@ -110,7 +160,7 @@ export default function AddProject() {
       element: (
         <Study
           dispatch={dispatch}
-          data={productsData}
+          data={project.products}
           updateData={updateProductsData}
         />
       ),
