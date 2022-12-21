@@ -191,7 +191,9 @@ const Form = ({ next, data, updateData }) => {
               justifyContent="flex-end"
               sx={{ gridColumn: "span 4" }}
             >
-              <NavButton cb={handleSubmit}>CONTINUE</NavButton>
+              {/* For Faster Testing */}
+              <NavButton cb={next}>CONTINUE</NavButton>
+              {/* <NavButton cb={handleSubmit}>CONTINUE</NavButton> */}
             </Box>
           </FormContainer>
         </form>
