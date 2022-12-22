@@ -33,7 +33,7 @@ export const ACTIONS = {
   ADD_PRODUCT: "add_product",
   REMOVE_PRODUCT: "remove_product",
   UPDATE_PRODUCT: "update_product",
-  UPDATE_PRODUCT_TYPE: "update_product_type",
+  UPDATE_PRODUCT_DRIVER: "update_product_driver",
 };
 
 function reducer(project, action) {
@@ -48,27 +48,46 @@ function reducer(project, action) {
       return {
         ...project,
         products: [...project.products, addProduct()],
-      };    
+      };
     case ACTIONS.REMOVE_PRODUCT:
       return {
         ...project,
-        products: project.products.filter(product => 
-          product.id !== action.payload.id  
+        products: project.products.filter(
+          (product) => product.id !== action.payload.id
         ),
       };
     case ACTIONS.UPDATE_PRODUCT:
       return {
         ...project,
-        products: project.products.map((product) =>{
+        products: project.products.map((product) => {
           if (product.id === action.payload.id) {
             return {
               ...product,
-              [action.payload.field]: action.payload.value
-            }
+              [action.payload.field]: action.payload.value,
+            };
           }
-          return product
-        })
-      }
+          return product;
+        }),
+      };
+    case ACTIONS.UPDATE_PRODUCT_DRIVER:
+      return {
+        ...project,
+        products: project.products.map((product) => {
+          if (product.id === action.payload.id) {
+            return {
+              ...product,
+              bom: {
+                ...product.bom,
+                driver: {
+                  ...product.bom.driver,
+                  [action.payload.field]: action.payload.value,
+                },
+              },
+            };
+          }
+          return product;
+        }),
+      };
     default:
       return project;
   }
@@ -114,13 +133,6 @@ export default function AddProject() {
     setError(true);
   };
 
-  const [productsData, setProductsData] = useState([
-    { type: "", name: "", amount: "", options: [] },
-  ]);
-
-  const updateProductsData = (data) => {
-    setProductsData(data);
-  };
 
   const steps = [
     {
@@ -133,8 +145,6 @@ export default function AddProject() {
         <ProductsForm
           dispatch={dispatch}
           project={project}
-          data={productsData}
-          updateData={updateProductsData}
           triggerError={triggerError}
         />
       ),
@@ -144,8 +154,7 @@ export default function AddProject() {
       element: (
         <Study
           dispatch={dispatch}
-          data={project.products}
-          updateData={updateProductsData}
+          project={project}
         />
       ),
     },
