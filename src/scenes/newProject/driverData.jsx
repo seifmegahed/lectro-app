@@ -5,6 +5,10 @@ import {
   InputLabel,
   MenuItem,
   FormControl,
+  Table,
+  TableBody,
+  TableRow,
+  TableCell,
 } from "@mui/material";
 
 import LabelContainer from "../../components/LabelContainer";
@@ -23,12 +27,21 @@ const DriverData = ({ product, dispatch }) => {
 
   const handleDriverChange = (event) => {
     const name = event.target.value;
+    const details = drivers.filter((driver) => driver.name === name)[0];
     dispatch({
       type: ACTIONS.UPDATE_PRODUCT_DRIVER,
       payload: {
         id: product.id,
         field: "name",
         value: name,
+      },
+    });
+    dispatch({
+      type: ACTIONS.UPDATE_PRODUCT_DRIVER,
+      payload: {
+        id: product.id,
+        field: "details",
+        value: details,
       },
     });
   };
@@ -38,6 +51,7 @@ const DriverData = ({ product, dispatch }) => {
     const options = driversData.drivers.filter(
       (driver) => driver.make === make
     );
+    console.log(options);
     dispatch({
       type: ACTIONS.UPDATE_PRODUCT_DRIVER,
       payload: {
@@ -59,6 +73,14 @@ const DriverData = ({ product, dispatch }) => {
       payload: {
         id: product.id,
         field: "name",
+        value: "",
+      },
+    });
+    dispatch({
+      type: ACTIONS.UPDATE_PRODUCT_DRIVER,
+      payload: {
+        id: product.id,
+        field: "details",
         value: "",
       },
     });
@@ -114,6 +136,70 @@ const DriverData = ({ product, dispatch }) => {
           </Select>
         </FormControl>
       </Box>
+      <Table sx={{ gridColumn: "span 4" }}>
+        <TableBody>
+          <TableRow>
+            <TableCell>Quantity/Product</TableCell>
+            <TableCell align="right">{driver.quantity}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Needed Quantity</TableCell>
+            <TableCell align="right">
+              {driver.quantity * product.quantity}
+            </TableCell>
+          </TableRow>
+          {driver.details && (
+            <>
+              <TableRow>
+                <TableCell>Available Quantity</TableCell>
+                <TableCell align="right">{driver.details.quantity}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Price</TableCell>
+                <TableCell align="right">
+                  {new Intl.NumberFormat("en-US", {
+                    style: "currency",
+                    currency: driver.details.currency
+                  }).format(driver.details.cost)}
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Total Price</TableCell>
+                <TableCell align="right">
+                  {new Intl.NumberFormat("en-US", {
+                    style: "currency",
+                    currency: driver.details.currency
+                  }).format(driver.details.cost * product.quantity)}
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Power</TableCell>
+                <TableCell align="right">
+                  {driver.details.power} W
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Output Voltage</TableCell>
+                <TableCell align="right">
+                  {driver.details.outputVoltage} V
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Output Current</TableCell>
+                <TableCell align="right">
+                  {driver.details.current} mA
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Case Type</TableCell>
+                <TableCell align="right">
+                  {driver.details.caseType}
+                </TableCell>
+              </TableRow>
+            </>
+          )}
+        </TableBody>
+      </Table>
     </LabelContainer>
   );
 };
@@ -124,16 +210,22 @@ const getDrivers = (power) => {
   );
 
   const makes = [];
+  const driversOptions = [];
 
   driversData.map((item) => {
     if (!makes.includes(item.make)) makes.push(item.make);
     return null;
   });
 
+  driversData.map((item) => {
+    driversOptions.push({ name: item.name, id: item.id, make: item.make });
+    return null;
+  });
+
   return {
     makes: makes,
-    drivers: driversData,
+    drivers: driversOptions,
   };
 };
 
-export default DriverData
+export default DriverData;
