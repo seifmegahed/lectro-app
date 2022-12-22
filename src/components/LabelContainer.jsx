@@ -22,6 +22,7 @@ const LabelContainer = ({ children, label }) => {
         mb="30px"
         border={`2px Solid ${colors.grey[800]}`}
         borderRadius="10px"
+        minWidth="250px"
         sx={{
           "& > div": {
             gridColumn: isNonMobile ? undefined : "span 4",

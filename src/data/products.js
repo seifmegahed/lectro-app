@@ -634,7 +634,6 @@ export const productsCategories = [
     products: [
       "NH-20",
       "NH-60",
-      "NH-80",
       "NH-100",
       "NH-150",
       "NH-200",

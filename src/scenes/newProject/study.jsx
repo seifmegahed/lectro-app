@@ -35,6 +35,7 @@ const Study = ({ dispatch, project }) => {
   return (
     <FormContainer>
       <Box
+        minWidth="270px"
         sx={{
           gridColumn: "span 4",
         }}

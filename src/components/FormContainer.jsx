@@ -12,7 +12,7 @@ const FormContainer = ({ children }) => {
       boxShadow="rgba(0, 0, 0, 0.24) 0px 3px 8px"
       borderRadius="10px"
       gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-
+      minWidth="300px"
       gap="20px"
       sx={{
         backgroundColor: `${colors.primary[700]}`,

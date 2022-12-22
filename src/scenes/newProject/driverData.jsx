@@ -136,9 +136,9 @@ const DriverData = ({ product, dispatch }) => {
           </Select>
         </FormControl>
       </Box>
-      <Table sx={{ gridColumn: "span 4" }}>
+      <Table size="small" sx={{ gridColumn: "span 4", width:"100%" }}>
         <TableBody>
-          <TableRow>
+          <TableRow sx={{borderBottom: "none"}}>
             <TableCell>Quantity/Product</TableCell>
             <TableCell align="right">{driver.quantity}</TableCell>
           </TableRow>
