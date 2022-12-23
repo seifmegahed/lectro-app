@@ -20,11 +20,14 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import { MenuOutlined } from "@mui/icons-material";
 import { useState } from "react";
+import { useAuth } from "../contexts/AuthContext";
 
-const Topbar = ({ collapse, signIn, signOut, isSignedIn }) => {
+const Topbar = ({ collapse }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
+  
+  const {logIn, logOut, currentUser} = useAuth();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -63,7 +66,7 @@ const Topbar = ({ collapse, signIn, signOut, isSignedIn }) => {
           </Box>
 
           {/* Icons */}
-          {isSignedIn ? (
+          {!!currentUser ? (
             <Box display="flex" zIndex="1">
               <IconButton onClick={colorMode.toggleColorMode}>
                 {theme.palette.mode === "dark" ? (
@@ -102,7 +105,7 @@ const Topbar = ({ collapse, signIn, signOut, isSignedIn }) => {
                     <MenuItem onClick={handleClose}>Account</MenuItem>
                     <MenuItem
                       onClick={() => {
-                        signOut();
+                        logOut();
                         handleClose();
                       }}
                     >
@@ -113,7 +116,7 @@ const Topbar = ({ collapse, signIn, signOut, isSignedIn }) => {
               </Popper>
             </Box>
           ) : (
-            <Button onClick={signIn}>
+            <Button onClick={logIn}>
               <Typography variant="h4">Log in</Typography>
             </Button>
           )}

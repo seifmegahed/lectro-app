@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import { tokens } from "../theme"
-
+import { useAuth } from "../contexts/AuthContext"
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar"
 import "react-pro-sidebar/dist/css/styles.css"
 
@@ -101,11 +101,11 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
 
 const pageKeys = Object.keys(pages);
 
-const Sidebar = ({isCollapsed, toggle, user}) => {
+const Sidebar = ({isCollapsed, toggle}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [selected, setSelected] = useState("Dashboard");
-
+  const {currentUser} = useAuth();
   return (
     <Box
         component="nav"
@@ -144,7 +144,7 @@ const Sidebar = ({isCollapsed, toggle, user}) => {
                     alt="profile-user"
                     width="100px"
                     height="100px"
-                    src={user.photoURL||`./images/user.png`}
+                    src={currentUser.photoURL||`./images/user.png`}
                     style={{ cursor: "pointer", borderRadius: "50%" }}
                   />
                 </Box>
@@ -155,10 +155,10 @@ const Sidebar = ({isCollapsed, toggle, user}) => {
                     fontWeight="bold"
                     sx={{ m: "10px 0 0 0" }}
                   >
-                    {user.displayName}
+                    {currentUser.displayName}
                   </Typography>
                   <Typography variant="h6" color={colors.blueAccent[300]}>
-                    {user.email}
+                    {currentUser.email}
                   </Typography>
                 </Box>
                </Box>
