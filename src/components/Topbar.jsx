@@ -9,6 +9,7 @@ import {
   MenuItem,
   Paper,
   ClickAwayListener,
+  Button,
 } from "@mui/material";
 import { useContext } from "react";
 import { ColorModeContext, tokens } from "../theme";
@@ -62,66 +63,60 @@ const Topbar = ({ collapse, signIn, signOut, isSignedIn }) => {
           </Box>
 
           {/* Icons */}
-          <Box display="flex" zIndex="1">
-            <IconButton onClick={colorMode.toggleColorMode}>
-              {theme.palette.mode === "dark" ? (
-                <DarkModeOutlinedIcon />
-              ) : (
-                <LightModeOutlinedIcon />
-              )}
-            </IconButton>
-            <IconButton>
-              <NotificationsOutlinedIcon />
-            </IconButton>
-            <IconButton>
-              <SettingsOutlinedIcon />
-            </IconButton>
-            <IconButton
-              id="accountButton"
-              aria-controls={open ? "accountMenu" : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? "true" : undefined}
-              onClick={handleClick}
-            >
-              <PersonOutlinedIcon />
-            </IconButton>
-            <Popper
-              id="accountMenu"
-              aria-labelledby="accountButton"
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-              placement="bottom-start"
-              sx={{ zIndex: "10001" }}
-            >
-              <ClickAwayListener onClickAway={handleClose}>
-                <Paper>
-                  {isSignedIn ? (
-                    <>
-                      <MenuItem onClick={handleClose}>Account</MenuItem>
-                      <MenuItem
-                        onClick={() => {
-                          signOut();
-                          handleClose();
-                        }}
-                      >
-                        Log Out
-                      </MenuItem>
-                    </>
-                  ) : (
+          {isSignedIn ? (
+            <Box display="flex" zIndex="1">
+              <IconButton onClick={colorMode.toggleColorMode}>
+                {theme.palette.mode === "dark" ? (
+                  <DarkModeOutlinedIcon />
+                ) : (
+                  <LightModeOutlinedIcon />
+                )}
+              </IconButton>
+              <IconButton>
+                <NotificationsOutlinedIcon />
+              </IconButton>
+              <IconButton>
+                <SettingsOutlinedIcon />
+              </IconButton>
+
+              <IconButton
+                id="accountButton"
+                aria-controls={open ? "accountMenu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? "true" : undefined}
+                onClick={handleClick}
+              >
+                <PersonOutlinedIcon />
+              </IconButton>
+              <Popper
+                id="accountMenu"
+                aria-labelledby="accountButton"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                placement="bottom-start"
+                sx={{ zIndex: "10001" }}
+              >
+                <ClickAwayListener onClickAway={handleClose}>
+                  <Paper>
+                    <MenuItem onClick={handleClose}>Account</MenuItem>
                     <MenuItem
                       onClick={() => {
-                        signIn();
+                        signOut();
                         handleClose();
                       }}
                     >
-                      Log In
+                      Log Out
                     </MenuItem>
-                  )}
-                </Paper>
-              </ClickAwayListener>
-            </Popper>
-          </Box>
+                  </Paper>
+                </ClickAwayListener>
+              </Popper>
+            </Box>
+          ) : (
+            <Button onClick={signIn}>
+              <Typography variant="h4">Log in</Typography>
+            </Button>
+          )}
         </Box>
       </AppBar>
     </Box>

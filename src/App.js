@@ -3,12 +3,11 @@ import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import { ColorModeContext, useMode } from "./theme";
-import { CssBaseline, ThemeProvider } from "@mui/material";
+import { CssBaseline, ThemeProvider, Box } from "@mui/material";
 
 import Topbar from "./components/Topbar";
 import Loading from "./components/Loading";
-
-import { app } from "./firebase-config";
+import { auth } from "./firebase-config";
 import {
   getAuth,
   onAuthStateChanged,
@@ -38,11 +37,11 @@ function App() {
   async function signIn() {
     // Sign in Firebase using popup auth and Google as the identity provider.
     var provider = new GoogleAuthProvider();
-    await signInWithPopup(getAuth(), provider);
+    await signInWithPopup(auth, provider);
   }
 
   function signOutUser() {
-    signOut(getAuth());
+    signOut(auth);
   }
 
   // Triggers when the auth state change
@@ -58,7 +57,7 @@ function App() {
 
   useEffect(() => {
     // Subscribe to Auth State Change and updateUser
-    onAuthStateChanged(getAuth(), updateUser);
+    onAuthStateChanged(auth, updateUser);
   }, []);
 
   return (
@@ -81,12 +80,30 @@ function App() {
                 signIn={signIn}
                 signOut={signOutUser}
               />
+              <Box mb="75px"></Box>
               <Routes>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/projects" element={<Projects />} />
-                <Route path="/clients" element={<Clients />} />
-                <Route path="/new-project" element={<NewProject />} />
-                <Route path="/items" element={<Items />} />
+                <Route
+                  path="*"
+                  element={
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      height="100%"
+                    >
+                      <h2>Error: Page Not Found</h2>
+                    </Box>
+                  }
+                />
+                {userSignedIn && (
+                  <>
+                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/projects" element={<Projects />} />
+                    <Route path="/clients" element={<Clients />} />
+                    <Route path="/new-project" element={<NewProject />} />
+                    <Route path="/items" element={<Items />} />
+                  </>
+                )}
               </Routes>
             </main>
           </div>
