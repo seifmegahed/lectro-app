@@ -55,7 +55,7 @@ const Topbar = ({ collapse }) => {
         >
           {/* Search Bar */}
           <Box display="flex" alignItems="center">
-            {!breakPoint && (
+            {!breakPoint && currentUser && (
               <IconButton onClick={() => collapse(true)}>
                 <MenuOutlined />
               </IconButton>
