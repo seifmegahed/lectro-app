@@ -8,7 +8,7 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import { MenuOutlined } from "@mui/icons-material";
 
-const Topbar = ({ collapse }) => {
+const Topbar = ({ collapse, signIn, signOut }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
@@ -56,10 +56,10 @@ const Topbar = ({ collapse }) => {
           <IconButton>
             <NotificationsOutlinedIcon />
           </IconButton>
-          <IconButton>
+          <IconButton onClick={signOut}>
             <SettingsOutlinedIcon />
           </IconButton>
-          <IconButton>
+          <IconButton onClick={signIn}>
             <PersonOutlinedIcon />
           </IconButton>
         </Box>

@@ -101,7 +101,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
 
 const pageKeys = Object.keys(pages);
 
-const Sidebar = ({isCollapsed, toggle}) => {
+const Sidebar = ({isCollapsed, toggle, user}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [selected, setSelected] = useState("Dashboard");
@@ -144,7 +144,7 @@ const Sidebar = ({isCollapsed, toggle}) => {
                     alt="profile-user"
                     width="100px"
                     height="100px"
-                    src={`./images/user.png`}
+                    src={user.photoURL||`./images/user.png`}
                     style={{ cursor: "pointer", borderRadius: "50%" }}
                   />
                 </Box>
@@ -155,10 +155,10 @@ const Sidebar = ({isCollapsed, toggle}) => {
                     fontWeight="bold"
                     sx={{ m: "10px 0 0 0" }}
                   >
-                    Seif Megahed
+                    {user.displayName}
                   </Typography>
                   <Typography variant="h6" color={colors.blueAccent[300]}>
-                    Admin
+                    {user.email}
                   </Typography>
                 </Box>
                </Box>
