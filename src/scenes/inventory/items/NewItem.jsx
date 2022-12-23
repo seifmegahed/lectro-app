@@ -5,12 +5,17 @@ import {
   MenuItem,
   FormControl,
   useTheme,
-  TextField,
 } from "@mui/material";
-import { useReducer, useState } from "react";
+import { useReducer } from "react";
 
+import DriverForm from "./forms/DriverForm";
 import FormContainer from "../../../components/FormContainer";
 import { tokens } from "../../../theme";
+
+export const ACTIONS = {
+  RESET: "reset",
+  UPDATE: "update",
+};
 
 const categories = [
   "Driver",
@@ -22,11 +27,6 @@ const categories = [
   "Tools",
   "Other",
 ];
-
-const ACTIONS = {
-  RESET: "reset",
-  UPDATE: "update",
-};
 
 function reducer(product, action) {
   switch (action.type) {
@@ -84,53 +84,6 @@ const NewItem = () => {
         <DriverForm dispatch={dispatch} product={product} />
       )}
     </FormContainer>
-  );
-};
-
-const DriverForm = ({ dispatch, product }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-
-  const handleChange = (event) => {
-    dispatch({
-      type: ACTIONS.UPDATE,
-      payload: {
-        field: event.target.name,
-        value: event.target.value,
-      },
-    });
-  };
-
-  return (
-    <>
-      <TextField
-        label="Make"
-        name="make"
-        value={product.make || ""}
-        onChange={handleChange}
-        sx={{
-          gridColumn: "span 2",
-          input: {
-            backgroundColor: `${colors.grey[900]}`,
-            borderRadius: "4px",
-          },
-        }}
-      />
-      <TextField
-        label="Quantity"
-        name="quantity"
-        value={product.quantity || ""}
-        onChange={handleChange}
-        type="number"
-        sx={{
-          gridColumn: "span 2",
-          input: {
-            backgroundColor: `${colors.grey[900]}`,
-            borderRadius: "4px",
-          },
-        }}
-      />
-    </>
   );
 };
 
