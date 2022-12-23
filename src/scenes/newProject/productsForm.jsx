@@ -244,6 +244,7 @@ const ProductForm = ({ product, dispatch, lastItem }) => {
         <TextField
           label="Quantity"
           name="quantity"
+          type="number"
           value={product.quantity || ""}
           onChange={(event) => handleChange(product.id, event)}
           sx={{
