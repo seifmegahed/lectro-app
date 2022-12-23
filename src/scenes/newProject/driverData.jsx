@@ -9,6 +9,7 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  Typography,
 } from "@mui/material";
 
 import LabelContainer from "../../components/LabelContainer";
@@ -136,66 +137,46 @@ const DriverData = ({ product, dispatch }) => {
           </Select>
         </FormControl>
       </Box>
-      <Table size="small" sx={{ gridColumn: "span 4", width:"100%" }}>
+      <Table size="small" sx={{ gridColumn: "span 4", width: "100%" }}>
         <TableBody>
-          <TableRow sx={{borderBottom: "none"}}>
-            <TableCell>Quantity/Product</TableCell>
-            <TableCell align="right">{driver.quantity}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Needed Quantity</TableCell>
-            <TableCell align="right">
-              {driver.quantity * product.quantity}
-            </TableCell>
-          </TableRow>
+          <DataDisplay
+            label="Quantity/Product"
+            data={driver.quantity}
+          />
+          <DataDisplay
+            label="Needed Quantity"
+            data={driver.quantity * product.quantity}
+          />
           {driver.details && (
             <>
-              <TableRow>
-                <TableCell>Available Quantity</TableCell>
-                <TableCell align="right">{driver.details.quantity}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Price</TableCell>
-                <TableCell align="right">
-                  {new Intl.NumberFormat("en-US", {
-                    style: "currency",
-                    currency: driver.details.currency
-                  }).format(driver.details.cost)}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Total Price</TableCell>
-                <TableCell align="right">
-                  {new Intl.NumberFormat("en-US", {
-                    style: "currency",
-                    currency: driver.details.currency
-                  }).format(driver.details.cost * product.quantity)}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Power</TableCell>
-                <TableCell align="right">
-                  {driver.details.power} W
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Output Voltage</TableCell>
-                <TableCell align="right">
-                  {driver.details.outputVoltage} V
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Output Current</TableCell>
-                <TableCell align="right">
-                  {driver.details.current} mA
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Case Type</TableCell>
-                <TableCell align="right">
-                  {driver.details.caseType}
-                </TableCell>
-              </TableRow>
+              <DataDisplay
+                label="Available Quantity"
+                data={driver.details.quantity}
+              />
+              <DataDisplay
+                label="Cost"
+                data={new Intl.NumberFormat("en-US", {
+                  style: "currency",
+                  currency: driver.details.currency,
+                }).format(driver.details.cost)}
+              />
+              <DataDisplay
+                label="Total Cost"
+                data={new Intl.NumberFormat("en-US", {
+                  style: "currency",
+                  currency: driver.details.currency,
+                }).format(driver.details.cost * product.quantity)}
+              />
+              <DataDisplay label="Power" data={`${driver.details.power} W`} />
+              <DataDisplay
+                label="Output Voltage"
+                data={`${driver.details.outputVoltage} V`}
+              />
+              <DataDisplay
+                label="Output Current"
+                data={`${driver.details.current} mA`}
+              />
+              <DataDisplay label="Case Type" data={driver.details.caseType} />
             </>
           )}
         </TableBody>
@@ -226,6 +207,19 @@ const getDrivers = (power) => {
     makes: makes,
     drivers: driversOptions,
   };
+};
+
+const DataDisplay = ({ label, data }) => {
+  return (
+    <TableRow>
+      <TableCell>
+        <Typography color="text.primary">{label}</Typography>
+      </TableCell>
+      <TableCell align="right">
+        <Typography color="text.primary">{data}</Typography>
+      </TableCell>
+    </TableRow>
+  );
 };
 
 export default DriverData;

@@ -162,7 +162,7 @@ export default function AddProject() {
     <Box m="20px">
       <Header title="CREATE NEW PROJECT" />
       <Stepper activeStep={project.activeStep} orientation="vertical">
-        {steps.map((step, index) => (
+        {steps.map((step) => (
           <Step key={step.label}>
             <StepLabel>{step.label}</StepLabel>
             <StepContent>{step.element}</StepContent>
