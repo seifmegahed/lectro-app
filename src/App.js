@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import { ColorModeContext, useMode } from "./theme";
-import { CssBaseline, ThemeProvider, Box } from "@mui/material";
+import { CssBaseline, ThemeProvider, Box, Typography } from "@mui/material";
 
 import Topbar from "./components/Topbar";
 import Loading from "./components/Loading";
@@ -80,22 +80,9 @@ function App() {
                 signIn={signIn}
                 signOut={signOutUser}
               />
-              <Box mb="75px"></Box>
+              <Box mb="85px"></Box>
               <Routes>
-                <Route
-                  path="*"
-                  element={
-                    <Box
-                      display="flex"
-                      alignItems="center"
-                      justifyContent="center"
-                      height="100%"
-                    >
-                      <h2>Error: Page Not Found</h2>
-                    </Box>
-                  }
-                />
-                {userSignedIn && (
+                {userSignedIn ? (
                   <>
                     <Route path="/" element={<Dashboard />} />
                     <Route path="/projects" element={<Projects />} />
@@ -103,7 +90,35 @@ function App() {
                     <Route path="/new-project" element={<NewProject />} />
                     <Route path="/items" element={<Items />} />
                   </>
+                ) : (
+                  <Route
+                    path="/"
+                    element={
+                      <Box
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                      >
+                        <Typography variant="h2">
+                          Welcome!
+                        </Typography>
+                      </Box>
+                    }
+                  />
                 )}
+                <Route
+                  path="*"
+                  element={
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      
+                    >
+                      <h2>Error: Page Not Found</h2>
+                    </Box>
+                  }
+                />
               </Routes>
             </main>
           </div>
