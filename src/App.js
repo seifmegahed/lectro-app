@@ -77,6 +77,7 @@ function App() {
             <main className="content">
               <Topbar
                 collapse={collapse}
+                isSignedIn={userSignedIn}
                 signIn={signIn}
                 signOut={signOutUser}
               />
