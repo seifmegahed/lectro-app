@@ -13,10 +13,7 @@ import {
 } from "@mui/material";
 import { useContext } from "react";
 import { ColorModeContext, tokens } from "../theme";
-import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
-import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import { MenuOutlined } from "@mui/icons-material";
 import { useState } from "react";
@@ -26,8 +23,8 @@ const Topbar = ({ collapse }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
-  
-  const {logIn, logOut, currentUser} = useAuth();
+
+  const { logIn, logOut, currentUser } = useAuth();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -53,7 +50,6 @@ const Topbar = ({ collapse }) => {
             backgroundColor: `${colors.primary[700]}`,
           }}
         >
-          {/* Search Bar */}
           <Box display="flex" alignItems="center">
             {!breakPoint && currentUser && (
               <IconButton onClick={() => collapse(true)}>
@@ -68,20 +64,9 @@ const Topbar = ({ collapse }) => {
           {/* Icons */}
           {!!currentUser ? (
             <Box display="flex" zIndex="1">
-              <IconButton onClick={colorMode.toggleColorMode}>
-                {theme.palette.mode === "dark" ? (
-                  <DarkModeOutlinedIcon />
-                ) : (
-                  <LightModeOutlinedIcon />
-                )}
-              </IconButton>
               <IconButton>
                 <NotificationsOutlinedIcon />
               </IconButton>
-              <IconButton>
-                <SettingsOutlinedIcon />
-              </IconButton>
-
               <IconButton
                 id="accountButton"
                 aria-controls={open ? "accountMenu" : undefined}
@@ -103,6 +88,16 @@ const Topbar = ({ collapse }) => {
                 <ClickAwayListener onClickAway={handleClose}>
                   <Paper>
                     <MenuItem onClick={handleClose}>Account</MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        colorMode.toggleColorMode();
+                        handleClose();
+                      }}
+                    >
+                      {theme.palette.mode === "dark"
+                        ? "Light Mode"
+                        : "Dark Mode"}
+                    </MenuItem>
                     <MenuItem
                       onClick={() => {
                         logOut();

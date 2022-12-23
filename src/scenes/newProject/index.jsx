@@ -133,7 +133,6 @@ export default function AddProject() {
     setError(true);
   };
 
-
   const steps = [
     {
       label: "Project Details",
@@ -151,12 +150,7 @@ export default function AddProject() {
     },
     {
       label: "Study",
-      element: (
-        <Study
-          dispatch={dispatch}
-          project={project}
-        />
-      ),
+      element: <Study dispatch={dispatch} project={project} />,
     },
     {
       label: "Finalize",
@@ -165,12 +159,7 @@ export default function AddProject() {
   ];
 
   return (
-    <Box
-      m="20px"
-      sx={{
-        maxWidth: "700px",
-      }}
-    >
+    <Box m="20px">
       <Header title="CREATE NEW PROJECT" />
       <Stepper activeStep={project.activeStep} orientation="vertical">
         {steps.map((step, index) => (

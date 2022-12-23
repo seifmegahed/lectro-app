@@ -21,16 +21,6 @@ const pages = {
       title: "Clients",
       path: "/clients",
     },
-    {
-      title: "Study Settings",
-      path: "/study-settings",
-    },
-  ],
-  Products: [
-    {
-      title: "Products",
-      path: "/products",
-    },
   ],
   Inventory: [
     {
@@ -42,27 +32,20 @@ const pages = {
       path: "/delivery-notes",
     },
     {
-      title: "Exchange Vouchers",
-      path: "/exchange-vouchers",
+      title: "Products",
+      path: "/products",
     },
   ],
   Purchasing: [
-    {
-      title: "Suppliers",
-      path: "/suppliers",
-    },
     {
       title: "Purchase Requests",
       path: "/purchase-requests",
     },
     {
-      title: "Recieve Items",
-      path: "/Recieve-item",
+      title: "Suppliers",
+      path: "/suppliers",
     },
-    {
-      title: "Return Vouchers",
-      path: "/return-vouchers",
-    },
+
   ],
   Manufacturing: [
     {

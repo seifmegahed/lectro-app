@@ -29,15 +29,15 @@ function App() {
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <Suspense fallback={<Loading />}>
-            <div className="app">
-              {!!currentUser && (
-                <Sidebar isCollapsed={isCollapsed} toggle={collapse} />
-              )}
-              <main className="content">
-                <Topbar collapse={collapse} />
-                <Box mb="85px"></Box>
+        <CssBaseline />
+        <Suspense fallback={<Loading />}>
+          <Box className="app">
+            {!!currentUser && (
+              <Sidebar isCollapsed={isCollapsed} toggle={collapse} />
+            )}
+            <Box className="content">
+              <Topbar collapse={collapse} />
+              <Box pt="85px" pl="2vw" maxWidth="850px" position="relative">
                 <Routes>
                   {!!currentUser ? (
                     <>
@@ -74,9 +74,10 @@ function App() {
                     }
                   />
                 </Routes>
-              </main>
-            </div>
-          </Suspense>
+              </Box>
+            </Box>
+          </Box>
+        </Suspense>
       </ThemeProvider>
     </ColorModeContext.Provider>
   );
