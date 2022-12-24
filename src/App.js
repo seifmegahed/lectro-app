@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 
@@ -9,19 +9,23 @@ import Topbar from "./components/Topbar";
 import Loading from "./components/Loading";
 
 import { useAuth } from "./contexts/AuthContext";
+import { appCheck } from "./firebase-config";
 
 const NewProject = lazy(() => import("./scenes/newProject"));
 const Dashboard = lazy(() => import("./scenes/dashboard"));
 const Projects = lazy(() => import("./scenes/projects"));
 const Clients = lazy(() => import("./scenes/clients"));
 const Sidebar = lazy(() => import("./components/Sidebar"));
-const Items = lazy(() => import("./scenes/inventory/items"));
+const Items = lazy(() => import("./scenes/inventory/"));
 
 function App() {
   const [theme, colorMode] = useMode();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { currentUser } = useAuth();
-
+  useEffect(()=> {
+    console.log(appCheck)
+  }, [])
+  
   const collapse = (val) => {
     setIsCollapsed(val);
   };

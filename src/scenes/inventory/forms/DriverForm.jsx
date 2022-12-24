@@ -1,6 +1,7 @@
 import {
   Select,
   Box,
+  Button,
   InputLabel,
   MenuItem,
   FormControl,
@@ -10,11 +11,13 @@ import {
   ToggleButtonGroup,
   InputAdornment,
 } from "@mui/material";
-
+import { LoadingButton } from "@mui/lab";
 import { useState } from "react";
 import { ACTIONS } from "../NewItem";
-import { tokens } from "../../../../theme";
-import NavButton from "../../../../components/navButton";
+import { tokens } from "../../../theme";
+import { db } from "../../../firebase-config";
+import { addDoc, collection } from "firebase/firestore";
+import { PhotoCamera } from "@mui/icons-material";
 
 const driverTypes = [
   "Constant Current",
@@ -28,12 +31,14 @@ const driverTypes = [
 const DriverForm = ({ dispatch, product }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
   const [errors, setErrors] = useState({
     make: false,
     name: false,
     power: false,
-  })
+  });
 
+  const [loading, setLoading] = useState(false);
   const handleChange = (event) => {
     dispatch({
       type: ACTIONS.UPDATE,
@@ -44,14 +49,29 @@ const DriverForm = ({ dispatch, product }) => {
     });
   };
 
+  async function saveData() {
+    try {
+      await addDoc(collection(db, "items"), product);
+      dispatch({ type: ACTIONS.RESET });
+    } catch (error) {
+      console.error("Error writing new message to Firebase Database", error);
+    }
+  }
+
   const handleSubmit = () => {
-    var allValid = true
-    for(const key in errors){
-      setErrors(prev => ({...prev, [key]: false}))
-      if(product[key]  === undefined || !product[key]){
-        allValid = false
-        setErrors(prev => ({...prev, [key]: true}))
+    setLoading(true);
+    var allValid = true;
+    for (const key in errors) {
+      setErrors((prev) => ({ ...prev, [key]: false }));
+      if (product[key] === undefined || !product[key]) {
+        allValid = false;
+        setErrors((prev) => ({ ...prev, [key]: true }));
       }
+    }
+    if (allValid) {
+      saveData().then(setLoading(false));
+    } else {
+      setLoading(false);
     }
   };
 
@@ -94,7 +114,6 @@ const DriverForm = ({ dispatch, product }) => {
         <FormControl fullWidth>
           <InputLabel id={"selectItemCategoryLabel"}>Category</InputLabel>
           <Select
-            
             labelId="selectItemCategoryLabel"
             label="Type"
             name="type"
@@ -313,12 +332,54 @@ const DriverForm = ({ dispatch, product }) => {
           },
         }}
       />
+      <TextField
+        label="Notes"
+        name="notes"
+        value={product.notes || ""}
+        onChange={handleChange}
+        type="text"
+        sx={{
+          gridColumn: "span 2",
+          input: {
+            backgroundColor: `${colors.grey[900]}`,
+            borderRadius: "4px",
+          },
+        }}
+      />
+      <Box
+        display="flex"
+        justifyContent="flex-end"
+        sx={{ gridColumn: "span 2" }}
+        >
+        <Button
+          variant="outlined"
+          component="label"
+          sx={{
+            backgroundColor: `${colors.grey[900]}`,
+            width: "100%",
+            minHeight: "52.71px",
+          }}
+        >
+          <PhotoCamera />
+          <input hidden accept="image/*" multiple type="file" />
+        </Button>
+      </Box>
       <Box
         display="flex"
         justifyContent="flex-end"
         sx={{ gridColumn: "span 4" }}
       >
-        <NavButton cb={handleSubmit}>Save</NavButton>
+        <LoadingButton
+          onClick={handleSubmit}
+          loading={loading}
+          variant="contained"
+          sx={{
+            width: "6rem",
+            height: "2.5rem",
+          }}
+        >
+          {!loading && "Save"}
+        </LoadingButton>
       </Box>
     </>
   );

@@ -1,8 +1,9 @@
-import Header from "../../../components/Header";
+import Header from "../../components/Header";
 import { Box, Tabs, Tab, Divider } from "@mui/material";
 import { useState } from "react";
 import NewItem from "./NewItem";
 import PropTypes from 'prop-types';
+import AllItems from "./items";
 
 const Items = () => {
   const [value, setValue] = useState(3);
@@ -27,7 +28,9 @@ const Items = () => {
             <Tab label="New Item" {...a11yProps(3)} />
           </Tabs>
           <Divider />
-          <TabPanel value={value} index={0}></TabPanel>
+          <TabPanel value={value} index={0}>
+            <AllItems />
+          </TabPanel>
           <TabPanel value={value} index={1}></TabPanel>
           <TabPanel value={value} index={2}></TabPanel>
           <TabPanel value={value} index={3}>

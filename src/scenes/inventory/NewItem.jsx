@@ -9,8 +9,8 @@ import {
 import { useReducer } from "react";
 
 import DriverForm from "./forms/DriverForm";
-import FormContainer from "../../../components/FormContainer";
-import { tokens } from "../../../theme";
+import FormContainer from "../../components/FormContainer";
+import { tokens } from "../../theme";
 
 export const ACTIONS = {
   RESET: "reset",
