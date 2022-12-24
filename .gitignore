@@ -21,6 +21,7 @@
 
 .firebase/
 .vscode/
+.VSCodeCounter/
 .firebaserc
 
 npm-debug.log*

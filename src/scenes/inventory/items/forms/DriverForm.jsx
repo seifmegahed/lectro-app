@@ -11,6 +11,7 @@ import {
   InputAdornment,
 } from "@mui/material";
 
+import { useState } from "react";
 import { ACTIONS } from "../NewItem";
 import { tokens } from "../../../../theme";
 import NavButton from "../../../../components/navButton";
@@ -27,6 +28,11 @@ const driverTypes = [
 const DriverForm = ({ dispatch, product }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [errors, setErrors] = useState({
+    make: false,
+    name: false,
+    power: false,
+  })
 
   const handleChange = (event) => {
     dispatch({
@@ -38,11 +44,23 @@ const DriverForm = ({ dispatch, product }) => {
     });
   };
 
+  const handleSubmit = () => {
+    var allValid = true
+    for(const key in errors){
+      setErrors(prev => ({...prev, [key]: false}))
+      if(product[key]  === undefined || !product[key]){
+        allValid = false
+        setErrors(prev => ({...prev, [key]: true}))
+      }
+    }
+  };
+
   return (
     <>
       <TextField
         label="Make"
         name="make"
+        error={errors.make}
         value={product.make || ""}
         onChange={handleChange}
         sx={{
@@ -56,6 +74,7 @@ const DriverForm = ({ dispatch, product }) => {
       <TextField
         label="Name"
         name="name"
+        error={errors.name}
         value={product.name || ""}
         onChange={handleChange}
         type="text"
@@ -75,6 +94,7 @@ const DriverForm = ({ dispatch, product }) => {
         <FormControl fullWidth>
           <InputLabel id={"selectItemCategoryLabel"}>Category</InputLabel>
           <Select
+            
             labelId="selectItemCategoryLabel"
             label="Type"
             name="type"
@@ -95,6 +115,7 @@ const DriverForm = ({ dispatch, product }) => {
       <TextField
         label="Power"
         name="power"
+        error={errors.power}
         value={product.power || ""}
         onChange={handleChange}
         type="number"
@@ -107,13 +128,7 @@ const DriverForm = ({ dispatch, product }) => {
           },
         }}
         InputProps={{
-          endAdornment: (
-            <InputAdornment
-              position="end"
-            >
-              W
-            </InputAdornment>
-          ),
+          endAdornment: <InputAdornment position="end">W</InputAdornment>,
         }}
       />
       <TextField
@@ -131,13 +146,7 @@ const DriverForm = ({ dispatch, product }) => {
           },
         }}
         InputProps={{
-          startAdornment: (
-            <InputAdornment
-              position="start"
-            >
-              V
-            </InputAdornment>
-          ),
+          startAdornment: <InputAdornment position="start">V</InputAdornment>,
         }}
       />
       <TextField
@@ -155,13 +164,7 @@ const DriverForm = ({ dispatch, product }) => {
           },
         }}
         InputProps={{
-          startAdornment: (
-            <InputAdornment
-              position="start"
-            >
-              V
-            </InputAdornment>
-          ),
+          startAdornment: <InputAdornment position="start">V</InputAdornment>,
         }}
       />
       <TextField
@@ -179,13 +182,7 @@ const DriverForm = ({ dispatch, product }) => {
           },
         }}
         InputProps={{
-          startAdornment: (
-            <InputAdornment
-              position="start"
-            >
-              V
-            </InputAdornment>
-          ),
+          startAdornment: <InputAdornment position="start">V</InputAdornment>,
         }}
       />
       <TextField
@@ -203,13 +200,7 @@ const DriverForm = ({ dispatch, product }) => {
           },
         }}
         InputProps={{
-          startAdornment: (
-            <InputAdornment
-              position="start"
-            >
-              V
-            </InputAdornment>
-          ),
+          startAdornment: <InputAdornment position="start">V</InputAdornment>,
         }}
       />
       <TextField
@@ -227,13 +218,7 @@ const DriverForm = ({ dispatch, product }) => {
           },
         }}
         InputProps={{
-          startAdornment: (
-            <InputAdornment
-              position="start"
-            >
-              mA
-            </InputAdornment>
-          ),
+          startAdornment: <InputAdornment position="start">mA</InputAdornment>,
         }}
       />
       <TextField
@@ -251,13 +236,7 @@ const DriverForm = ({ dispatch, product }) => {
           },
         }}
         InputProps={{
-          startAdornment: (
-            <InputAdornment
-              position="start"
-            >
-              mA
-            </InputAdornment>
-          ),
+          startAdornment: <InputAdornment position="start">mA</InputAdornment>,
         }}
       />
       <TextField
@@ -272,16 +251,10 @@ const DriverForm = ({ dispatch, product }) => {
           input: {
             backgroundColor: `${colors.grey[900]}`,
             borderRadius: "4px",
-          },   
+          },
         }}
         InputProps={{
-          endAdornment: (
-            <InputAdornment
-              position="end"
-            >
-              %
-            </InputAdornment>
-          ),
+          endAdornment: <InputAdornment position="end">%</InputAdornment>,
         }}
       />
       <Box
@@ -320,16 +293,10 @@ const DriverForm = ({ dispatch, product }) => {
           input: {
             backgroundColor: `${colors.grey[900]}`,
             borderRadius: "4px",
-          }
+          },
         }}
         InputProps={{
-          startAdornment: (
-            <InputAdornment
-              position="start"
-            >
-              IP
-            </InputAdornment>
-          ),
+          startAdornment: <InputAdornment position="start">IP</InputAdornment>,
         }}
       />
       <TextField
@@ -346,10 +313,12 @@ const DriverForm = ({ dispatch, product }) => {
           },
         }}
       />
-      <Box display="flex" justifyContent="flex-end" sx={{gridColumn: "span 4"}}>
-        <NavButton>
-          Save
-        </NavButton>
+      <Box
+        display="flex"
+        justifyContent="flex-end"
+        sx={{ gridColumn: "span 4" }}
+      >
+        <NavButton cb={handleSubmit}>Save</NavButton>
       </Box>
     </>
   );
