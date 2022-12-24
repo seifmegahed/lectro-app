@@ -25,7 +25,7 @@ const AllItems = () => {
   }, []);
 
   return (
-    <Box>
+    <Box display="grid" gap="20px">
       {items.map((item) => {
         return <ItemCard key={item.id} data={item.data()} />;
       })}

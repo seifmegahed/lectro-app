@@ -7,7 +7,7 @@ const ItemCard = ({ data }) => {
       <Box display="flex" gap="10px" sx={{ gridColumn: "span 4" }}>
         <Box width="100px">
           <img
-            src={data.img || "/images/imageplaceholder.png"}
+            src={data.imageUrl || "/images/imageplaceholder.png"}
             style={{ maxWidth: "100%", maxHeight: "100%" }}
           />
         </Box>

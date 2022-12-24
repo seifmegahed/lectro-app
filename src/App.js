@@ -9,7 +9,6 @@ import Topbar from "./components/Topbar";
 import Loading from "./components/Loading";
 
 import { useAuth } from "./contexts/AuthContext";
-import { appCheck } from "./firebase-config";
 
 const NewProject = lazy(() => import("./scenes/newProject"));
 const Dashboard = lazy(() => import("./scenes/dashboard"));
@@ -22,9 +21,7 @@ function App() {
   const [theme, colorMode] = useMode();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { currentUser } = useAuth();
-  useEffect(()=> {
-    console.log(appCheck)
-  }, [])
+
   
   const collapse = (val) => {
     setIsCollapsed(val);

@@ -11,13 +11,22 @@ import {
   ToggleButtonGroup,
   InputAdornment,
 } from "@mui/material";
+
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import { addDoc, collection, updateDoc } from "firebase/firestore";
+
 import { LoadingButton } from "@mui/lab";
 import { useState } from "react";
 import { ACTIONS } from "../NewItem";
 import { tokens } from "../../../theme";
 import { db } from "../../../firebase-config";
-import { addDoc, collection } from "firebase/firestore";
 import { PhotoCamera } from "@mui/icons-material";
+import { useAuth } from "../../../contexts/AuthContext";
 
 const driverTypes = [
   "Constant Current",
@@ -28,7 +37,8 @@ const driverTypes = [
   "DC-DC Boost",
 ];
 
-const DriverForm = ({ dispatch, product }) => {
+const DriverForm = ({ dispatch, product, changeTab }) => {
+  const { currentUser } = useAuth();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -49,9 +59,38 @@ const DriverForm = ({ dispatch, product }) => {
     });
   };
 
+  var file = "";
+  const handleImageUpload = (event) => {
+    event.preventDefault();
+    file = event.target.files[0];
+
+    // Check if the file is an image.
+    if (!file.type.match("image.*")) {
+      console.log("Error not Image");
+      return;
+    }
+  };
+
   async function saveData() {
     try {
-      await addDoc(collection(db, "items"), product);
+      const data = {...product, createtBy: currentUser.displayName, createdOn: new Date()}
+      const itemRef = await addDoc(collection(db, "items"), data);
+
+      if (!!file) {
+        const filePath = `items/${itemRef.id}/${
+          file.name
+        }`;
+        const newImageRef = ref(getStorage(), filePath);
+        const fileSnapshot = await uploadBytesResumable(newImageRef, file);
+        const publicImageUrl = await getDownloadURL(newImageRef);
+        
+        await updateDoc(itemRef,{
+          imageUrl: publicImageUrl,
+          storageUri: fileSnapshot.metadata.fullPath
+        });
+
+        changeTab(0)
+      }
       dispatch({ type: ACTIONS.RESET });
     } catch (error) {
       console.error("Error writing new message to Firebase Database", error);
@@ -350,7 +389,7 @@ const DriverForm = ({ dispatch, product }) => {
         display="flex"
         justifyContent="flex-end"
         sx={{ gridColumn: "span 2" }}
-        >
+      >
         <Button
           variant="outlined"
           component="label"
@@ -361,7 +400,12 @@ const DriverForm = ({ dispatch, product }) => {
           }}
         >
           <PhotoCamera />
-          <input hidden accept="image/*" multiple type="file" />
+          <input
+            hidden
+            accept="image/*"
+            onChange={handleImageUpload}
+            type="file"
+          />
         </Button>
       </Box>
       <Box
