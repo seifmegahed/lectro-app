@@ -26,7 +26,9 @@ function reducer(items, action) {
 }
 
 const Items = () => {
-  function PageElements({page}) {
+  const [items, dispatch] = useReducer(reducer, { page: PAGES.ALL_ITEMS });
+
+  function PageElements({ page }) {
     switch (page) {
       case PAGES.ALL_ITEMS:
         return <AllItems dispatch={dispatch} />;
@@ -34,13 +36,18 @@ const Items = () => {
         return <NewItem dispatch={dispatch} />;
     }
   }
-  const [items, dispatch] = useReducer(reducer, { page: PAGES.ALL_ITEMS });
+
+  const returnHome = () => {
+    dispatch({ type: ACTIONS.UPDATE_PAGE, payload: { page: PAGES.ALL_ITEMS } });
+  };
 
   return (
     <Box m="20px" maxWidth="700px">
       <Box display="flex" gap="10px" flexDirection="column">
-        <Header title="Items in Store" subtitle="" />
-        <PageElements page={items.page}/>
+        <Box sx={{ cursor: "pointer" }} onClick={returnHome}>
+          <Header title="Inventory" />
+        </Box>
+        <PageElements page={items.page} />
       </Box>
     </Box>
   );
