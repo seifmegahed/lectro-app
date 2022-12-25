@@ -33,7 +33,7 @@ const AllItems = () => {
           <ItemCard
             key={item.id}
             docId={item.id}
-            handleDelete={() => handleDelete(item.id)}
+            handleDelete={handleDelete}
             data={item.data()}
           />
         );

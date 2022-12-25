@@ -9,12 +9,14 @@ import {
   Paper,
   ClickAwayListener,
   Checkbox,
+  useMediaQuery,
 } from "@mui/material";
 
 import { useState } from "react";
 import { MoreVert } from "@mui/icons-material";
 
 const ItemCard = ({ data, docId, handleDelete }) => {
+  const isNonMobile = useMediaQuery("(min-width:600px)");
   const [moreMenu, setMoreMenu] = useState(null);
   const open = Boolean(moreMenu);
   const handleMenu = (event) => {
@@ -38,25 +40,31 @@ const ItemCard = ({ data, docId, handleDelete }) => {
             sx={{ "& .MuiSvgIcon-root": { fontSize: 28 } }}
           />
         </Box>
-        <Box width="100px" display="flex" alignItems="center">
-          <img
-            src={data.imageUrl || "/images/imageplaceholder.png"}
-            style={{ maxWidth: "100%", maxHeight: "100%" }}
-          />
-        </Box>
+        {isNonMobile && (
+          <Box width="100px" display="flex" alignItems="center">
+            <img
+              src={data.imageUrl || "/images/imageplaceholder.png"}
+              style={{ maxWidth: "100%", maxHeight: "100%" }}
+            />
+          </Box>
+        )}
         <Box display="flex" justifyContent="space-between" width="100%">
           <Box>
-            <Typography variant="h3">{data.name}</Typography>
-            <Typography variant="h5">
+            <Typography variant={isNonMobile ? "h3" : "h4"}>
+              {data.name}
+            </Typography>
+            <Typography variant={isNonMobile ? "h5" : "h6"}>
               {data.category} - {data.make}
             </Typography>
           </Box>
-          <Box display="flex" flexDirection="column" textAlign="right">
-            <Typography variant="h6">
-              Quantity: {data.quantity || "0"}
-            </Typography>
-            <Typography variant="h6">Cost: {"0"}</Typography>
-          </Box>
+          {isNonMobile && (
+            <Box display="flex" flexDirection="column" textAlign="right">
+              <Typography variant="h6">
+                Quantity: {data.quantity || "0"}
+              </Typography>
+              <Typography variant="h6">Cost: {"0"}</Typography>
+            </Box>
+          )}
         </Box>
         <Box display="flex" alignItems="center">
           <IconButton
