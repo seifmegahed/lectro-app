@@ -1,82 +1,49 @@
 import Header from "../../components/Header";
-import { Box, Tabs, Tab, Divider } from "@mui/material";
-import { useState } from "react";
+import { Box } from "@mui/material";
+import { useReducer } from "react";
 import NewItem from "./NewItem";
-import PropTypes from 'prop-types';
-import AllItems from "./items";
+import AllItems from "./allItems";
+
+export const ACTIONS = {
+  UPDATE_PAGE: "update-page",
+  UPDATE_PRODUCT: "update-product",
+};
+export const PAGES = {
+  ALL_ITEMS: "allItems",
+  NEW_ITEM: "newItem",
+  ITEM: "item",
+  EDIT_ITEM: "editItem",
+  RECIEVE_ITEMS: "recieveItems",
+};
+
+function reducer(items, action) {
+  switch (action.type) {
+    case ACTIONS.UPDATE_PAGE:
+      return { ...items, page: action.payload.page };
+    case ACTIONS.UPDATE_PRODUCT:
+      return { ...items, product: action.payload.product };
+  }
+}
 
 const Items = () => {
-  const [tab, setTab] = useState(0);
-
-  function changeTab(value) {
-    setTab(value)
+  function PageElements({page}) {
+    switch (page) {
+      case PAGES.ALL_ITEMS:
+        return <AllItems dispatch={dispatch} />;
+      case PAGES.NEW_ITEM:
+        return <NewItem dispatch={dispatch} />;
+    }
   }
+  const [items, dispatch] = useReducer(reducer, { page: PAGES.ALL_ITEMS });
 
-  const handleChange = (event, value) => {
-    setTab(value);
-  };
   return (
     <Box m="20px" maxWidth="700px">
       <Box display="flex" gap="10px" flexDirection="column">
         <Header title="Items in Store" subtitle="" />
-        <Box sx={{ width: "100%" }}>
-          <Tabs
-            value={tab}
-            onChange={handleChange}
-            textColor="secondary"
-            indicatorColor="secondary"
-          >
-            <Tab label="Items" {...a11yProps(0)} />
-            <Tab label="Recieve Item" {...a11yProps(1)} />
-            <Tab label="Retrun Item" {...a11yProps(2)} />
-            <Tab label="New Item" {...a11yProps(3)} />
-          </Tabs>
-          <Divider />
-          <TabPanel value={tab} index={0}>
-            <AllItems />
-          </TabPanel>
-          <TabPanel value={tab} index={1}></TabPanel>
-          <TabPanel value={tab} index={2}></TabPanel>
-          <TabPanel value={tab} index={3}>
-            <NewItem changeTab={changeTab} />
-          </TabPanel>
-        </Box>
+        <PageElements page={items.page}/>
       </Box>
     </Box>
   );
 };
-
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box pt="20px">
-          {children}
-        </Box>
-      )}
-    </div>
-  );
-}
-
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.number.isRequired,
-  value: PropTypes.number.isRequired,
-};
-
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
-  };
-}
 
 export default Items;

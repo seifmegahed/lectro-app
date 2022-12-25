@@ -50,7 +50,11 @@ const ItemCard = ({ data, docId, handleDelete }) => {
         )}
         <Box display="flex" justifyContent="space-between" width="100%">
           <Box>
-            <Typography variant={isNonMobile ? "h3" : "h4"}>
+            <Typography
+              variant={isNonMobile ? "h3" : "h4"}
+              onClick={() => console.log(docId)}
+              sx={{ cursor: "pointer" }}
+            >
               {data.name}
             </Typography>
             <Typography variant={isNonMobile ? "h5" : "h6"}>
