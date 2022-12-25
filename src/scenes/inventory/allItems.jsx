@@ -8,51 +8,48 @@ import ItemCard from "./ItemCard";
 import { tokens } from "../../theme";
 import { ACTIONS, PAGES } from ".";
 
-const AllItems = ({ dispatch }) => {
+const AllItems = ({ dispatch, data }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const [items, setItems] = useState([]);
-  const [filteredItems, setFilteredItems] = useState([]);
-  const [searchKey, setSearchKey] = useState("");
+  const [searchkey, setSearchkey] = useState("")
+  const [filteredProducts, setFilteredProducts] = useState(data.products)
 
   function handleDelete(docId) {
     async function deleteData() {
       await deleteDoc(doc(db, "items", docId));
     }
     deleteData();
-    const newItems = items.filter((item) => item.id !== docId);
-    setItems(newItems);
+    dispatch({
+      type: ACTIONS.REMOVE_PRODUCT,
+      payload: {
+        id: docId,
+      },
+    });
   }
-
-  useEffect(() => {
-    async function getData() {
-      const data = await getDocs(query(collection(db, "items")));
-      setItems(data.docs);
-      setFilteredItems(data.docs);
-    }
-    getData();
-  }, []);
-
-  useEffect(() => {
-    if (searchKey === "") {
-      setFilteredItems(items);
-    } else {
-      setFilteredItems(
-        items.filter(
-          (item) =>
-            item.data().name.toLowerCase().includes(searchKey) ||
-            item.data().make.toLowerCase().includes(searchKey) ||
-            item.data().category.toLowerCase().includes(searchKey)
-        )
-      );
-    }
-  }, [searchKey, items]);
 
   const handleSearch = (event) => {
     const value = event.target.value.toLowerCase();
-    setSearchKey(value);
+    setSearchkey(value)
+
   };
+
+  useEffect(() => {
+    var filtered = [];
+
+    if (searchkey === "") {
+      filtered = data.products;
+    } else {
+      filtered = data.products.filter(
+        (product) =>
+          product.data().name.toLowerCase().includes(searchkey) ||
+          product.data().make.toLowerCase().includes(searchkey) ||
+          product.data().category.toLowerCase().includes(searchkey)
+      );
+    }
+    setFilteredProducts(filtered)
+  }, [searchkey]);
+
   const handleNewItem = () => {
     dispatch({
       type: ACTIONS.UPDATE_PAGE,
@@ -61,6 +58,7 @@ const AllItems = ({ dispatch }) => {
       },
     });
   };
+
   return (
     <Box display="grid" gap="20px">
       <Box display="flex" justifyContent="space-between">
@@ -73,7 +71,7 @@ const AllItems = ({ dispatch }) => {
           <InputBase
             sx={{ ml: 2, flex: 1 }}
             placeholder="Search"
-            value={searchKey}
+            value={searchkey || ""}
             onChange={handleSearch}
           />
           <IconButton type="button" sx={{ p: 1 }}>
@@ -85,13 +83,13 @@ const AllItems = ({ dispatch }) => {
         </Button>
       </Box>
 
-      {filteredItems.map((item) => {
+      {filteredProducts.map((product) => {
         return (
           <ItemCard
-            key={item.id}
-            docId={item.id}
+            key={product.id}
+            docId={product.id}
             handleDelete={handleDelete}
-            data={item.data()}
+            data={product.data()}
           />
         );
       })}
