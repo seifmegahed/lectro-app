@@ -42,6 +42,7 @@ const DriverForm = ({ dispatch, product, changeTab }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  const [file, setFile] = useState(null);
   const [errors, setErrors] = useState({
     make: false,
     name: false,
@@ -59,10 +60,9 @@ const DriverForm = ({ dispatch, product, changeTab }) => {
     });
   };
 
-  var file = "";
   const handleImageUpload = (event) => {
     event.preventDefault();
-    file = event.target.files[0];
+    setFile(event.target.files[0]);
 
     // Check if the file is an image.
     if (!file.type.match("image.*")) {
@@ -73,23 +73,25 @@ const DriverForm = ({ dispatch, product, changeTab }) => {
 
   async function saveData() {
     try {
-      const data = {...product, createtBy: currentUser.displayName, createdOn: new Date()}
+      const data = {
+        ...product,
+        createtBy: currentUser.displayName,
+        createdOn: new Date(),
+      };
       const itemRef = await addDoc(collection(db, "items"), data);
 
       if (!!file) {
-        const filePath = `items/${itemRef.id}/${
-          file.name
-        }`;
+        const filePath = `items/${itemRef.id}/${file.name}`;
         const newImageRef = ref(getStorage(), filePath);
         const fileSnapshot = await uploadBytesResumable(newImageRef, file);
         const publicImageUrl = await getDownloadURL(newImageRef);
-        
-        await updateDoc(itemRef,{
+
+        await updateDoc(itemRef, {
           imageUrl: publicImageUrl,
-          storageUri: fileSnapshot.metadata.fullPath
+          storageUri: fileSnapshot.metadata.fullPath,
         });
 
-        changeTab(0)
+        changeTab(0);
       }
       dispatch({ type: ACTIONS.RESET });
     } catch (error) {
@@ -315,6 +317,24 @@ const DriverForm = ({ dispatch, product, changeTab }) => {
           endAdornment: <InputAdornment position="end">%</InputAdornment>,
         }}
       />
+      <TextField
+        label="IP Rating"
+        name="ipRating"
+        value={product.ipRating || ""}
+        onChange={handleChange}
+        type="number"
+        sx={{
+          gridColumn: "span 2",
+          backgroundColor: `${colors.grey[900]}`,
+          input: {
+            backgroundColor: `${colors.grey[900]}`,
+            borderRadius: "4px",
+          },
+        }}
+        InputProps={{
+          startAdornment: <InputAdornment position="start">IP</InputAdornment>,
+        }}
+      />
       <Box
         display="flex"
         justifyContent="flex-end"
@@ -339,24 +359,6 @@ const DriverForm = ({ dispatch, product, changeTab }) => {
           </ToggleButton>
         </ToggleButtonGroup>
       </Box>
-      <TextField
-        label="IP Rating"
-        name="ipRating"
-        value={product.ipRating || ""}
-        onChange={handleChange}
-        type="number"
-        sx={{
-          gridColumn: "span 2",
-          backgroundColor: `${colors.grey[900]}`,
-          input: {
-            backgroundColor: `${colors.grey[900]}`,
-            borderRadius: "4px",
-          },
-        }}
-        InputProps={{
-          startAdornment: <InputAdornment position="start">IP</InputAdornment>,
-        }}
-      />
       <TextField
         label="Country of Origin"
         name="country"
@@ -387,15 +389,15 @@ const DriverForm = ({ dispatch, product, changeTab }) => {
       />
       <Box
         display="flex"
-        justifyContent="flex-end"
-        sx={{ gridColumn: "span 2" }}
+        gap="20px"
+        sx={{ gridColumn: "span 4" }}
       >
         <Button
           variant="outlined"
           component="label"
           sx={{
             backgroundColor: `${colors.grey[900]}`,
-            width: "100%",
+            minWidth: "80px",
             minHeight: "52.71px",
           }}
         >
@@ -407,6 +409,18 @@ const DriverForm = ({ dispatch, product, changeTab }) => {
             type="file"
           />
         </Button>
+        <TextField
+          disabled
+          label="File Name"
+          value={!!file ? file.name : ""}
+          sx={{
+            width: "100%",
+            input: {
+              backgroundColor: `${colors.grey[900]}`,
+              borderRadius: "4px",
+            },
+          }}
+        />
       </Box>
       <Box
         display="flex"

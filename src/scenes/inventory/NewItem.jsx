@@ -59,7 +59,7 @@ const NewItem = ({ changeTab }) => {
 
   return (
     <FormContainer>
-      <Box sx={{ gridColumn: "span 2" }}>
+      <Box sx={{ gridColumn: "span 4" }}>
         <FormControl fullWidth>
           <InputLabel id={"selectItemCategoryLabel"}>Category</InputLabel>
           <Select
