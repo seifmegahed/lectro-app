@@ -5,6 +5,7 @@ import {
   MenuItem,
   FormControl,
   useTheme,
+  Typography,
 } from "@mui/material";
 import { useReducer } from "react";
 
@@ -60,6 +61,7 @@ const NewItem = ({ changeTab }) => {
   return (
     <FormContainer>
       <Box sx={{ gridColumn: "span 4" }}>
+        <Typography variant="h3" mb="20px">New Item</Typography>
         <FormControl fullWidth>
           <InputLabel id={"selectItemCategoryLabel"}>Category</InputLabel>
           <Select
