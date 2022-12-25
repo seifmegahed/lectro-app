@@ -1,14 +1,14 @@
 import { Box, useTheme, useMediaQuery } from "@mui/material";
 import { tokens } from "../theme";
 
-const FormContainer = ({ children }) => {
+const FormContainer = ({ children, padding }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
   return (
     <Box
       display="grid"
-      p={isNonMobile ? "30px" : "15px"}
+      p={!!padding ? padding : (isNonMobile ? "30px" : "15px")}
       boxShadow="rgba(0, 0, 0, 0.24) 0px 3px 8px"
       borderRadius="10px"
       gridTemplateColumns="repeat(4, minmax(0, 1fr))"
