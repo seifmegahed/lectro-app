@@ -6,6 +6,7 @@ import AllItems from "./allItems";
 
 import { db } from "../../firebase-config";
 import { collection, query, getDocs, deleteDoc, doc } from "firebase/firestore";
+import ItemPage from "./ItemPage";
 
 export const ACTIONS = {
   UPDATE_PAGE: "update-page",
@@ -16,11 +17,15 @@ export const ACTIONS = {
 export const PAGES = {
   ALL_ITEMS: "allItems",
   NEW_ITEM: "newItem",
-  ITEM: "item",
+  ITEM_PAGE: "itemPage",
   EDIT_ITEM: "editItem",
   RECIEVE_ITEMS: "recieveItems",
   REMOVE_PRODUCT: "removeProduct",
 };
+
+export const CATEGORIES = {
+  DRIVER: "Driver",
+}
 
 function reducer(items, action) {
   switch (action.type) {
@@ -55,9 +60,11 @@ const Inventory = () => {
   function PageElements({ page }) {
     switch (page) {
       case PAGES.ALL_ITEMS:
-        return <AllItems dispatch={dispatch} data={items} />;
+        return <AllItems dispatch={dispatch} items={items} />;
       case PAGES.NEW_ITEM:
         return <NewItem dispatch={dispatch} />;
+      case PAGES.ITEM_PAGE:
+        return <ItemPage items={items} dispatch={dispatch} />
     }
   }
 

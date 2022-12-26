@@ -8,12 +8,12 @@ import ItemCard from "./ItemCard";
 import { tokens } from "../../theme";
 import { ACTIONS, PAGES } from ".";
 
-const AllItems = ({ dispatch, data }) => {
+const AllItems = ({ dispatch, items }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
   const [searchkey, setSearchkey] = useState("")
-  const [filteredProducts, setFilteredProducts] = useState(data.products)
+  const [filteredProducts, setFilteredProducts] = useState(items.products)
 
   function handleDelete(docId) {
     async function deleteData() {
@@ -38,9 +38,9 @@ const AllItems = ({ dispatch, data }) => {
     var filtered = [];
 
     if (searchkey === "") {
-      filtered = data.products;
+      filtered = items.products;
     } else {
-      filtered = data.products.filter(
+      filtered = items.products.filter(
         (product) =>
           product.data().name.toLowerCase().includes(searchkey) ||
           product.data().make.toLowerCase().includes(searchkey) ||
@@ -87,9 +87,9 @@ const AllItems = ({ dispatch, data }) => {
         return (
           <ItemCard
             key={product.id}
-            docId={product.id}
-            handleDelete={handleDelete}
-            data={product.data()}
+            product={product}
+            handleDelete={() => handleDelete(product.id)}
+            dispatch={dispatch}
           />
         );
       })}

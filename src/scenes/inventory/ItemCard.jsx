@@ -1,4 +1,5 @@
 import FormContainer from "../../components/FormContainer";
+import { ACTIONS, PAGES } from ".";
 
 import {
   Box,
@@ -15,17 +16,32 @@ import {
 import { useState } from "react";
 import { MoreVert } from "@mui/icons-material";
 
-const ItemCard = ({ data, docId, handleDelete }) => {
+const ItemCard = ({ product, dispatch, handleDelete }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [moreMenu, setMoreMenu] = useState(null);
+
   const open = Boolean(moreMenu);
+
   const handleMenu = (event) => {
     setMoreMenu(event.currentTarget);
   };
   const handleMenuClose = () => {
     setMoreMenu(null);
   };
-
+  const handleSelectProduct = () => {
+    dispatch({
+      type: ACTIONS.UPDATE_SELECTED_PRODUCT,
+      payload: {
+        product: product,
+      },
+    });
+    dispatch({
+      type: ACTIONS.UPDATE_PAGE,
+      payload: {
+        page: PAGES.ITEM_PAGE
+      }
+    })
+  };
   return (
     <FormContainer padding="15px">
       <Box
@@ -43,7 +59,7 @@ const ItemCard = ({ data, docId, handleDelete }) => {
         {isNonMobile && (
           <Box width="100px" display="flex" alignItems="center">
             <img
-              src={data.imageUrl || "/images/imageplaceholder.png"}
+              src={product.data().imageUrl || "/images/imageplaceholder.png"}
               style={{ maxWidth: "100%", maxHeight: "100%" }}
             />
           </Box>
@@ -52,19 +68,19 @@ const ItemCard = ({ data, docId, handleDelete }) => {
           <Box>
             <Typography
               variant={isNonMobile ? "h3" : "h4"}
-              onClick={() => console.log(docId)}
+              onClick={handleSelectProduct}
               sx={{ cursor: "pointer" }}
             >
-              {data.name}
+              {product.data().name}
             </Typography>
             <Typography variant={isNonMobile ? "h5" : "h6"}>
-              {data.category} - {data.make}
+              {product.data().category} - {product.data().make}
             </Typography>
           </Box>
           {isNonMobile && (
             <Box display="flex" flexDirection="column" textAlign="right">
               <Typography variant="h6">
-                Quantity: {data.quantity || "0"}
+                Quantity: {product.data().quantity || "0"}
               </Typography>
               <Typography variant="h6">Cost: {"0"}</Typography>
             </Box>
@@ -120,7 +136,7 @@ const ItemCard = ({ data, docId, handleDelete }) => {
                 </MenuItem>
                 <MenuItem
                   onClick={() => {
-                    handleDelete(docId);
+                    handleDelete();
                     handleMenuClose();
                   }}
                   color="error"
