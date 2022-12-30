@@ -46,7 +46,7 @@ export const InventoryProvider = ({ children }) => {
   }
 
   const removeFromItems = (item) => {
-    const updatedItems = [];
+    let updatedItems = [];
     updatedItems = state.items.filter(
       (currentItem) => currentItem.id !== item.id
     );

@@ -95,7 +95,7 @@ const DriverForm = ({ dispatchProduct, product }) => {
         });
 
       }
-      updatePage(PAGES.ALL_ITEMS);
+      updatePage(PAGES.STORE);
     } catch (error) {
       console.error("Error writing new message to Firebase Database", error);
     }

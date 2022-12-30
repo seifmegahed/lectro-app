@@ -43,7 +43,7 @@ function reducer(product, action) {
   }
 }
 
-const NewItem = ({ changeTab, dispatch }) => {
+const NewItem = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [product, dispatchProduct] = useReducer(reducer, { category: "" });
@@ -61,7 +61,9 @@ const NewItem = ({ changeTab, dispatch }) => {
   return (
     <FormContainer>
       <Box sx={{ gridColumn: "span 4" }}>
-        <Typography variant="h3" mb="20px">New Item</Typography>
+        <Typography variant="h3" mb="20px">
+          New Item
+        </Typography>
         <FormControl fullWidth>
           <InputLabel id={"selectItemCategoryLabel"}>Category</InputLabel>
           <Select
@@ -83,7 +85,10 @@ const NewItem = ({ changeTab, dispatch }) => {
         </FormControl>
       </Box>
       {product.category === "Driver" && (
-        <DriverForm dispatch={dispatch} dispatchProduct={dispatchProduct} product={product} changeTab={changeTab} />
+        <DriverForm
+          dispatchProduct={dispatchProduct}
+          product={product}
+        />
       )}
     </FormContainer>
   );

@@ -32,8 +32,8 @@ const InventoryWrapper = () => {
     switch (page) {
       case PAGES.STORE:
         return <AllItems />;
-      // case PAGES.NEW_ITEM:
-      //   return <NewItem />;
+      case PAGES.NEW_ITEM:
+        return <NewItem />;
       case PAGES.ITEM_PAGE:
         return <ItemPage />;
       default:
@@ -42,18 +42,27 @@ const InventoryWrapper = () => {
   };
 
   useEffect(() => {
-    async function subscribeToItems() {
-      try {
-        const products = await getDocs(query(collection(db, "items")));
-        products.forEach((product) =>
-          addToItems({ ...product.data(), id: product.id })
-        )
-      } catch (error) {
-        console.log("There was an Error");
-        console.log(error);
-      }
+    try {
+      onSnapshot(collection(db, "items"), function (snapshot) {
+        snapshot.docChanges().forEach(function (change) {
+          switch (change.type) {
+            case "removed": {
+              removeFromItems(change.doc);
+              break;
+            }
+            case "added": {
+              addToItems({ ...change.doc.data(), id: change.doc.id });
+              break;
+            }
+            default:
+              return;
+          }
+        });
+      });
+    } catch (error) {
+      console.log("There was an Error");
+      console.log(error);
     }
-    subscribeToItems()
   }, []);
 
   const returnHome = () => {
