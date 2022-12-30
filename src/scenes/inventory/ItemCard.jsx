@@ -52,7 +52,7 @@ const ItemCard = ({ product, handleDelete }) => {
         {isNonMobile && (
           <Box width="100px" display="flex" alignItems="center">
             <img
-              src={product.data().imageUrl || "/images/imageplaceholder.png"}
+              src={product.imageUrl || "/images/imageplaceholder.png"}
               style={{ maxWidth: "100%", maxHeight: "100%" }}
             />
           </Box>
@@ -64,16 +64,16 @@ const ItemCard = ({ product, handleDelete }) => {
               onClick={handleSelectProduct}
               sx={{ cursor: "pointer" }}
             >
-              {product.data().name}
+              {product.name}
             </Typography>
             <Typography variant={isNonMobile ? "h5" : "h6"}>
-              {product.data().category} - {product.data().make}
+              {product.category} - {product.make}
             </Typography>
           </Box>
           {isNonMobile && (
             <Box display="flex" flexDirection="column" textAlign="right">
               <Typography variant="h6">
-                Quantity: {product.data().quantity || "0"}
+                Quantity: {product.quantity || "0"}
               </Typography>
               <Typography variant="h6">Cost: {"0"}</Typography>
             </Box>

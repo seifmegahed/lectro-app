@@ -8,11 +8,11 @@ import {
   TableCell,
 } from "@mui/material";
 import FormContainer from "../../components/FormContainer";
+import useInventory from "../../contexts/InventoryContext";
 
-const DriverPage = ({ items }) => {
+const DriverPage = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const productId = items.selectedProduct.id;
-  const product = items.selectedProduct.data();
+  const { selectedItem } = useInventory();
 
   return (
     <FormContainer>
@@ -25,7 +25,7 @@ const DriverPage = ({ items }) => {
         {isNonMobile && (
           <Box width="100px" display="flex" alignItems="center">
             <img
-              src={product.imageUrl || "/images/imageplaceholder.png"}
+              src={selectedItem.imageUrl || "/images/imageplaceholder.png"}
               style={{ maxWidth: "100%", maxHeight: "100%" }}
             />
           </Box>
@@ -38,10 +38,10 @@ const DriverPage = ({ items }) => {
             alignItems="flex-start"
           >
             <Typography color="text.secondary" variant="h5">
-              {product.category}
+              {selectedItem.category}
             </Typography>
             <Typography color="text.primary" variant="h3">
-              {product.name}
+              {selectedItem.name}
             </Typography>
           </Box>
           {isNonMobile && (
@@ -51,9 +51,9 @@ const DriverPage = ({ items }) => {
               justifyContent="center"
               alignItems="flex-end"
             >
-              <Typography color="text.secondary">{productId}</Typography>
+              <Typography color="text.secondary">{selectedItem.id}</Typography>
               <Typography color="text.secondary" variant="h5">
-                {product.make}
+                {selectedItem.make}
               </Typography>
             </Box>
           )}
@@ -65,51 +65,57 @@ const DriverPage = ({ items }) => {
         sx={{ gridColumn: `span ${isNonMobile ? "3" : "4"}`, width: "100%" }}
       >
         <TableBody>
-          <DataDisplay label="Power:" data={`${product.power} W`} />
-          <DataDisplay label="Make:" data={product.make} />
+          <DataDisplay label="Power:" data={`${selectedItem.power} W`} />
+          <DataDisplay label="Make:" data={selectedItem.make} />
           <DataDisplay
             label="Data of Creation:"
-            data={getFormatedDate(product.createdOn)}
+            data={getFormatedDate(selectedItem.createdOn)}
           />
-          <DataDisplay label="Created By:" data={product.createdBy} />
-          <DataDisplay label="Country of Origin:" data={product.country} />
-          <DataDisplay label="Type:" data={product.type} />
+          <DataDisplay label="Created By:" data={selectedItem.createdBy} />
+          <DataDisplay label="Country of Origin:" data={selectedItem.country} />
+          <DataDisplay label="Type:" data={selectedItem.type} />
           <DataDisplay
             label="Input Voltage:"
             data={
-              product.inputVoltageMin === product.inputVoltageMax
-                ? `${product.inputVoltageMax} V`
-                : `${product.inputVoltageMin}-${product.inputVoltageMax} V`
+              selectedItem.inputVoltageMin === selectedItem.inputVoltageMax
+                ? `${selectedItem.inputVoltageMax} V`
+                : `${selectedItem.inputVoltageMin}-${selectedItem.inputVoltageMax} V`
             }
           />
           <DataDisplay
             label="Output Voltage:"
             data={
-              product.outputVoltageMin === product.outputVoltageMax
-                ? `${product.outputVoltageMax} V`
-                : `${product.outputVoltageMin}-${product.outputVoltageMax} V`
+              selectedItem.outputVoltageMin === selectedItem.outputVoltageMax
+                ? `${selectedItem.outputVoltageMax} V`
+                : `${selectedItem.outputVoltageMin}-${selectedItem.outputVoltageMax} V`
             }
           />
           <DataDisplay
             label="Output Current:"
             data={
-              product.outputCurrentMin === product.outputCurrentMax
-                ? `${product.outputCurrentMax} mA`
-                : `${product.outputCurrentMin}-${product.outputCurrentMax} mA`
+              selectedItem.outputCurrentMin === selectedItem.outputCurrentMax
+                ? `${selectedItem.outputCurrentMax} mA`
+                : `${selectedItem.outputCurrentMin}-${selectedItem.outputCurrentMax} mA`
             }
           />
-          {!!product.powerFactor && (
+          {!!selectedItem.powerFactor && (
             <DataDisplay
               label="Power Factor:"
-              data={`${product.powerFactor}%`}
+              data={`${selectedItem.powerFactor}%`}
             />
           )}
-          {!!product.ipRating && (
-            <DataDisplay label="IP Rating:" data={`IP${product.ipRating}`} />
+          {!!selectedItem.ipRating && (
+            <DataDisplay
+              label="IP Rating:"
+              data={`IP${selectedItem.ipRating}`}
+            />
           )}
-          <DataDisplay label="Case Material:" data={product.caseMaterial} />
-          {!!product.notes && (
-            <DataDisplay label="Notes:" data={product.notes} />
+          <DataDisplay
+            label="Case Material:"
+            data={selectedItem.caseMaterial}
+          />
+          {!!selectedItem.notes && (
+            <DataDisplay label="Notes:" data={selectedItem.notes} />
           )}
         </TableBody>
       </Table>
@@ -146,10 +152,8 @@ function getFormatedDate(val) {
     "Nov",
     "Dec",
   ];
-  if(!!val.nanoseconds)
-    var date = new Date(val.seconds * 1000);
-  else
-    var date = new Date(val.seconds);
+  if (!!val.nanoseconds) var date = new Date(val.seconds * 1000);
+  else var date = new Date(val.seconds);
 
   const month = months[date.getMonth()];
   const day = date.getDate();

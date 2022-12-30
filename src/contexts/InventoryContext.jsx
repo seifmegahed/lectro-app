@@ -18,14 +18,15 @@ export const InventoryProvider = ({ children }) => {
     });
   };
 
-  const addToItems = (item) => {
+  async function addToItems(item) {
     let updatedItems = [];
     let isNotIncluded = true;
     state.items.forEach((currentItem) => {
       isNotIncluded &= currentItem.id !== item.id;
     });
-    updatedItems = state.items.concat(item);
+    updatedItems = state.items;
     if (isNotIncluded) {
+      updatedItems.push(item)
       dispatch({
         type: ACTIONS.UPDATE_ITEMS,
         payload: {
@@ -34,6 +35,15 @@ export const InventoryProvider = ({ children }) => {
       });
     }
   };
+
+  const updateItems = (items) => {
+    dispatch({
+      type: ACTIONS.UPDATE_ITEMS,
+      payload: {
+        items
+      }
+    })
+  }
 
   const removeFromItems = (item) => {
     const updatedItems = [];
@@ -54,8 +64,9 @@ export const InventoryProvider = ({ children }) => {
     state.selectedItems.forEach((currentItem) => {
       isNotIncluded &= currentItem.id !== item.id;
     });
-    updatedSelectedItems = state.items.concat(item);
+    updatedSelectedItems = state.items;
     if (isNotIncluded) {
+      updatedSelectedItems.push(item)
       dispatch({
         type: ACTIONS.UPDATE_SELECTEDITEMS,
         payload: {
@@ -94,6 +105,7 @@ export const InventoryProvider = ({ children }) => {
     selectedItem: state.selectedItem,
     updatePage,
     addToItems,
+    updateItems,
     removeFromItems,
     addToSelectedItems,
     removeFromSelectedItems,

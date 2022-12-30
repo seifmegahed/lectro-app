@@ -35,13 +35,12 @@ const AllItems = () => {
     } else {
       filtered = items.filter(
         (product) =>
-          product.data().name.toLowerCase().includes(searchkey) ||
-          product.data().make.toLowerCase().includes(searchkey) ||
-          product.data().category.toLowerCase().includes(searchkey)
+          product.name.toLowerCase().includes(searchkey) ||
+          product.make.toLowerCase().includes(searchkey) ||
+          product.category.toLowerCase().includes(searchkey)
       );
     }
     setFilteredProducts(filtered);
-    console.log(items)
   }, [searchkey, items]);
 
   const handleNewItem = () => {

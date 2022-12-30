@@ -1,12 +1,16 @@
+import useInventory from "../../contexts/InventoryContext";
 import { CATEGORIES } from "../../reducers/inventoryReducer";
 import DriverPage from "./DriverPage";
 const ItemPage = ({ items, dispatch }) => {
+  const {selectedItem} = useInventory();
+
   function ItemCategory() {
-    switch (items.selectedProduct.data().category) {
+    switch (selectedItem.category) {
       case CATEGORIES.DRIVER:
-        return <DriverPage items={items} dispatch={dispatch} />;
+        return <DriverPage />;
     }
   }
+
   return <ItemCategory />;
 };
 
