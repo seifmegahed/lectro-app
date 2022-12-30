@@ -186,7 +186,7 @@ export const products = [
     id: 4,
     name: "NHE-20",
     power: 20,
-    series: "NH Emergancy",
+    series: "NH Emergency",
     type: "Flood Light",
     quantity: "",
     bom: {
@@ -626,7 +626,7 @@ export const productsCategories = [
     products: ["PERI-100", "PERI-150", "PERI-200"],
   },
   {
-    name: "Emergancy",
+    name: "Emergency",
     products: ["NHE-20"],
   },
   {

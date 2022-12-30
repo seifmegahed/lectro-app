@@ -1,5 +1,4 @@
 import FormContainer from "../../components/FormContainer";
-import { ACTIONS, PAGES } from ".";
 
 import {
   Box,
@@ -16,7 +15,11 @@ import {
 import { useState } from "react";
 import { MoreVert } from "@mui/icons-material";
 
-const ItemCard = ({ product, dispatch, handleDelete }) => {
+import { PAGES } from "../../reducers/inventoryReducer";
+import useInventory from "../../contexts/InventoryContext";
+
+const ItemCard = ({ product, handleDelete }) => {
+  const { updatePage, updateSelectedItem } = useInventory();
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [moreMenu, setMoreMenu] = useState(null);
 
@@ -29,18 +32,8 @@ const ItemCard = ({ product, dispatch, handleDelete }) => {
     setMoreMenu(null);
   };
   const handleSelectProduct = () => {
-    dispatch({
-      type: ACTIONS.UPDATE_SELECTED_PRODUCT,
-      payload: {
-        product: product,
-      },
-    });
-    dispatch({
-      type: ACTIONS.UPDATE_PAGE,
-      payload: {
-        page: PAGES.ITEM_PAGE
-      }
-    })
+    updateSelectedItem(product);
+    updatePage(PAGES.ITEM_PAGE)
   };
   return (
     <FormContainer padding="15px">

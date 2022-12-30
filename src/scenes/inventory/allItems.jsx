@@ -6,57 +6,46 @@ import { Search as SearchIcon } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import ItemCard from "./ItemCard";
 import { tokens } from "../../theme";
-import { ACTIONS, PAGES } from ".";
+import { PAGES } from "../../reducers/inventoryReducer";
+import useInventory from "../../contexts/InventoryContext";
 
-const AllItems = ({ dispatch, items }) => {
+const AllItems = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
-  const [searchkey, setSearchkey] = useState("")
-  const [filteredProducts, setFilteredProducts] = useState(items.products)
+  const {items, updatePage} = useInventory();
+  const [searchkey, setSearchkey] = useState("");
+  const [filteredProducts, setFilteredProducts] = useState(items);
 
   function handleDelete(docId) {
     async function deleteData() {
       await deleteDoc(doc(db, "items", docId));
     }
     deleteData();
-    dispatch({
-      type: ACTIONS.REMOVE_PRODUCT,
-      payload: {
-        id: docId,
-      },
-    });
   }
 
   const handleSearch = (event) => {
     const value = event.target.value.toLowerCase();
-    setSearchkey(value)
-
+    setSearchkey(value);
   };
 
   useEffect(() => {
     var filtered = [];
-
     if (searchkey === "") {
-      filtered = items.products;
+      filtered = items;
     } else {
-      filtered = items.products.filter(
+      filtered = items.filter(
         (product) =>
           product.data().name.toLowerCase().includes(searchkey) ||
           product.data().make.toLowerCase().includes(searchkey) ||
           product.data().category.toLowerCase().includes(searchkey)
       );
     }
-    setFilteredProducts(filtered)
-  }, [searchkey]);
+    setFilteredProducts(filtered);
+    console.log(items)
+  }, [searchkey, items]);
 
   const handleNewItem = () => {
-    dispatch({
-      type: ACTIONS.UPDATE_PAGE,
-      payload: {
-        page: PAGES.NEW_ITEM,
-      },
-    });
+    updatePage(PAGES.NEW_ITEM);
   };
 
   return (
@@ -89,7 +78,6 @@ const AllItems = ({ dispatch, items }) => {
             key={product.id}
             product={product}
             handleDelete={() => handleDelete(product.id)}
-            dispatch={dispatch}
           />
         );
       })}

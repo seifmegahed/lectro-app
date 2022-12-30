@@ -43,13 +43,13 @@ function reducer(product, action) {
   }
 }
 
-const NewItem = ({ changeTab }) => {
+const NewItem = ({ changeTab, dispatch }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [product, dispatch] = useReducer(reducer, { category: "" });
+  const [product, dispatchProduct] = useReducer(reducer, { category: "" });
 
   const handleCategoryChange = (event) => {
-    dispatch({
+    dispatchProduct({
       type: ACTIONS.UPDATE,
       payload: {
         field: event.target.name,
@@ -83,7 +83,7 @@ const NewItem = ({ changeTab }) => {
         </FormControl>
       </Box>
       {product.category === "Driver" && (
-        <DriverForm dispatch={dispatch} product={product} changeTab={changeTab} />
+        <DriverForm dispatch={dispatch} dispatchProduct={dispatchProduct} product={product} changeTab={changeTab} />
       )}
     </FormContainer>
   );

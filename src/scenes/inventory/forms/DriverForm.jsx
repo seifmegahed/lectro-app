@@ -27,6 +27,8 @@ import { tokens } from "../../../theme";
 import { db } from "../../../firebase-config";
 import { PhotoCamera } from "@mui/icons-material";
 import { useAuth } from "../../../contexts/AuthContext";
+import { PAGES } from "../../../reducers/inventoryReducer";
+import useInventory from "../../../contexts/InventoryContext";
 
 const driverTypes = [
   "Constant Current",
@@ -37,8 +39,9 @@ const driverTypes = [
   "DC-DC Boost",
 ];
 
-const DriverForm = ({ dispatch, product, changeTab }) => {
+const DriverForm = ({ dispatchProduct, product }) => {
   const { currentUser } = useAuth();
+  const { updatePage } = useInventory();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -51,7 +54,7 @@ const DriverForm = ({ dispatch, product, changeTab }) => {
 
   const [loading, setLoading] = useState(false);
   const handleChange = (event) => {
-    dispatch({
+    dispatchProduct({
       type: ACTIONS.UPDATE,
       payload: {
         field: event.target.name,
@@ -75,7 +78,7 @@ const DriverForm = ({ dispatch, product, changeTab }) => {
     try {
       const data = {
         ...product,
-        createtBy: currentUser.displayName,
+        createdBy: currentUser.displayName,
         createdOn: new Date(),
       };
       const itemRef = await addDoc(collection(db, "items"), data);
@@ -91,9 +94,8 @@ const DriverForm = ({ dispatch, product, changeTab }) => {
           storageUri: fileSnapshot.metadata.fullPath,
         });
 
-        changeTab(0);
       }
-      dispatch({ type: ACTIONS.RESET });
+      updatePage(PAGES.ALL_ITEMS);
     } catch (error) {
       console.error("Error writing new message to Firebase Database", error);
     }

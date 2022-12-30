@@ -1,4 +1,4 @@
-import { CATEGORIES } from ".";
+import { CATEGORIES } from "../../reducers/inventoryReducer";
 import DriverPage from "./DriverPage";
 const ItemPage = ({ items, dispatch }) => {
   function ItemCategory() {
