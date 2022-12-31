@@ -93,9 +93,7 @@ const DriverForm = ({ dispatchProduct, product }) => {
           imageUrl: publicImageUrl,
           storageUri: fileSnapshot.metadata.fullPath,
         });
-
       }
-      updatePage(PAGES.STORE);
     } catch (error) {
       console.error("Error writing new message to Firebase Database", error);
     }
@@ -112,7 +110,7 @@ const DriverForm = ({ dispatchProduct, product }) => {
       }
     }
     if (allValid) {
-      saveData().then(setLoading(false));
+      saveData().then(setLoading(false)).then(updatePage(PAGES.STORE));
     } else {
       setLoading(false);
     }
@@ -389,11 +387,7 @@ const DriverForm = ({ dispatchProduct, product }) => {
           },
         }}
       />
-      <Box
-        display="flex"
-        gap="20px"
-        sx={{ gridColumn: "span 4" }}
-      >
+      <Box display="flex" gap="20px" sx={{ gridColumn: "span 4" }}>
         <Button
           variant="outlined"
           component="label"

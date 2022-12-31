@@ -18,7 +18,8 @@ export const InventoryProvider = ({ children }) => {
     });
   };
 
-  async function addToItems(item) {
+  const addToItems = (item) => {
+    console.log("addToItems", item.id);
     let updatedItems = [];
     let isNotIncluded = true;
     state.items.forEach((currentItem) => {
@@ -26,7 +27,7 @@ export const InventoryProvider = ({ children }) => {
     });
     updatedItems = state.items;
     if (isNotIncluded) {
-      updatedItems.push(item)
+      updatedItems.push(item);
       dispatch({
         type: ACTIONS.UPDATE_ITEMS,
         payload: {
@@ -36,24 +37,11 @@ export const InventoryProvider = ({ children }) => {
     }
   };
 
-  const updateItems = (items) => {
+  const removeFromItems = (itemID) => {
     dispatch({
-      type: ACTIONS.UPDATE_ITEMS,
+      type: ACTIONS.REMOVE_ITEM,
       payload: {
-        items
-      }
-    })
-  }
-
-  const removeFromItems = (item) => {
-    let updatedItems = [];
-    updatedItems = state.items.filter(
-      (currentItem) => currentItem.id !== item.id
-    );
-    dispatch({
-      type: ACTIONS.UPDATE_ITEMS,
-      payload: {
-        items: updatedItems,
+        itemID
       },
     });
   };
@@ -66,7 +54,7 @@ export const InventoryProvider = ({ children }) => {
     });
     updatedSelectedItems = state.items;
     if (isNotIncluded) {
-      updatedSelectedItems.push(item)
+      updatedSelectedItems.push(item);
       dispatch({
         type: ACTIONS.UPDATE_SELECTEDITEMS,
         payload: {
@@ -105,7 +93,6 @@ export const InventoryProvider = ({ children }) => {
     selectedItem: state.selectedItem,
     updatePage,
     addToItems,
-    updateItems,
     removeFromItems,
     addToSelectedItems,
     removeFromSelectedItems,

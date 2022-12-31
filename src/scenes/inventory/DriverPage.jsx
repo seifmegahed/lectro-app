@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import FormContainer from "../../components/FormContainer";
 import useInventory from "../../contexts/InventoryContext";
-import { getFormatedDate } from "../../Utils/dateFormatting";
+import { getFormatedDate } from "../../utils/dateFormatting";
 
 const DriverPage = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");

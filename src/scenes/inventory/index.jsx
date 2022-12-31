@@ -15,7 +15,7 @@ import { db } from "../../firebase-config";
 import { collection, query, getDocs, onSnapshot } from "firebase/firestore";
 
 import { Box, IconButton } from "@mui/material";
-import { ChevronLeft } from "@mui/icons-material";
+import { CatchingPokemonSharp, ChevronLeft } from "@mui/icons-material";
 
 const Inventory = () => {
   return (
@@ -46,9 +46,10 @@ const InventoryWrapper = () => {
     try {
       onSnapshot(collection(db, "items"), function (snapshot) {
         snapshot.docChanges().forEach(function (change) {
+          console.log(change.type, change.doc.id) 
           switch (change.type) {
             case "removed": {
-              removeFromItems(change.doc);
+              removeFromItems(change.doc.id);
               break;
             }
             case "added": {

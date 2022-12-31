@@ -1,6 +1,7 @@
 export const ACTIONS = {
   UPDATE_PAGE: "UPDATE_PAGE",
   UPDATE_ITEMS: "UPDATE_ITEMS",
+  REMOVE_ITEM: "REMOVE_ITEM",
   UPDATE_SELECTEDITEMS: "UPDATE_SELECTEDITEMS",
   UPDATE_SELECTEDITEM: "UPDATE_SELECTEDITEM",
 };
@@ -39,6 +40,14 @@ const inventoryReducer = (state, action) => {
       return {
         ...state,
         items: payload.items,
+      };
+    case ACTIONS.REMOVE_ITEM:
+      console.log(ACTIONS.REMOVE_ITEM, payload);
+      return {
+        ...state,
+        items: state.items.filter(
+          (currentItem) => currentItem.id !== payload.itemID
+        ),
       };
     case ACTIONS.UPDATE_SELECTEDITEMS:
       console.log(ACTIONS.UPDATE_SELECTEDITEMS, payload);
