@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import FormContainer from "../../components/FormContainer";
 import useInventory from "../../contexts/InventoryContext";
+import { getFormatedDate } from "../../Utils/dateFormatting";
 
 const DriverPage = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -135,31 +136,5 @@ const DataDisplay = ({ label, data }) => {
     </TableRow>
   );
 };
-
-// returns date in Mon dd, yyyy format
-function getFormatedDate(val) {
-  const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
-  if (!!val.nanoseconds) var date = new Date(val.seconds * 1000);
-  else var date = new Date(val.seconds);
-
-  const month = months[date.getMonth()];
-  const day = date.getDate();
-  const year = date.getFullYear();
-  const formatedDate = month + " " + day + ", " + year;
-  return formatedDate;
-}
 
 export default DriverPage;
