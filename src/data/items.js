@@ -1,3 +1,37 @@
+export const itemData = {
+  Driver: [
+    { name: "power", label: "Power", postFix: " W" },
+    { name: "make", label: "Make" },
+    { name: "country", label: "Country of Origin" },
+    { name: "type", label: "Type" },
+    { name: "inputVoltageMax", label: "Input Voltage", postFix: " V" },
+    { name: "outputVoltageMax", label: "Output Voltage", postFix: " V" },
+    { name: "outputCurrentMax", label: "Output Current", postFix: " mA" },
+    { name: "powerFactor", label: "Power Factor", postFix: "%" },
+    { name: "ipRating", label: "IP Rating", preFix: "IP" },
+    { name: "caseMaterial", label: "Case Material" },
+    { name: "createdOn", label: "Date of Creation", type: "date" },
+    { name: "createdBy", label: "Created By" },
+    { name: "notes", label: "Notes" },
+  ],
+  LED: [
+    { name: "power", label: "Power", postFix: "W" },
+    { name: "make", label: "Make" },
+    { name: "country", label: "Country of Origin" },
+    { name: "type", label: "Type" },
+    { name: "forwardVoltage", label: "Forward Voltage (Vf)", postFix: "V" },
+    { name: "forwardCurrent", label: "Forward Current (If)", postFix: "mA" },
+    { name: "lmPw", label: "Lumen/Watt", postFix: "lm/W" },
+    { name: "colorTemperature", label: "Color Temperature", postFix: "K" },
+    { name: "cri", label: "Color Rendering Index", postFix: "Ra" },
+    { name: "length", label: "Length", postFix: "mm" },
+    { name: "width", label: "Width", postFix: "mm" },
+    { name: "createdOn", label: "Date of Creation", type: "date" },
+    { name: "createdBy", label: "Created By" },
+    { name: "notes", label: "Notes" },
+  ],
+};
+
 export const drivers = [
   {
     id: 1,

@@ -33,7 +33,7 @@ const ItemCard = ({ product, handleDelete }) => {
   };
   const handleSelectProduct = () => {
     updateSelectedItem(product);
-    updatePage(PAGES.ITEM_PAGE)
+    updatePage(PAGES.ITEM_PAGE);
   };
   return (
     <FormContainer padding="15px">
@@ -101,7 +101,7 @@ const ItemCard = ({ product, handleDelete }) => {
               <Paper>
                 <MenuItem
                   onClick={() => {
-                    console.log(items)
+                    console.log(items);
                     handleMenuClose();
                   }}
                 >
