@@ -1,7 +1,8 @@
 import { Typography, TableRow, TableCell } from "@mui/material";
 import { getFormatedDate } from "../utils/dateFormatting";
 
-const DataDisplay = ({ label, data, preFix, postFix, type }) => {
+const DataDisplay = ({ itemDetails, data }) => {
+  let {label, type, preFix, postFix} = itemDetails;
   return (
     <TableRow>
       <TableCell>
@@ -10,7 +11,7 @@ const DataDisplay = ({ label, data, preFix, postFix, type }) => {
       <TableCell align="right">
         <Typography color="text.primary">
           {`${!!preFix ? preFix : ""}${
-            type === "date" ? getFormatedDate(data) : data
+          type === "date" ? getFormatedDate(data) : data
           }${!!postFix ? postFix : ""}`}
         </Typography>
       </TableCell>

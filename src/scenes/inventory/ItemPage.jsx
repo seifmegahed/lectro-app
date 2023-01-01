@@ -69,14 +69,11 @@ const ItemPage = () => {
         <TableBody>
           {itemData[selectedItem.category].map(
             (item) =>
-              selectedItem[item.name] && (
+              !!selectedItem[item.name] && (
                 <DataDisplay
                   key={item.name}
-                  label={item.label}
                   data={selectedItem[item.name]}
-                  preFix={!!item.preFix ? item.preFix : null}
-                  postFix={!!item.postFix ? item.postFix : null}
-                  type={!!item.type ? item.type : null}
+                  itemDetails={item}
                 />
               )
           )}
