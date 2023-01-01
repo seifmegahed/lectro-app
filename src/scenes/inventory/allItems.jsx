@@ -41,7 +41,6 @@ const AllItems = () => {
       );
     }
     setFilteredProducts(filtered);
-    console.log("useEffect Triggered")
   }, [searchkey, items]);
 
   const handleNewItem = () => {

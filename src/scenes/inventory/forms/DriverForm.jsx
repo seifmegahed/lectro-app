@@ -39,7 +39,7 @@ const driverTypes = [
   "DC-DC Boost",
 ];
 
-const DriverForm = ({ dispatchProduct, product }) => {
+const DriverForm = ({ dispatch, product }) => {
   const { currentUser } = useAuth();
   const { updatePage } = useInventory();
   const theme = useTheme();
@@ -54,7 +54,7 @@ const DriverForm = ({ dispatchProduct, product }) => {
 
   const [loading, setLoading] = useState(false);
   const handleChange = (event) => {
-    dispatchProduct({
+    dispatch({
       type: ACTIONS.UPDATE,
       payload: {
         field: event.target.name,
@@ -65,13 +65,18 @@ const DriverForm = ({ dispatchProduct, product }) => {
 
   const handleImageUpload = (event) => {
     event.preventDefault();
-    setFile(event.target.files[0]);
 
+    const temp = event.target.files[0];
     // Check if the file is an image.
-    if (!file.type.match("image.*")) {
+    if(temp.type === null) {
+      console.log('Error not a file, try again')
+      return;
+    }
+    if (!temp.type.match("image.*")) {
       console.log("Error not Image");
       return;
     }
+    setFile(temp);
   };
 
   async function saveData() {
@@ -153,7 +158,7 @@ const DriverForm = ({ dispatchProduct, product }) => {
         }}
       >
         <FormControl fullWidth>
-          <InputLabel id={"selectItemCategoryLabel"}>Category</InputLabel>
+          <InputLabel id={"selectItemCategoryLabel"}>Type</InputLabel>
           <Select
             labelId="selectItemCategoryLabel"
             label="Type"

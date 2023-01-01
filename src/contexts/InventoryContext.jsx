@@ -1,7 +1,8 @@
-import { createContext, useReducer, useContext } from "react";
+import { createContext, useReducer, useContext, useMemo } from "react";
 import inventoryReducer, {
   initialState,
   ACTIONS,
+  PAGES,
 } from "../reducers/inventoryReducer";
 
 const InventoryContext = createContext(initialState);
@@ -19,29 +20,19 @@ export const InventoryProvider = ({ children }) => {
   };
 
   const addToItems = (item) => {
-    console.log("addToItems", item.id);
-    let updatedItems = [];
-    let isNotIncluded = true;
-    state.items.forEach((currentItem) => {
-      isNotIncluded &= currentItem.id !== item.id;
+    dispatch({
+      type: ACTIONS.ADD_ITEM,
+      payload: {
+        item,
+      },
     });
-    updatedItems = state.items;
-    if (isNotIncluded) {
-      updatedItems.push(item);
-      dispatch({
-        type: ACTIONS.UPDATE_ITEMS,
-        payload: {
-          items: updatedItems,
-        },
-      });
-    }
   };
 
   const removeFromItems = (itemID) => {
     dispatch({
       type: ACTIONS.REMOVE_ITEM,
       payload: {
-        itemID
+        itemID,
       },
     });
   };
@@ -86,18 +77,23 @@ export const InventoryProvider = ({ children }) => {
     });
   };
 
-  const value = {
-    page: state.page,
-    items: state.items,
-    selectedItems: state.selectedItems,
-    selectedItem: state.selectedItem,
-    updatePage,
-    addToItems,
-    removeFromItems,
-    addToSelectedItems,
-    removeFromSelectedItems,
-    updateSelectedItem,
-  };
+  const value = useMemo(
+    () => ({
+      page: state.page,
+      items: state.items,
+      selectedItems: state.selectedItems,
+      selectedItem: state.selectedItem,
+      updatePage,
+      addToItems,
+      removeFromItems,
+      addToSelectedItems,
+      removeFromSelectedItems,
+      updateSelectedItem,
+      PAGES,
+      ACTIONS,
+    }),
+    [state]
+  );
 
   return (
     <InventoryContext.Provider value={value}>

@@ -9,25 +9,16 @@ import {
 } from "@mui/material";
 import { useReducer } from "react";
 
-import DriverForm from "./forms/DriverForm";
-import FormContainer from "../../components/FormContainer";
 import { tokens } from "../../theme";
+import FormContainer from "../../components/FormContainer";
+
+import DriverForm from "./forms/DriverForm";
+import LEDForm from "./forms/LEDForm";
 
 export const ACTIONS = {
   RESET: "reset",
   UPDATE: "update",
 };
-
-const categories = [
-  "Driver",
-  "LED",
-  "Lens",
-  "Metal",
-  "Screws",
-  "Wire",
-  "Tools",
-  "Other",
-];
 
 function reducer(product, action) {
   switch (action.type) {
@@ -46,10 +37,32 @@ function reducer(product, action) {
 const NewItem = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [product, dispatchProduct] = useReducer(reducer, { category: "" });
+  const [product, dispatch] = useReducer(reducer, { category: "" });
+
+  const categories = {
+    DRIVER: {
+      name: "Driver",
+      element: (
+        <DriverForm key={"Driver"} product={product} dispatch={dispatch} />
+      ),
+    },
+    LED: {
+      name: "LED",
+      element: <LEDForm key={"LED"} product={product} dispatch={dispatch} />,
+    },
+    LENS: { name: "Lens", element: <h1 key={"Lens"}>Hi</h1> },
+    METAL: { name: "Metal", element: <h1 key={"Metal"}>Hi</h1> },
+    SCREWS: { name: "Screws", element: <h1 key={"Screw"}>Hi</h1> },
+    WIRE: { name: "Wire", element: <h1 key={"Wire"}>Hi</h1> },
+    TOOLS: { name: "Tools", element: <h1 key={"Tools"}>Hi</h1> },
+    OTHER: { name: "Other", element: <h1 key={"Other"}>Hi</h1> },
+  };
 
   const handleCategoryChange = (event) => {
-    dispatchProduct({
+    dispatch({
+      type: ACTIONS.RESET
+    })
+    dispatch({
       type: ACTIONS.UPDATE,
       payload: {
         field: event.target.name,
@@ -76,20 +89,19 @@ const NewItem = () => {
               backgroundColor: `${colors.grey[900]}`,
             }}
           >
-            {categories.map((category) => (
-              <MenuItem key={category} value={category}>
-                {category}
+            {Object.keys(categories).map((key) => (
+              <MenuItem key={categories[key].name} value={categories[key].name}>
+                {categories[key].name}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
       </Box>
-      {product.category === "Driver" && (
-        <DriverForm
-          dispatchProduct={dispatchProduct}
-          product={product}
-        />
-      )}
+      {Object.keys(categories).map((key) => {
+        if (categories[key].name === product.category) {
+          return categories[key].element;
+        }
+      })}
     </FormContainer>
   );
 };

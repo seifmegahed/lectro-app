@@ -46,7 +46,6 @@ const InventoryWrapper = () => {
     try {
       onSnapshot(collection(db, "items"), function (snapshot) {
         snapshot.docChanges().forEach(function (change) {
-          console.log(change.type, change.doc.id) 
           switch (change.type) {
             case "removed": {
               removeFromItems(change.doc.id);

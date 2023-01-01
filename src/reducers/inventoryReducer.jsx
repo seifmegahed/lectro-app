@@ -1,6 +1,7 @@
 export const ACTIONS = {
   UPDATE_PAGE: "UPDATE_PAGE",
   UPDATE_ITEMS: "UPDATE_ITEMS",
+  ADD_ITEM: "ADD_ITEM",
   REMOVE_ITEM: "REMOVE_ITEM",
   UPDATE_SELECTEDITEMS: "UPDATE_SELECTEDITEMS",
   UPDATE_SELECTEDITEM: "UPDATE_SELECTEDITEM",
@@ -41,6 +42,18 @@ const inventoryReducer = (state, action) => {
         ...state,
         items: payload.items,
       };
+    case ACTIONS.ADD_ITEM:
+      console.log(ACTIONS.UPDATE_ITEMS, payload);
+      let isNotIncluded = true;
+      state.items.forEach((item) => {
+        isNotIncluded &= item.id !== payload.item.id;
+      });
+      if (isNotIncluded)
+        return {
+          ...state,
+          items: [...state.items, payload.item],
+        };
+      else return state;
     case ACTIONS.REMOVE_ITEM:
       console.log(ACTIONS.REMOVE_ITEM, payload);
       return {
