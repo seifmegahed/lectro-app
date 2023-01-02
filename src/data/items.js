@@ -33,7 +33,6 @@ const country = {
   label: "Country of Origin",
   type: "text",
   input: "textField",
-  required,
   span: "2",
 };
 
@@ -106,7 +105,7 @@ export const itemData = {
   Driver: [
     name,
     make,
-    country,
+    {...country, required},
     power,
     {
       name: "type",
@@ -184,7 +183,7 @@ export const itemData = {
   LED: [
     name,
     make,
-    country,
+    {...country, required},
     power,
     {
       name: "type",
@@ -255,7 +254,7 @@ export const itemData = {
   Lens: [
     name,
     make,
-    country,
+    {...country, required},
     length,
     width,
     createdOn,
@@ -273,6 +272,7 @@ export const itemData = {
       name: "type",
       label: "Type",
       input: "select",
+      required,
       options: [
         "Sheet Aluminum",
         "Galvanized Metal",
@@ -281,16 +281,15 @@ export const itemData = {
       ],
       span: "2"
     },
-    length,
-    width,
-    thickness,
-    weight,
+    {...length, required},
+    {...width, required},
+    {...thickness, required},
+    {...weight, required},
     createdOn,
     createdBy,
     lastModifiedOn,
     modifiedBy,
     notes,
-    image,
   ],
   Screws: [
     name,
@@ -301,7 +300,6 @@ export const itemData = {
     lastModifiedOn,
     modifiedBy,
     notes,
-    image,
   ],
   Cables: [
     name,
@@ -312,7 +310,6 @@ export const itemData = {
     lastModifiedOn,
     modifiedBy,
     notes,
-    image,
   ],
   Tools: [
     name,

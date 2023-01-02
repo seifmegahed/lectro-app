@@ -23,7 +23,7 @@ import {
 import { db } from "../../firebase-config";
 import { addDoc, collection, updateDoc } from "firebase/firestore";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { tokens } from "../../theme";
 import { itemData } from "../../data/items";
@@ -225,7 +225,9 @@ const ItemForm = ({ product, dispatch }) => {
     }
     setFile(temp);
   };
-
+  useEffect(() => {
+    setErrors({})
+  },[product.category])
   async function saveData() {
     try {
       const data = {
