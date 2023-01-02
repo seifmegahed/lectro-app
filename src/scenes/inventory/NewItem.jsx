@@ -37,7 +37,7 @@ function reducer(product, action) {
 const NewItem = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [product, dispatch] = useReducer(reducer, { category: "" });
+  const [product, dispatch] = useReducer(reducer, { category: "Metal" });
 
   const handleCategoryChange = (event) => {
     dispatch({

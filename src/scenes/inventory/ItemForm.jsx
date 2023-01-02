@@ -44,8 +44,17 @@ const Field = ({
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const { input, label, name, type, span, required, options, preFix, postFix } =
-    field;
+  const {
+    input,
+    label,
+    name,
+    type,
+    span,
+    required,
+    options,
+    preFix,
+    postFix,
+  } = field;
 
   const handleChange = (event) => {
     dispatch({
@@ -241,6 +250,7 @@ const ItemForm = ({ product, dispatch }) => {
       console.error("Error writing new message to Firebase Database", error);
     }
   }
+
   const handleSubmit = () => {
     setLoading(true);
     var allValid = true;
@@ -259,6 +269,7 @@ const ItemForm = ({ product, dispatch }) => {
       setLoading(false);
     }
   };
+
   return (
     <>
       {Object.keys(itemData).map((key) => {

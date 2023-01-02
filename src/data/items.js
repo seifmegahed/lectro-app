@@ -84,6 +84,24 @@ const width = {
   span: "1",
 };
 
+const thickness = {
+  name: "thickness",
+  label: "Thickness",
+  postFix: "mm",
+  input: "textField",
+  type: "number",
+  span: "1",
+};
+
+const weight = {
+  name: "weight",
+  label: "Weight",
+  postFix: "Kg",
+  input: "textField",
+  type: "number",
+  span: "1",
+};
+
 export const itemData = {
   Driver: [
     name,
@@ -177,6 +195,13 @@ export const itemData = {
       options: ["PCB", "COB", "Reel"],
     },
     {
+      name: "numberOfLeds",
+      label: "Number of LEDs",
+      input: "textField",
+      type: "number",
+      span: "2",
+    },
+    {
       name: "forwardVoltage",
       label: "Forward Voltage (Vf)",
       postFix: "V",
@@ -227,12 +252,90 @@ export const itemData = {
     notes,
     image,
   ],
-  Lens: [],
-  Metal: [],
-  Screws: [],
-  Cables: [],
-  Tools: [],
-  Other: [],
+  Lens: [
+    name,
+    make,
+    country,
+    length,
+    width,
+    createdOn,
+    createdBy,
+    lastModifiedOn,
+    modifiedBy,
+    notes,
+    image,
+  ],
+  Metal: [
+    name,
+    make,
+    country,
+    {
+      name: "type",
+      label: "Type",
+      input: "select",
+      options: [
+        "Sheet Aluminum",
+        "Galvanized Metal",
+        "Stainless 304",
+        "Stainless 316",
+      ],
+      span: "2"
+    },
+    length,
+    width,
+    thickness,
+    weight,
+    createdOn,
+    createdBy,
+    lastModifiedOn,
+    modifiedBy,
+    notes,
+    image,
+  ],
+  Screws: [
+    name,
+    make,
+    country,
+    createdOn,
+    createdBy,
+    lastModifiedOn,
+    modifiedBy,
+    notes,
+    image,
+  ],
+  Cables: [
+    name,
+    make,
+    country,
+    createdOn,
+    createdBy,
+    lastModifiedOn,
+    modifiedBy,
+    notes,
+    image,
+  ],
+  Tools: [
+    name,
+    make,
+    country,
+    createdOn,
+    createdBy,
+    lastModifiedOn,
+    modifiedBy,
+    notes,
+    image,
+  ],
+  Other: [
+    name,
+    make,
+    country,
+    createdOn,
+    createdBy,
+    lastModifiedOn,
+    modifiedBy,
+    notes,
+    image,
+  ],
 };
 
 export const drivers = [
