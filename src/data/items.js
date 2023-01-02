@@ -105,7 +105,7 @@ export const itemData = {
   Driver: [
     name,
     make,
-    {...country, required},
+    { ...country, required },
     power,
     {
       name: "type",
@@ -183,7 +183,7 @@ export const itemData = {
   LED: [
     name,
     make,
-    {...country, required},
+    { ...country, required },
     power,
     {
       name: "type",
@@ -254,7 +254,7 @@ export const itemData = {
   Lens: [
     name,
     make,
-    {...country, required},
+    { ...country, required },
     length,
     width,
     createdOn,
@@ -279,12 +279,12 @@ export const itemData = {
         "Stainless 304",
         "Stainless 316",
       ],
-      span: "2"
+      span: "2",
     },
-    {...length, required},
-    {...width, required},
-    {...thickness, required},
-    {...weight, required},
+    { ...length, required },
+    { ...width, required },
+    { ...thickness, required },
+    { ...weight, required },
     createdOn,
     createdBy,
     lastModifiedOn,

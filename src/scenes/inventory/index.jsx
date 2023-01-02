@@ -7,15 +7,15 @@ import useInventory, {
 import { PAGES } from "../../reducers/inventoryReducer";
 
 import NewItem from "./NewItem";
-import AllItems from "./allItems";
+import AllItems from "./AllItems";
 import ItemPage from "./ItemPage";
 import Header from "../../components/Header";
 
 import { db } from "../../firebase-config";
-import { collection, query, getDocs, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 
 import { Box, IconButton } from "@mui/material";
-import { CatchingPokemonSharp, ChevronLeft } from "@mui/icons-material";
+import { ChevronLeft } from "@mui/icons-material";
 
 const Inventory = () => {
   return (
@@ -26,8 +26,7 @@ const Inventory = () => {
 };
 
 const InventoryWrapper = () => {
-  const { page, addToItems, removeFromItems, updatePage, updateItems } =
-    useInventory();
+  const { page, addToItems, removeFromItems, updatePage } = useInventory();
 
   const PageElements = () => {
     switch (page) {
@@ -76,7 +75,7 @@ const InventoryWrapper = () => {
         <Box display="flex" alignItems="center">
           {page !== PAGES.STORE && (
             <IconButton onClick={returnHome}>
-              <ChevronLeft fontSize="large"/>
+              <ChevronLeft fontSize="large" />
             </IconButton>
           )}
           <Header title="Inventory" />
