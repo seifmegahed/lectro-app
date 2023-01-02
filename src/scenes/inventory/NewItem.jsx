@@ -11,9 +11,9 @@ import { useReducer } from "react";
 
 import { tokens } from "../../theme";
 import FormContainer from "../../components/FormContainer";
+import { itemData } from "../../data/items";
 
-import DriverForm from "./forms/DriverForm";
-import LEDForm from "./forms/LEDForm";
+import ItemForm from "./ItemForm";
 
 export const ACTIONS = {
   RESET: "reset",
@@ -39,29 +39,10 @@ const NewItem = () => {
   const colors = tokens(theme.palette.mode);
   const [product, dispatch] = useReducer(reducer, { category: "" });
 
-  const categories = {
-    DRIVER: {
-      name: "Driver",
-      element: (
-        <DriverForm key={"Driver"} product={product} dispatch={dispatch} />
-      ),
-    },
-    LED: {
-      name: "LED",
-      element: <LEDForm key={"LED"} product={product} dispatch={dispatch} />,
-    },
-    LENS: { name: "Lens", element: <h1 key={"Lens"}>Hi</h1> },
-    METAL: { name: "Metal", element: <h1 key={"Metal"}>Hi</h1> },
-    SCREWS: { name: "Screws", element: <h1 key={"Screw"}>Hi</h1> },
-    WIRE: { name: "Wire", element: <h1 key={"Wire"}>Hi</h1> },
-    TOOLS: { name: "Tools", element: <h1 key={"Tools"}>Hi</h1> },
-    OTHER: { name: "Other", element: <h1 key={"Other"}>Hi</h1> },
-  };
-
   const handleCategoryChange = (event) => {
     dispatch({
-      type: ACTIONS.RESET
-    })
+      type: ACTIONS.RESET,
+    });
     dispatch({
       type: ACTIONS.UPDATE,
       payload: {
@@ -89,19 +70,15 @@ const NewItem = () => {
               backgroundColor: `${colors.grey[900]}`,
             }}
           >
-            {Object.keys(categories).map((key) => (
-              <MenuItem key={categories[key].name} value={categories[key].name}>
-                {categories[key].name}
+            {Object.keys(itemData).map((key) => (
+              <MenuItem key={key} value={key}>
+                {key}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
       </Box>
-      {Object.keys(categories).map((key) => {
-        if (categories[key].name === product.category) {
-          return categories[key].element;
-        }
-      })}
+      <ItemForm product={product} dispatch={dispatch} />
     </FormContainer>
   );
 };

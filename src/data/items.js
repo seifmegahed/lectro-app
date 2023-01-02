@@ -1,35 +1,238 @@
+const required = true;
+const editable = true;
+
+const name = {
+  name: "name",
+  label: "Name",
+  type: "text",
+  input: "textField",
+  required,
+  span: "2",
+};
+const make = {
+  name: "make",
+  label: "Make",
+  type: "text",
+  input: "textField",
+  required,
+  span: "2",
+};
+
+const power = {
+  name: "power",
+  label: "Power",
+  postFix: " W",
+  type: "number",
+  input: "textField",
+  required,
+  span: "2",
+};
+
+const country = {
+  name: "country",
+  label: "Country of Origin",
+  type: "text",
+  input: "textField",
+  required,
+  span: "2",
+};
+
+const notes = {
+  name: "notes",
+  label: "Notes",
+  type: "text",
+  input: "textField",
+  span: "2",
+};
+
+const image = {
+  name: "image",
+  input: "image",
+};
+
+const createdOn = {
+  name: "createdOn",
+  label: "Date of Creation",
+  type: "date",
+};
+
+const createdBy = { name: "createdBy", label: "Created By" };
+
+const lastModifiedOn = {
+  name: "lastModifiedOn",
+  label: "Date of Modification",
+  type: "date",
+};
+
+const modifiedBy = { name: "modifiedBy", label: "Modified By" };
+
+const length = {
+  name: "length",
+  label: "Length",
+  postFix: "mm",
+  input: "textField",
+  type: "number",
+  span: "1",
+};
+
+const width = {
+  name: "width",
+  label: "Width",
+  postFix: "mm",
+  input: "textField",
+  type: "number",
+  span: "1",
+};
+
 export const itemData = {
   Driver: [
-    { name: "power", label: "Power", postFix: " W" },
-    { name: "make", label: "Make" },
-    { name: "country", label: "Country of Origin" },
-    { name: "type", label: "Type" },
-    { name: "inputVoltageMax", label: "Input Voltage", postFix: " V" },
-    { name: "outputVoltageMax", label: "Output Voltage", postFix: " V" },
-    { name: "outputCurrentMax", label: "Output Current", postFix: " mA" },
-    { name: "powerFactor", label: "Power Factor", postFix: "%" },
-    { name: "ipRating", label: "IP Rating", preFix: "IP" },
-    { name: "caseMaterial", label: "Case Material" },
-    { name: "createdOn", label: "Date of Creation", type: "date" },
-    { name: "createdBy", label: "Created By" },
-    { name: "notes", label: "Notes" },
+    name,
+    make,
+    country,
+    power,
+    {
+      name: "type",
+      label: "Type",
+      type: "text",
+      input: "select",
+      required,
+      span: "2",
+      options: [
+        "Constant Current",
+        "Constant Voltage",
+        "Constant Power",
+        "DC-DC Constant Current",
+        "DC-DC Buck",
+        "DC-DC Boost",
+      ],
+    },
+    {
+      name: "inputVoltage",
+      label: "Input Voltage",
+      postFix: " V",
+      type: "text",
+      input: "textField",
+      span: "1",
+    },
+    {
+      name: "outputVoltage",
+      label: "Output Voltage",
+      postFix: " V",
+      type: "text",
+      input: "textField",
+      span: "1",
+      required,
+    },
+    {
+      name: "outputCurrent",
+      label: "Output Current",
+      postFix: " mA",
+      type: "text",
+      input: "textField",
+      required,
+      span: "1",
+    },
+    {
+      name: "powerFactor",
+      label: "Power Factor",
+      postFix: "%",
+      type: "number",
+      input: "textField",
+      span: "1",
+    },
+    {
+      name: "ipRating",
+      label: "IP Rating",
+      preFix: "IP",
+      type: "number",
+      input: "textField",
+      span: "2",
+    },
+    {
+      name: "caseMaterial",
+      label: "Case Material",
+      input: "toggle",
+      span: "2",
+      required,
+      options: ["Aluminum", "Plastic", "Bare PCB"],
+    },
+    createdOn,
+    createdBy,
+    lastModifiedOn,
+    modifiedBy,
+    notes,
+    image,
   ],
   LED: [
-    { name: "power", label: "Power", postFix: "W" },
-    { name: "make", label: "Make" },
-    { name: "country", label: "Country of Origin" },
-    { name: "type", label: "Type" },
-    { name: "forwardVoltage", label: "Forward Voltage (Vf)", postFix: "V" },
-    { name: "forwardCurrent", label: "Forward Current (If)", postFix: "mA" },
-    { name: "lmPw", label: "Lumen/Watt", postFix: "lm/W" },
-    { name: "colorTemperature", label: "Color Temperature", postFix: "K" },
-    { name: "cri", label: "Color Rendering Index", postFix: "Ra" },
-    { name: "length", label: "Length", postFix: "mm" },
-    { name: "width", label: "Width", postFix: "mm" },
-    { name: "createdOn", label: "Date of Creation", type: "date" },
-    { name: "createdBy", label: "Created By" },
-    { name: "notes", label: "Notes" },
+    name,
+    make,
+    country,
+    power,
+    {
+      name: "type",
+      label: "Type",
+      input: "toggle",
+      required: true,
+      span: "2",
+      options: ["PCB", "COB", "Reel"],
+    },
+    {
+      name: "forwardVoltage",
+      label: "Forward Voltage (Vf)",
+      postFix: "V",
+      input: "textField",
+      type: "number",
+      required: true,
+      span: "2",
+    },
+    {
+      name: "forwardCurrent",
+      label: "Forward Current (If)",
+      postFix: "mA",
+      input: "textField",
+      type: "number",
+      required: true,
+      span: "2",
+    },
+    {
+      name: "lmPw",
+      label: "Lumen/Watt",
+      postFix: "lm/W",
+      input: "textField",
+      type: "number",
+      span: "2",
+    },
+    {
+      name: "colorTemperature",
+      label: "Color Temperature",
+      postFix: "K",
+      input: "textField",
+      type: "number",
+      span: "2",
+    },
+    {
+      name: "cri",
+      label: "Color Rendering Index",
+      postFix: "Ra",
+      input: "textField",
+      type: "number",
+      span: "2",
+    },
+    length,
+    width,
+    createdOn,
+    createdBy,
+    lastModifiedOn,
+    modifiedBy,
+    notes,
+    image,
   ],
+  Lens: [],
+  Metal: [],
+  Screws: [],
+  Cables: [],
+  Tools: [],
+  Other: [],
 };
 
 export const drivers = [
