@@ -26,7 +26,7 @@ const Inventory = () => {
 };
 
 const InventoryWrapper = () => {
-  const { page, addToItems, removeFromItems, updatePage } = useInventory();
+  const { page, addToItems, removeFromItems, updatePage, PAGES } = useInventory();
 
   const PageElements = () => {
     switch (page) {

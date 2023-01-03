@@ -16,6 +16,7 @@ const Projects = lazy(() => import("./scenes/projects"));
 const Clients = lazy(() => import("./scenes/clients"));
 const Sidebar = lazy(() => import("./components/Sidebar"));
 const Inventory = lazy(() => import("./scenes/inventory/"));
+const Suppliers = lazy(() => import("./scenes/purchasing/suppliers/"));
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -47,6 +48,7 @@ function App() {
                       <Route path="/clients" element={<Clients />} />
                       <Route path="/new-project" element={<NewProject />} />
                       <Route path="/items" element={<Inventory />} />
+                      <Route path="/suppliers" element={<Suppliers />} />
                     </>
                   ) : (
                     <Route

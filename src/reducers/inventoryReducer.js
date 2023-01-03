@@ -15,10 +15,6 @@ export const PAGES = {
   RECIEVE_ITEMS: "RECIEVE_ITEMS",
 };
 
-export const CATEGORIES = {
-  DRIVER: "Driver",
-};
-
 export const initialState = {
   page: PAGES.STORE,
   items: [],
