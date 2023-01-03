@@ -1,5 +1,12 @@
+import { useEffect, useState } from "react";
+
 import { db } from "../../../firebase-config";
 import { deleteDoc, doc } from "firebase/firestore";
+
+import SupplierCard from "./SupplierCard";
+import useSuppliers from "../../../contexts/SuppliersContext";
+
+import { tokens } from "../../../theme";
 
 import {
   Box,
@@ -10,25 +17,18 @@ import {
   Pagination,
 } from "@mui/material";
 import { Search as SearchIcon } from "@mui/icons-material";
-import { useEffect, useState } from "react";
-import SupplierCard from "./SupplierCard";
-import { tokens } from "../../../theme";
-import { PAGES } from "../../../reducers/suppliersReducer";
-import useSuppliers from "../../../contexts/SuppliersContext";
-import { suppliersList } from "../../../data/suppliers";
 
-const suppliersPerPage = 10;
+const suppliersPerPage = 5;
 
 const AllSuppliers = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const { suppliers, updatePage } = useSuppliers();
+  const { suppliers, updatePage, PAGES } = useSuppliers();
 
   const [searchkey, setSearchkey] = useState("");
 
-  const [notAddedSuppliers, setNotAddedSuppliers] = useState(suppliersList);
-  const [filteredSuppliers, setFilteredSuppliers] = useState([]);
+  const [filteredSuppliers, setFilteredSuppliers] = useState(suppliers);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [numberPages, setNumberPages] = useState(1);
@@ -58,25 +58,24 @@ const AllSuppliers = () => {
   }, [searchkey]);
 
   useEffect(() => {
-    let temp = notAddedSuppliers
-    suppliersList.map((supplier) => {
-        temp.filter((item) => supplier.name !== item.name)
-    });
-    setNotAddedSuppliers(temp);
-    setFilteredSuppliers(temp)
-  }, [suppliers]);
-
-  useEffect(() => {
     let filtered = [];
+
     if (searchkey === "") {
-      filtered = notAddedSuppliers;
+      filtered = suppliers;
     } else {
-      filtered = notAddedSuppliers.filter(
+      filtered = suppliers.filter(
         (supplier) =>
           supplier.name.includes(searchkey) ||
           supplier.englishName.toLowerCase().includes(searchkey)
       );
     }
+
+    filtered.sort((a, b) => {
+      if (a.number > b.number) return 1;
+      if (a.number < b.number) return -1;
+      return 0;
+    });
+
     setNumberPages(Math.ceil(filtered.length / suppliersPerPage));
     const lastItemIndex = currentPage * suppliersPerPage;
     const firstItemIndex = lastItemIndex - suppliersPerPage;
@@ -112,7 +111,12 @@ const AllSuppliers = () => {
       </Box>
 
       {filteredSuppliers.map((supplier) => {
-        return <SupplierCard key={supplier.name} supplier={supplier} />;
+        return (
+          <SupplierCard
+            key={`Supplier ${supplier.number}`}
+            supplier={supplier}
+          />
+        );
       })}
       {numberPages !== 1 && (
         <Box display="flex" justifyContent="center">

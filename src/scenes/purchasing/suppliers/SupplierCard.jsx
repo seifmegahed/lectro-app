@@ -15,11 +15,16 @@ import {
 import { useState } from "react";
 import { MoreVert } from "@mui/icons-material";
 
+import { addDoc, collection, updateDoc } from "firebase/firestore";
+import { db } from "../../../firebase-config";
+
 import useSuppliers from "../../../contexts/SuppliersContext";
+import { useAuth } from "../../../contexts/AuthContext";
 
 const SupplierCard = ({ supplier }) => {
   const { updatePage, updateSelectedSupplier, suppliers, PAGES } =
     useSuppliers();
+  const { currentUser } = useAuth();
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [moreMenu, setMoreMenu] = useState(null);
 
@@ -59,6 +64,7 @@ const SupplierCard = ({ supplier }) => {
               variant={isNonMobile ? "h3" : "h4"}
               onClick={handleSelectedSupplier}
               sx={{ cursor: "pointer" }}
+              // color={supplier.done ? "primary" : "error"}
             >
               {supplier.englishName}
             </Typography>
@@ -68,7 +74,7 @@ const SupplierCard = ({ supplier }) => {
           </Box>
           {isNonMobile && (
             <Box display="flex" flexDirection="column" textAlign="right">
-              <Typography variant="h6">{supplier.taxNumber || "0"}</Typography>
+              <Typography variant="h6">{supplier.taxNumber || ""}</Typography>
             </Box>
           )}
         </Box>
@@ -92,13 +98,6 @@ const SupplierCard = ({ supplier }) => {
           >
             <ClickAwayListener onClickAway={handleMenuClose}>
               <Paper>
-                <MenuItem
-                  onClick={() => {
-                    handleMenuClose();
-                  }}
-                >
-                  Save
-                </MenuItem>
                 <MenuItem
                   onClick={() => {
                     handleMenuClose();
