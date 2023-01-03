@@ -11,6 +11,7 @@ import { collection, onSnapshot } from "firebase/firestore";
 
 import { Box, IconButton } from "@mui/material";
 import { ChevronLeft } from "@mui/icons-material";
+import AllSuppliers from "./AllSuppliers";
 
 const Suppliers = () => {
   return (
@@ -27,13 +28,13 @@ const SuppliersWrapper = () => {
   const PageElements = () => {
     switch (page) {
       case PAGES.SUPPLIERS:
-        return <h1>All Suppliers</h1>;
+        return <AllSuppliers />;
       case PAGES.NEW_SUPPLIER:
         return <h1>New Supplier</h1>;
       case PAGES.SUPPLIER_PAGE:
         return <h1>Supplier Page</h1>;
       default:
-        return <h1>All Suppliers</h1>;
+        return <AllSuppliers />;
     }
   };
 
@@ -43,10 +44,12 @@ const SuppliersWrapper = () => {
         snapshot.docChanges().forEach(function (change) {
           switch (change.type) {
             case "removed": {
+              console.log("removed", change.doc.id)
               removeFromSuppliers(change.doc.id);
               break;
             }
             case "added": {
+              console.log("added", change.doc.id)
               addToSuppliers({ ...change.doc.data(), id: change.doc.id });
               break;
             }

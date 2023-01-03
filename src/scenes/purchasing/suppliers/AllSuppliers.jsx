@@ -1,4 +1,4 @@
-import { db } from "../../firebase-config";
+import { db } from "../../../firebase-config";
 import { deleteDoc, doc } from "firebase/firestore";
 
 import {
@@ -11,25 +11,31 @@ import {
 } from "@mui/material";
 import { Search as SearchIcon } from "@mui/icons-material";
 import { useEffect, useState } from "react";
-import ItemCard from "./ItemCard";
-import { tokens } from "../../theme";
-import { PAGES } from "../../reducers/inventoryReducer";
-import useInventory from "../../contexts/InventoryContext";
+import SupplierCard from "./SupplierCard";
+import { tokens } from "../../../theme";
+import { PAGES } from "../../../reducers/suppliersReducer";
+import useSuppliers from "../../../contexts/SuppliersContext";
+import { suppliersList } from "../../../data/suppliers";
 
-const itemsPerPage = 5;
+const suppliersPerPage = 10;
 
-const AllItems = () => {
+const AllSuppliers = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const { items, updatePage } = useInventory();
+
+  const { suppliers, updatePage } = useSuppliers();
+
   const [searchkey, setSearchkey] = useState("");
-  const [filteredProducts, setFilteredProducts] = useState(items);
+
+  const [notAddedSuppliers, setNotAddedSuppliers] = useState(suppliersList);
+  const [filteredSuppliers, setFilteredSuppliers] = useState([]);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [numberPages, setNumberPages] = useState(1);
 
   function handleDelete(docId) {
     async function deleteData() {
-      await deleteDoc(doc(db, "items", docId));
+      await deleteDoc(doc(db, "suppliers", docId));
     }
     deleteData();
   }
@@ -44,29 +50,38 @@ const AllItems = () => {
   };
 
   const handleNewItem = () => {
-    updatePage(PAGES.NEW_ITEM);
+    updatePage(PAGES.NEW_SUPPLIER);
   };
-  var filtered = [];
+
   useEffect(() => {
     setCurrentPage(1);
   }, [searchkey]);
 
   useEffect(() => {
+    let temp = notAddedSuppliers
+    suppliersList.map((supplier) => {
+        temp.filter((item) => supplier.name !== item.name)
+    });
+    setNotAddedSuppliers(temp);
+    setFilteredSuppliers(temp)
+  }, [suppliers]);
+
+  useEffect(() => {
+    let filtered = [];
     if (searchkey === "") {
-      filtered = items;
+      filtered = notAddedSuppliers;
     } else {
-      filtered = items.filter(
-        (product) =>
-          product.name.toLowerCase().includes(searchkey) ||
-          product.make.toLowerCase().includes(searchkey) ||
-          product.category.toLowerCase().includes(searchkey)
+      filtered = notAddedSuppliers.filter(
+        (supplier) =>
+          supplier.name.includes(searchkey) ||
+          supplier.englishName.toLowerCase().includes(searchkey)
       );
     }
-    setNumberPages(Math.ceil(filtered.length / itemsPerPage));
-    const lastItemIndex = currentPage * itemsPerPage;
-    const firstItemIndex = lastItemIndex - itemsPerPage;
-    setFilteredProducts(filtered.slice(firstItemIndex, lastItemIndex));
-  }, [searchkey, items, currentPage]);
+    setNumberPages(Math.ceil(filtered.length / suppliersPerPage));
+    const lastItemIndex = currentPage * suppliersPerPage;
+    const firstItemIndex = lastItemIndex - suppliersPerPage;
+    setFilteredSuppliers(filtered.slice(firstItemIndex, lastItemIndex));
+  }, [searchkey, suppliers, currentPage]);
 
   return (
     <Box display="grid" gap="20px">
@@ -87,23 +102,17 @@ const AllItems = () => {
           </IconButton>
         </Box>
         <Button
-          sx={{ minWidth: "110px" }}
+          sx={{ minWidth: "130px" }}
           variant="contained"
           size="large"
           onClick={handleNewItem}
         >
-          New Item
+          New Supplier
         </Button>
       </Box>
 
-      {filteredProducts.map((product) => {
-        return (
-          <ItemCard
-            key={product.id}
-            product={product}
-            handleDelete={() => handleDelete(product.id)}
-          />
-        );
+      {filteredSuppliers.map((supplier) => {
+        return <SupplierCard key={supplier.name} supplier={supplier} />;
       })}
       {numberPages !== 1 && (
         <Box display="flex" justifyContent="center">
@@ -119,4 +128,4 @@ const AllItems = () => {
   );
 };
 
-export default AllItems;
+export default AllSuppliers;
