@@ -24,7 +24,7 @@ const AllItems = () => {
   const { items, updatePage } = useInventory();
   const [searchkey, setSearchkey] = useState("");
   const [filteredProducts, setFilteredProducts] = useState(items);
-  const [page, setPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const [numberPages, setNumberPages] = useState(1);
 
   function handleDelete(docId) {
@@ -40,16 +40,18 @@ const AllItems = () => {
   };
 
   const handlePagination = (event, value) => {
-    setPage(value);
+    setCurrentPage(value);
   };
 
   const handleNewItem = () => {
     updatePage(PAGES.NEW_ITEM);
   };
+  var filtered = [];
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchkey]);
 
   useEffect(() => {
-    setPage(1);
-    var filtered = [];
     if (searchkey === "") {
       filtered = items;
     } else {
@@ -60,9 +62,11 @@ const AllItems = () => {
           product.category.toLowerCase().includes(searchkey)
       );
     }
-    setFilteredProducts(filtered);
-    setNumberPages(Math.ceil(filtered.length / itemsPerPage))
-  }, [searchkey, items]);
+    setNumberPages(Math.ceil(filtered.length / itemsPerPage));
+    const lastItemIndex = currentPage * itemsPerPage;
+    const firstItemIndex = lastItemIndex - itemsPerPage;
+    setFilteredProducts(filtered.slice(firstItemIndex, lastItemIndex));
+  }, [searchkey, items, currentPage]);
 
   return (
     <Box display="grid" gap="20px">
@@ -70,8 +74,7 @@ const AllItems = () => {
         <Box
           display="flex"
           backgroundColor={colors.primary[400]}
-          borderRadius="3px"     
-          maxWidth="250px"
+          borderRadius="3px"
         >
           <InputBase
             sx={{ ml: 2, flex: 1 }}
@@ -83,7 +86,12 @@ const AllItems = () => {
             <SearchIcon />
           </IconButton>
         </Box>
-        <Button variant="contained" size="large" onClick={handleNewItem}>
+        <Button
+          sx={{ minWidth: "110px" }}
+          variant="contained"
+          size="large"
+          onClick={handleNewItem}
+        >
           New Item
         </Button>
       </Box>
@@ -97,14 +105,16 @@ const AllItems = () => {
           />
         );
       })}
-      <Box display="flex" justifyContent="center">
-        <Pagination
-          count={numberPages}
-          size="large"
-          page={page}
-          onChange={handlePagination}
-        />
-      </Box>
+      {numberPages !== 1 && (
+        <Box display="flex" justifyContent="center">
+          <Pagination
+            count={numberPages}
+            size="large"
+            currentPage={currentPage}
+            onChange={handlePagination}
+          />
+        </Box>
+      )}
     </Box>
   );
 };
