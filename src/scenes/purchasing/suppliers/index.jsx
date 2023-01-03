@@ -44,12 +44,10 @@ const SuppliersWrapper = () => {
         snapshot.docChanges().forEach(function (change) {
           switch (change.type) {
             case "removed": {
-              console.log("removed", change.doc.id)
               removeFromSuppliers(change.doc.id);
               break;
             }
             case "added": {
-              console.log("added", change.doc.id)
               addToSuppliers({ ...change.doc.data(), id: change.doc.id });
               break;
             }

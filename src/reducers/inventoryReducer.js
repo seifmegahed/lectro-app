@@ -39,7 +39,6 @@ const inventoryReducer = (state, action) => {
         items: payload.items,
       };
     case ACTIONS.ADD_ITEM:
-      console.log(ACTIONS.UPDATE_ITEMS, payload);
       let isNotIncluded = true;
       state.items.forEach((item) => {
         isNotIncluded &= item.id !== payload.item.id;
@@ -51,7 +50,6 @@ const inventoryReducer = (state, action) => {
         };
       else return state;
     case ACTIONS.REMOVE_ITEM:
-      console.log(ACTIONS.REMOVE_ITEM, payload);
       return {
         ...state,
         items: state.items.filter(

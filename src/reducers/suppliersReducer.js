@@ -29,7 +29,6 @@ const suppliersReducer = (state, action) => {
         page: payload.page,
       };
     case ACTIONS.ADD_SUPPLIER:
-      console.log(ACTIONS.ADD_SUPPLIER, payload);
       let isNotIncluded = true;
       state.suppliers.forEach((supplier) => {
         isNotIncluded &= supplier.id !== payload.supplier.id;
@@ -41,7 +40,6 @@ const suppliersReducer = (state, action) => {
         };
       else return state;
     case ACTIONS.REMOVE_SUPPLIER:
-      console.log(ACTIONS.REMOVE_SUPPLIER, payload);
       return {
         ...state,
         suppliers: state.suppliers.filter(
