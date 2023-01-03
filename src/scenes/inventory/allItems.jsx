@@ -16,6 +16,8 @@ import { tokens } from "../../theme";
 import { PAGES } from "../../reducers/inventoryReducer";
 import useInventory from "../../contexts/InventoryContext";
 
+const itemsPerPage = 5;
+
 const AllItems = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -23,6 +25,7 @@ const AllItems = () => {
   const [searchkey, setSearchkey] = useState("");
   const [filteredProducts, setFilteredProducts] = useState(items);
   const [page, setPage] = useState(1);
+  const [numberPages, setNumberPages] = useState(1);
 
   function handleDelete(docId) {
     async function deleteData() {
@@ -45,6 +48,7 @@ const AllItems = () => {
   };
 
   useEffect(() => {
+    setPage(1);
     var filtered = [];
     if (searchkey === "") {
       filtered = items;
@@ -57,6 +61,7 @@ const AllItems = () => {
       );
     }
     setFilteredProducts(filtered);
+    setNumberPages(Math.ceil(filtered.length / itemsPerPage))
   }, [searchkey, items]);
 
   return (
@@ -94,7 +99,7 @@ const AllItems = () => {
       })}
       <Box display="flex" justifyContent="center">
         <Pagination
-          count={5}
+          count={numberPages}
           size="large"
           page={page}
           onChange={handlePagination}
