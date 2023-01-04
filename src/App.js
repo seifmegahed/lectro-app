@@ -13,10 +13,9 @@ import { useAuth } from "./contexts/AuthContext";
 const NewProject = lazy(() => import("./scenes/newProject"));
 const Dashboard = lazy(() => import("./scenes/dashboard"));
 const Projects = lazy(() => import("./scenes/projects"));
-const Clients = lazy(() => import("./scenes/clients"));
 const Sidebar = lazy(() => import("./components/Sidebar"));
 const Inventory = lazy(() => import("./scenes/inventory/"));
-const Suppliers = lazy(() => import("./scenes/purchasing/suppliers/"));
+const Accounts = lazy(() => import("./scenes/accounts/"));
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -45,10 +44,10 @@ function App() {
                     <>
                       <Route path="/" element={<Dashboard />} />
                       <Route path="/projects" element={<Projects />} />
-                      <Route path="/clients" element={<Clients />} />
+                      <Route path="/clients" element={<Accounts type="Client" />} />
                       <Route path="/new-project" element={<NewProject />} />
                       <Route path="/items" element={<Inventory />} />
-                      <Route path="/suppliers" element={<Suppliers />} />
+                      <Route path="/suppliers" element={<Accounts type="Supplier" />} />
                     </>
                   ) : (
                     <Route

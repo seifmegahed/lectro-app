@@ -1,4 +1,4 @@
-import FormContainer from "../../../components/FormContainer";
+import FormContainer from "../../components/FormContainer";
 
 import {
   Box,
@@ -14,11 +14,11 @@ import {
 import { useState } from "react";
 import { MoreVert } from "@mui/icons-material";
 
-import useSuppliers from "../../../contexts/SuppliersContext";
+import useAccounts from "../../contexts/AccountsContext";
 
-const SupplierCard = ({ supplier }) => {
-  const { updatePage, updateSelectedSupplier, PAGES } =
-    useSuppliers();
+const AccountCard = ({ account }) => {
+  const { updatePage, updateSelectedAccount, PAGES } =
+    useAccounts();
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [moreMenu, setMoreMenu] = useState(null);
 
@@ -30,9 +30,9 @@ const SupplierCard = ({ supplier }) => {
   const handleMenuClose = () => {
     setMoreMenu(null);
   };
-  const handleSelectedSupplier = () => {
-    updateSelectedSupplier(supplier);
-    updatePage(PAGES.SUPPLIER_PAGE);
+  const handleSelectedAccount = () => {
+    updateSelectedAccount(account);
+    updatePage(PAGES.ACCOUNT_PAGE);
   };
   return (
     <FormContainer padding="15px">
@@ -46,29 +46,29 @@ const SupplierCard = ({ supplier }) => {
         <Box width="60px" display="flex" justifyContent="center">
           <Typography
             variant={isNonMobile ? "h1" : "h2"}
-            onClick={handleSelectedSupplier}
+            onClick={handleSelectedAccount}
             sx={{ cursor: "pointer" }}
           >
-            {supplier.number}
+            {account.number}
           </Typography>
         </Box>
         <Box display="flex" justifyContent="space-between" width="100%">
           <Box>
             <Typography
               variant={isNonMobile ? "h3" : "h4"}
-              onClick={handleSelectedSupplier}
+              onClick={handleSelectedAccount}
               sx={{ cursor: "pointer" }}
-              // color={supplier.done ? "primary" : "error"}
+              // color={account.done ? "primary" : "error"}
             >
-              {supplier.englishName}
+              {account.englishName}
             </Typography>
             <Typography variant={isNonMobile ? "h5" : "h6"}>
-              {supplier.name}
+              {account.arabicName}
             </Typography>
           </Box>
           {isNonMobile && (
             <Box display="flex" flexDirection="column" textAlign="right">
-              <Typography variant="h6">{supplier.taxNumber || ""}</Typography>
+              <Typography variant="h6">{account.taxNumber || ""}</Typography>
             </Box>
           )}
         </Box>
@@ -116,4 +116,4 @@ const SupplierCard = ({ supplier }) => {
   );
 };
 
-export default SupplierCard;
+export default AccountCard;

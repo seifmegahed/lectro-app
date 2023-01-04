@@ -38,7 +38,8 @@ const suppliersReducer = (state, action) => {
           ...state,
           suppliers: [...state.suppliers, payload.supplier],
         };
-      else return state;
+      else {
+        return state};
     case ACTIONS.REMOVE_SUPPLIER:
       return {
         ...state,

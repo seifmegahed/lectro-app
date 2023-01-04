@@ -119,6 +119,7 @@ export const itemData = {
         "Constant Current",
         "Constant Voltage",
         "Constant Power",
+        "CC + CV",
         "DC-DC Constant Current",
         "DC-DC Buck",
         "DC-DC Boost",

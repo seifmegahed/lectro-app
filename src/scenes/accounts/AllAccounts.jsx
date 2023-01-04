@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
-import SupplierCard from "./SupplierCard";
-import useSuppliers from "../../../contexts/SuppliersContext";
+import AccountCard from "./AccountCard";
+import useAccounts from "../../contexts/AccountsContext";
 
-import { tokens } from "../../../theme";
+import { tokens } from "../../theme";
 
 import {
   Box,
@@ -12,27 +12,29 @@ import {
   useTheme,
   Button,
   Pagination,
+  useMediaQuery,
 } from "@mui/material";
 import { Search as SearchIcon } from "@mui/icons-material";
 
-const suppliersPerPage = 5;
+const accountsPerPage = 10;
 
-const AllSuppliers = () => {
+const AllAccounts = () => {
   const theme = useTheme();
+  const isNonMobile = useMediaQuery("(min-width:600px)");
   const colors = tokens(theme.palette.mode);
 
-  const { suppliers, updatePage, PAGES } = useSuppliers();
+  const { accounts, updatePage, PAGES } = useAccounts();
 
   const [searchkey, setSearchkey] = useState("");
 
-  const [filteredSuppliers, setFilteredSuppliers] = useState(suppliers);
+  const [filteredAccounts, setFilteredAccounts] = useState(accounts);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [numberPages, setNumberPages] = useState(1);
 
   // function handleDelete(docId) {
   //   async function deleteData() {
-  //     await deleteDoc(doc(db, "suppliers", docId));
+  //     await deleteDoc(doc(db, "accounts", docId));
   //   }
   //   deleteData();
   // }
@@ -47,7 +49,7 @@ const AllSuppliers = () => {
   };
 
   const handleNewItem = () => {
-    updatePage(PAGES.NEW_SUPPLIER);
+    updatePage(PAGES.NEW_ACCOUNT);
   };
 
   useEffect(() => {
@@ -58,12 +60,12 @@ const AllSuppliers = () => {
     let filtered = [];
 
     if (searchkey === "") {
-      filtered = suppliers;
+      filtered = accounts;
     } else {
-      filtered = suppliers.filter(
-        (supplier) =>
-          supplier.name.includes(searchkey) ||
-          supplier.englishName.toLowerCase().includes(searchkey)
+      filtered = accounts.filter(
+        (account) =>
+          account.arabicName.includes(searchkey) ||
+          account.englishName.toLowerCase().includes(searchkey)
       );
     }
 
@@ -73,11 +75,11 @@ const AllSuppliers = () => {
       return 0;
     });
 
-    setNumberPages(Math.ceil(filtered.length / suppliersPerPage));
-    const lastItemIndex = currentPage * suppliersPerPage;
-    const firstItemIndex = lastItemIndex - suppliersPerPage;
-    setFilteredSuppliers(filtered.slice(firstItemIndex, lastItemIndex));
-  }, [searchkey, suppliers, currentPage]);
+    setNumberPages(Math.ceil(filtered.length / accountsPerPage));
+    const lastItemIndex = currentPage * accountsPerPage;
+    const firstItemIndex = lastItemIndex - accountsPerPage;
+    setFilteredAccounts(filtered.slice(firstItemIndex, lastItemIndex));
+  }, [searchkey, accounts, currentPage]);
 
   return (
     <Box display="grid" gap="20px">
@@ -103,23 +105,18 @@ const AllSuppliers = () => {
           size="large"
           onClick={handleNewItem}
         >
-          New Supplier
+          New Account
         </Button>
       </Box>
 
-      {filteredSuppliers.map((supplier) => {
-        return (
-          <SupplierCard
-            key={`Supplier ${supplier.number}`}
-            supplier={supplier}
-          />
-        );
+      {filteredAccounts.map((account, index) => {
+        return <AccountCard key={`Account ${index}`} account={account} />;
       })}
       {numberPages !== 1 && (
         <Box display="flex" justifyContent="center">
           <Pagination
             count={numberPages}
-            size="large"
+            size={isNonMobile ? "large" : "medium"}
             currentPage={currentPage}
             onChange={handlePagination}
           />
@@ -129,4 +126,4 @@ const AllSuppliers = () => {
   );
 };
 
-export default AllSuppliers;
+export default AllAccounts;
