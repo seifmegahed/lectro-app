@@ -16,13 +16,13 @@ const Projects = lazy(() => import("./scenes/projects"));
 const Sidebar = lazy(() => import("./components/Sidebar"));
 const Inventory = lazy(() => import("./scenes/inventory/"));
 const Accounts = lazy(() => import("./scenes/accounts/"));
-
+const Suppliers = () => <Accounts type="Supplier" />;
+const Clients = () => <Accounts type="Client" />;
 function App() {
   const [theme, colorMode] = useMode();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { currentUser } = useAuth();
 
-  
   const collapse = (val) => {
     setIsCollapsed(val);
   };
@@ -44,10 +44,10 @@ function App() {
                     <>
                       <Route path="/" element={<Dashboard />} />
                       <Route path="/projects" element={<Projects />} />
-                      <Route path="/clients" element={<Accounts type="Client" />} />
+                      <Route path="/clients" element={<Clients />} />
                       <Route path="/new-project" element={<NewProject />} />
                       <Route path="/items" element={<Inventory />} />
-                      <Route path="/suppliers" element={<Accounts type="Supplier" />} />
+                      <Route path="/suppliers" element={<Suppliers />} />
                     </>
                   ) : (
                     <Route

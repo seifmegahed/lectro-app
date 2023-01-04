@@ -1,8 +1,8 @@
 import { Typography, TableRow, TableCell } from "@mui/material";
 import { getFormatedDate } from "../utils/dateFormatting";
 
-const DataDisplay = ({ itemDetails, data }) => {
-  let {label, type, preFix, postFix} = itemDetails;
+const DataDisplay = ({ details, data }) => {
+  let {label, type, preFix, postFix} = details;
   return (
     <TableRow>
       <TableCell>

@@ -29,7 +29,7 @@ const AllAccounts = () => {
 
   const [filteredAccounts, setFilteredAccounts] = useState(accounts);
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const [page, setCurrentPage] = useState(1);
   const [numberPages, setNumberPages] = useState(1);
 
   // function handleDelete(docId) {
@@ -76,10 +76,10 @@ const AllAccounts = () => {
     });
 
     setNumberPages(Math.ceil(filtered.length / accountsPerPage));
-    const lastItemIndex = currentPage * accountsPerPage;
+    const lastItemIndex = page * accountsPerPage;
     const firstItemIndex = lastItemIndex - accountsPerPage;
     setFilteredAccounts(filtered.slice(firstItemIndex, lastItemIndex));
-  }, [searchkey, accounts, currentPage]);
+  }, [searchkey, accounts, page]);
 
   return (
     <Box display="grid" gap="20px">
@@ -117,7 +117,7 @@ const AllAccounts = () => {
           <Pagination
             count={numberPages}
             size={isNonMobile ? "large" : "medium"}
-            currentPage={currentPage}
+            page={page}
             onChange={handlePagination}
           />
         </Box>

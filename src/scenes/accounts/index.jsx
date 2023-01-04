@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import useAccounts, { AccountsProvider } from "../../contexts/AccountsContext";
 
@@ -10,30 +10,25 @@ import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { Box, IconButton } from "@mui/material";
 import { ChevronLeft } from "@mui/icons-material";
 import AllAccounts from "./AllAccounts";
+import AccountPage from "./AccountPage";
 
 const Accounts = ({ type }) => {
-  const [newType, setNewType] = useState();
-  useEffect(() => {
-    setNewType(type);
-  }, [type]);
   return (
     <AccountsProvider>
-      <AccountsWrapper passedType={newType} />
+      <AccountsWrapper passedType={type} />
     </AccountsProvider>
   );
 };
 
 const AccountsWrapper = ({ passedType }) => {
   const {
-    type,
     page,
-    setType,
     updatePage,
-    resetAccounts,
     addToAccounts,
     removeFromAccounts,
     PAGES,
   } = useAccounts();
+
   const PageElements = () => {
     switch (page) {
       case PAGES.ACCOUNTS:
@@ -41,22 +36,17 @@ const AccountsWrapper = ({ passedType }) => {
       case PAGES.NEW_ACCOUNT:
         return <h1>New Accounts</h1>;
       case PAGES.ACCOUNT_PAGE:
-        return <h1>Accounts Page</h1>;
+        return <AccountPage />;
       default:
         return <AllAccounts />;
     }
   };
 
   useEffect(() => {
-    setType(passedType);
-    resetAccounts();
-  }, [passedType, setType, resetAccounts]);
-
-  useEffect(() => {
     try {
       const accountsQuery = query(
         collection(db, "accounts"),
-        where("type", "==", type)
+        where("type", "==", passedType)
       );
       onSnapshot(accountsQuery, function (snapshot) {
         snapshot.docChanges().forEach(function (change) {
@@ -78,7 +68,7 @@ const AccountsWrapper = ({ passedType }) => {
       console.log("There was an Error");
       console.log(error);
     }
-  }, [addToAccounts, removeFromAccounts, type]);
+  }, [addToAccounts, removeFromAccounts, passedType]);
 
   const returnHome = () => {
     updatePage(PAGES.ACCOUNTS);
@@ -93,7 +83,7 @@ const AccountsWrapper = ({ passedType }) => {
               <ChevronLeft fontSize="large" />
             </IconButton>
           )}
-          <Header title={type + "s"} />
+          <Header title={passedType + "s"} />
         </Box>
         <PageElements />
       </Box>

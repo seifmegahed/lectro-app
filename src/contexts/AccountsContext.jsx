@@ -10,59 +10,59 @@ const AccountsContext = createContext(initialState);
 export const AccountsProvider = ({ children }) => {
   const [state, dispatch] = useReducer(accountsReducer, initialState);
 
-  const setType = (type) => {
-    dispatch({
-      type: ACTIONS.SET_TYPE,
-      payload: {
-        type,
-      },
-    });
-  };
+  const value = useMemo(() => {
+    const setType = (type) => {
+      dispatch({
+        type: ACTIONS.SET_TYPE,
+        payload: {
+          type,
+        },
+      });
+    };
 
-  const resetAccounts = () => {
-    dispatch({
-      type: ACTIONS.RESET_ACCOUNTS,
-    });
-  };
+    const resetAccounts = () => {
+      dispatch({
+        type: ACTIONS.RESET_ACCOUNTS,
+      });
+    };
 
-  const updatePage = (page) => {
-    dispatch({
-      type: ACTIONS.UPDATE_PAGE,
-      payload: {
-        page,
-      },
-    });
-  };
+    const updatePage = (page) => {
+      dispatch({
+        type: ACTIONS.UPDATE_PAGE,
+        payload: {
+          page,
+        },
+      });
+    };
 
-  const addToAccounts = (account) => {
-    dispatch({
-      type: ACTIONS.ADD_ACCOUNT,
-      payload: {
-        account,
-      },
-    });
-  };
+    const addToAccounts = (account) => {
+      dispatch({
+        type: ACTIONS.ADD_ACCOUNT,
+        payload: {
+          account,
+        },
+      });
+    };
 
-  const removeFromAccounts = (accountID) => {
-    dispatch({
-      type: ACTIONS.REMOVE_ACCOUNT,
-      payload: {
-        accountID,
-      },
-    });
-  };
+    const removeFromAccounts = (accountID) => {
+      dispatch({
+        type: ACTIONS.REMOVE_ACCOUNT,
+        payload: {
+          accountID,
+        },
+      });
+    };
 
-  const updateSelectedAccount = (selectedAccount) => {
-    dispatch({
-      type: ACTIONS.UPDATE_SELECTED_ACCOUNT,
-      payload: {
-        selectedAccount,
-      },
-    });
-  };
+    const updateSelectedAccount = (selectedAccount) => {
+      dispatch({
+        type: ACTIONS.UPDATE_SELECTED_ACCOUNT,
+        payload: {
+          selectedAccount,
+        },
+      });
+    };
 
-  const value = useMemo(
-    () => ({
+    return {
       type: state.type,
       page: state.page,
       accounts: state.accounts,
@@ -75,9 +75,8 @@ export const AccountsProvider = ({ children }) => {
       updateSelectedAccount,
       PAGES,
       ACTIONS,
-    }),
-    [state]
-  );
+    };
+  }, [state]);
 
   return (
     <AccountsContext.Provider value={value}>

@@ -6,33 +6,24 @@ import {
   TableBody,
 } from "@mui/material";
 
-import useInventory from "../../contexts/InventoryContext";
+import useAccounts from "../../contexts/AccountsContext";
 
 import DataDisplay from "../../components/DataDisplay";
 import FormContainer from "../../components/FormContainer";
-import { itemData } from "../../data/items";
+import { accountFields } from "../../data/fields";
 
-const ItemPage = () => {
-  const { selectedItem } = useInventory();
+const AccountPage = () => {
+  const { selectedAccount } = useAccounts();
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   return (
     <FormContainer>
       <Box
         display="flex"
-        alignItems="center"
+        alignAccounts="center"
         gap="20px"
         sx={{ gridColumn: "span 4" }}
       >
-        {isNonMobile && (
-          <Box width="100px" display="flex" alignItems="center">
-            <img
-              src={selectedItem.imageUrl || "/images/imageplaceholder.png"}
-              style={{ maxWidth: "100%", maxHeight: "100%" }}
-              alt=""
-            />
-          </Box>
-        )}
         <Box display="flex" width="100%" justifyContent="space-between">
           <Box
             display="flex"
@@ -41,10 +32,10 @@ const ItemPage = () => {
             alignItems="flex-start"
           >
             <Typography color="text.secondary" variant="h5">
-              {selectedItem.category}
+              {selectedAccount.arabicName}
             </Typography>
             <Typography color="text.primary" variant="h3">
-              {selectedItem.name}
+              {selectedAccount.englishName}
             </Typography>
           </Box>
           {isNonMobile && (
@@ -54,9 +45,9 @@ const ItemPage = () => {
               justifyContent="center"
               alignItems="flex-end"
             >
-              <Typography color="text.secondary">{selectedItem.id}</Typography>
+              <Typography color="text.secondary">{selectedAccount.id}</Typography>
               <Typography color="text.secondary" variant="h5">
-                {selectedItem.make}
+                {selectedAccount.taxNumber}
               </Typography>
             </Box>
           )}
@@ -68,13 +59,13 @@ const ItemPage = () => {
         sx={{ gridColumn: `span ${isNonMobile ? "3" : "4"}`, width: "100%" }}
       >
         <TableBody>
-          {itemData[selectedItem.category].map(
-            (item) =>
-              !!selectedItem[item.name] && (
+          {accountFields.map(
+            (field) =>
+              !!selectedAccount[field.name] && field.display && (
                 <DataDisplay
-                  key={item.name}
-                  data={selectedItem[item.name]}
-                  details={item}
+                  key={field.name}
+                  data={selectedAccount[field.name]}
+                  details={field}
                 />
               )
           )}
@@ -84,4 +75,4 @@ const ItemPage = () => {
   );
 };
 
-export default ItemPage;
+export default AccountPage;
