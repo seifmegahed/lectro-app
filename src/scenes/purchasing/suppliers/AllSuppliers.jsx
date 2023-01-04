@@ -1,8 +1,5 @@
 import { useEffect, useState } from "react";
 
-import { db } from "../../../firebase-config";
-import { deleteDoc, doc } from "firebase/firestore";
-
 import SupplierCard from "./SupplierCard";
 import useSuppliers from "../../../contexts/SuppliersContext";
 
@@ -33,12 +30,12 @@ const AllSuppliers = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [numberPages, setNumberPages] = useState(1);
 
-  function handleDelete(docId) {
-    async function deleteData() {
-      await deleteDoc(doc(db, "suppliers", docId));
-    }
-    deleteData();
-  }
+  // function handleDelete(docId) {
+  //   async function deleteData() {
+  //     await deleteDoc(doc(db, "suppliers", docId));
+  //   }
+  //   deleteData();
+  // }
 
   const handleSearch = (event) => {
     const value = event.target.value.toLowerCase();

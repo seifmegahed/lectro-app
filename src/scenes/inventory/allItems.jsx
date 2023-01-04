@@ -46,12 +46,12 @@ const AllItems = () => {
   const handleNewItem = () => {
     updatePage(PAGES.NEW_ITEM);
   };
-  var filtered = [];
   useEffect(() => {
     setCurrentPage(1);
   }, [searchkey]);
-
+  
   useEffect(() => {
+    let filtered = [];
     if (searchkey === "") {
       filtered = items;
     } else {

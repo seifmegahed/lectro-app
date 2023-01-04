@@ -8,23 +8,17 @@ import {
   MenuItem,
   Paper,
   ClickAwayListener,
-  Checkbox,
   useMediaQuery,
 } from "@mui/material";
 
 import { useState } from "react";
 import { MoreVert } from "@mui/icons-material";
 
-import { addDoc, collection, updateDoc } from "firebase/firestore";
-import { db } from "../../../firebase-config";
-
 import useSuppliers from "../../../contexts/SuppliersContext";
-import { useAuth } from "../../../contexts/AuthContext";
 
 const SupplierCard = ({ supplier }) => {
-  const { updatePage, updateSelectedSupplier, suppliers, PAGES } =
+  const { updatePage, updateSelectedSupplier, PAGES } =
     useSuppliers();
-  const { currentUser } = useAuth();
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [moreMenu, setMoreMenu] = useState(null);
 
@@ -38,7 +32,7 @@ const SupplierCard = ({ supplier }) => {
   };
   const handleSelectedSupplier = () => {
     updateSelectedSupplier(supplier);
-    // updatePage(PAGES.SUPPLIER_PAGE);
+    updatePage(PAGES.SUPPLIER_PAGE);
   };
   return (
     <FormContainer padding="15px">

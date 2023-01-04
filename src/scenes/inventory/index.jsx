@@ -4,8 +4,6 @@ import useInventory, {
   InventoryProvider,
 } from "../../contexts/InventoryContext";
 
-import { PAGES } from "../../reducers/inventoryReducer";
-
 import NewItem from "./NewItem";
 import AllItems from "./AllItems";
 import ItemPage from "./ItemPage";
@@ -63,7 +61,7 @@ const InventoryWrapper = () => {
       console.log("There was an Error");
       console.log(error);
     }
-  }, []);
+  }, [removeFromItems, addToItems]);
 
   const returnHome = () => {
     updatePage(PAGES.STORE);

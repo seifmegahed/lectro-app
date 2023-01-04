@@ -42,6 +42,7 @@ const notes = {
   type: "text",
   input: "textField",
   span: "2",
+  editable
 };
 
 const image = {

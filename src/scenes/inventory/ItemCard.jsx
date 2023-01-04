@@ -41,7 +41,7 @@ const ItemCard = ({ product, handleDelete }) => {
         display="flex"
         alignItems="center"
         gap="20px"
-        height = {isNonMobile ? "80px" : "50px"}
+        height={isNonMobile ? "80px" : "50px"}
         sx={{ gridColumn: "span 4" }}
       >
         <Box>
@@ -51,10 +51,16 @@ const ItemCard = ({ product, handleDelete }) => {
           />
         </Box>
         {isNonMobile && (
-          <Box width="100px" display="flex" justifyContent="center" alignItems="center">
+          <Box
+            width="100px"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+          >
             <img
               src={product.imageUrl || "/images/imageplaceholder.png"}
               style={{ maxWidth: "100%", maxHeight: "70px" }}
+              alt=""
             />
           </Box>
         )}

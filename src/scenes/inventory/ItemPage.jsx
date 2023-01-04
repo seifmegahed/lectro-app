@@ -29,6 +29,7 @@ const ItemPage = () => {
             <img
               src={selectedItem.imageUrl || "/images/imageplaceholder.png"}
               style={{ maxWidth: "100%", maxHeight: "100%" }}
+              alt=""
             />
           </Box>
         )}

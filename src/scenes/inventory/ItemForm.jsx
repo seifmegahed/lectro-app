@@ -44,17 +44,8 @@ const Field = ({
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const {
-    input,
-    label,
-    name,
-    type,
-    span,
-    required,
-    options,
-    preFix,
-    postFix,
-  } = field;
+  const { input, label, name, type, span, required, options, preFix, postFix } =
+    field;
 
   const handleChange = (event) => {
     dispatch({
@@ -226,8 +217,8 @@ const ItemForm = ({ product, dispatch }) => {
     setFile(temp);
   };
   useEffect(() => {
-    setErrors({})
-  },[product.category])
+    setErrors({});
+  }, [product.category]);
   async function saveData() {
     try {
       const data = {
@@ -256,7 +247,7 @@ const ItemForm = ({ product, dispatch }) => {
   const handleSubmit = () => {
     setLoading(true);
     var allValid = true;
-    itemData[product.category].map((field) => {
+    itemData[product.category].forEach((field) => {
       if (!!field.required) {
         setErrors((prev) => ({ ...prev, [field.name]: false }));
         if (product[field.name] === undefined || !product[field.name]) {
@@ -291,7 +282,9 @@ const ItemForm = ({ product, dispatch }) => {
                 />
               );
             }
+            return null;
           });
+        return null;
       })}
       <Box
         display="flex"

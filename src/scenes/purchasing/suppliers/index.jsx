@@ -60,7 +60,7 @@ const SuppliersWrapper = () => {
       console.log("There was an Error");
       console.log(error);
     }
-  }, []);
+  }, [addToSuppliers, removeFromSuppliers]);
 
   const returnHome = () => {
     updatePage(PAGES.SUPPLIERS);
