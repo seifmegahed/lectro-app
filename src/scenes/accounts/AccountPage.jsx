@@ -13,7 +13,7 @@ import FormContainer from "../../components/FormContainer";
 import { accountFields } from "../../data/fields";
 
 const AccountPage = () => {
-  const { selectedAccount } = useAccounts();
+  const { account } = useAccounts();
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   return (
@@ -31,7 +31,7 @@ const AccountPage = () => {
                 variant={isNonMobile ? "h1" : "h2"}
                 sx={{ cursor: "pointer" }}
               >
-                {selectedAccount.number}
+                {account.number}
               </Typography>
             </Box>
             <Box
@@ -41,10 +41,10 @@ const AccountPage = () => {
               alignItems="flex-start"
             >
               <Typography color="text.primary" variant="h3">
-                {selectedAccount.englishName}
+                {account.englishName}
               </Typography>
               <Typography color="text.secondary" variant="h5">
-                {selectedAccount.arabicName}
+                {account.arabicName}
               </Typography>
             </Box>
           </Box>
@@ -56,10 +56,10 @@ const AccountPage = () => {
               alignItems="flex-end"
             >
               <Typography color="text.secondary">
-                {selectedAccount.id}
+                {account.id}
               </Typography>
               <Typography color="text.secondary" variant="h5">
-                {selectedAccount.taxNumber}
+                {account.taxNumber}
               </Typography>
             </Box>
           )}
@@ -73,11 +73,11 @@ const AccountPage = () => {
         <TableBody>
           {accountFields.map(
             (field) =>
-              !!selectedAccount[field.name] &&
+              !!account[field.name] &&
               field.display && (
                 <DataDisplay
                   key={field.name}
-                  data={selectedAccount[field.name]}
+                  data={account[field.name]}
                   details={field}
                 />
               )

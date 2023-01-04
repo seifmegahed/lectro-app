@@ -7,13 +7,16 @@ export const accountFields = [
     input: "toggle",
     options: ["Supplier", "Client"],
     display,
+    span: "4"
   },
   {
+    label: "English Name",
     name: "englishName",
     type: "text",
     input: "textField",
   },
   {
+    label: "Arabic Name",
     name: "arabicName",
     type: "text",
     input: "textField",

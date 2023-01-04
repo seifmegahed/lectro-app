@@ -11,7 +11,7 @@ import { Box, IconButton } from "@mui/material";
 import { ChevronLeft } from "@mui/icons-material";
 import AllAccounts from "./AllAccounts";
 import AccountPage from "./AccountPage";
-
+import NewAccount from "./NewAccount";
 const Accounts = ({ type }) => {
   return (
     <AccountsProvider>
@@ -23,7 +23,7 @@ const Accounts = ({ type }) => {
 const AccountsWrapper = ({ passedType }) => {
   const {
     page,
-    updatePage,
+    setPage,
     addToAccounts,
     removeFromAccounts,
     PAGES,
@@ -34,7 +34,7 @@ const AccountsWrapper = ({ passedType }) => {
       case PAGES.ACCOUNTS:
         return <AllAccounts />;
       case PAGES.NEW_ACCOUNT:
-        return <h1>New Accounts</h1>;
+        return <NewAccount />;
       case PAGES.ACCOUNT_PAGE:
         return <AccountPage />;
       default:
@@ -72,7 +72,7 @@ const AccountsWrapper = ({ passedType }) => {
   }, [addToAccounts, removeFromAccounts, passedType]);
 
   const returnHome = () => {
-    updatePage(PAGES.ACCOUNTS);
+    setPage(PAGES.ACCOUNTS);
   };
 
   return (

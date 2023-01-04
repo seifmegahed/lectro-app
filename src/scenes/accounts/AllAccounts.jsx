@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import AccountCard from "./AccountCard";
 import useAccounts from "../../contexts/AccountsContext";
-
+import { accountFields } from "../../data/fields";
 import { tokens } from "../../theme";
 
 import {
@@ -23,7 +23,7 @@ const AllAccounts = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const colors = tokens(theme.palette.mode);
 
-  const { accounts, updatePage, PAGES } = useAccounts();
+  const { accounts, setPage, resetAccount, updateAccount, PAGES } = useAccounts();
 
   const [searchkey, setSearchkey] = useState("");
 
@@ -49,7 +49,13 @@ const AllAccounts = () => {
   };
 
   const handleNewItem = () => {
-    updatePage(PAGES.NEW_ACCOUNT);
+    resetAccount();
+    accountFields.forEach((field) => {
+      if (field.input) {
+        updateAccount(field.name, "");
+      }
+    });
+    setPage(PAGES.NEW_ACCOUNT);
   };
 
   useEffect(() => {

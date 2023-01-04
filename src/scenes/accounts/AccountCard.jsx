@@ -17,7 +17,7 @@ import { MoreVert } from "@mui/icons-material";
 import useAccounts from "../../contexts/AccountsContext";
 
 const AccountCard = ({ account }) => {
-  const { updatePage, updateSelectedAccount, PAGES } =
+  const { setPage, setAccount, PAGES } =
     useAccounts();
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [moreMenu, setMoreMenu] = useState(null);
@@ -30,9 +30,9 @@ const AccountCard = ({ account }) => {
   const handleMenuClose = () => {
     setMoreMenu(null);
   };
-  const handleSelectedAccount = () => {
-    updateSelectedAccount(account);
-    updatePage(PAGES.ACCOUNT_PAGE);
+  const handleSelectAccount = () => {
+    setAccount(account);
+    setPage(PAGES.ACCOUNT_PAGE);
   };
   return (
     <FormContainer padding="15px">
@@ -46,7 +46,7 @@ const AccountCard = ({ account }) => {
         <Box width="60px" display="flex" justifyContent="center">
           <Typography
             variant={isNonMobile ? "h1" : "h2"}
-            onClick={handleSelectedAccount}
+            onClick={handleSelectAccount}
             sx={{ cursor: "pointer" }}
           >
             {account.number}
@@ -56,7 +56,7 @@ const AccountCard = ({ account }) => {
           <Box>
             <Typography
               variant={isNonMobile ? "h3" : "h4"}
-              onClick={handleSelectedAccount}
+              onClick={handleSelectAccount}
               sx={{ cursor: "pointer" }}
               // color={account.done ? "primary" : "error"}
             >

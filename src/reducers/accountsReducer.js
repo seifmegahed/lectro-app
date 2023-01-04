@@ -1,10 +1,11 @@
 export const ACTIONS = {
   SET_TYPE: "SET_TYPE",
-  UPDATE_PAGE: "UPDATE_PAGE",
+  SET_PAGE: "SET_PAGE",
   RESET_ACCOUNTS: "RESET_ACCOUNTS",
   ADD_ACCOUNT: "ADD_ACCOUNT",
   REMOVE_ACCOUNT: "REMOVE_ACCOUNT",
-  UPDATE_SELECTED_ACCOUNT: "UPDATE_SELECTED_ACCOUNT",
+  SET_ACCOUNT: "SET_ACCOUNT",
+  UPDATE_ACCOUNT: "UPDATE_ACCOUNT",
 };
 
 export const PAGES = {
@@ -17,7 +18,7 @@ export const PAGES = {
 export const initialState = {
   page: PAGES.ACCOUNTS,
   accounts: [],
-  selectedAccount: {},
+  account: {},
 };
 
 const accountsReducer = (state, action) => {
@@ -30,8 +31,8 @@ const accountsReducer = (state, action) => {
         ...state,
         type: payload.type,
       };
-    case ACTIONS.UPDATE_PAGE:
-      console.log(ACTIONS.UPDATE_PAGE, payload);
+    case ACTIONS.SET_PAGE:
+      console.log(ACTIONS.SET_PAGE, payload);
       return {
         ...state,
         page: payload.page,
@@ -68,11 +69,21 @@ const accountsReducer = (state, action) => {
           (currentItem) => currentItem.id !== payload.accountID
         ),
       };
-    case ACTIONS.UPDATE_SELECTED_ACCOUNT:
-      console.log(ACTIONS.UPDATE_SELECTED_ACCOUNT, payload);
+    case ACTIONS.SET_ACCOUNT:
+      console.log(ACTIONS.SET_ACCOUNT, payload);
       return {
         ...state,
-        selectedAccount: payload.selectedAccount,
+        account: payload.account,
+      };
+    case ACTIONS.UPDATE_ACCOUNT:
+      console.log(ACTIONS.UPDATE_ACCOUNT, payload);
+      return {
+        ...state,
+        
+        account: {
+          ...state.account,
+          [payload.field]: payload.value
+        },
       };
     default:
       throw new Error(`No case for type ${type} found in accountsReducer`);
