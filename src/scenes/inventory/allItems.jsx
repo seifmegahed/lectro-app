@@ -24,7 +24,7 @@ const AllItems = () => {
   const { items, updatePage } = useInventory();
   const [searchkey, setSearchkey] = useState("");
   const [filteredProducts, setFilteredProducts] = useState(items);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [page, setCurrentPage] = useState(1);
   const [numberPages, setNumberPages] = useState(1);
 
   function handleDelete(docId) {
@@ -63,10 +63,10 @@ const AllItems = () => {
       );
     }
     setNumberPages(Math.ceil(filtered.length / itemsPerPage));
-    const lastItemIndex = currentPage * itemsPerPage;
+    const lastItemIndex = page * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
     setFilteredProducts(filtered.slice(firstItemIndex, lastItemIndex));
-  }, [searchkey, items, currentPage]);
+  }, [searchkey, items, page]);
 
   return (
     <Box display="grid" gap="20px">
@@ -110,7 +110,7 @@ const AllItems = () => {
           <Pagination
             count={numberPages}
             size="large"
-            currentPage={currentPage}
+            page={page}
             onChange={handlePagination}
           />
         </Box>

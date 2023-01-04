@@ -47,12 +47,18 @@ const accountsReducer = (state, action) => {
       state.accounts.forEach((account) => {
         isNotIncluded &= account.id !== payload.account.id;
       });
-      if (isNotIncluded)
+      if (isNotIncluded) {
+        const newAccounts = [...state.accounts, payload.account];
+        newAccounts.sort((a, b) => {
+            if (a.number > b.number) return 1;
+            if (a.number < b.number) return -1;
+            return 0;
+        });
         return {
           ...state,
-          accounts: [...state.accounts, payload.account],
+          accounts: newAccounts,
         };
-      else {
+      } else {
         return state;
       }
     case ACTIONS.REMOVE_ACCOUNT:

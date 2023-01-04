@@ -27,7 +27,7 @@ const AllAccounts = () => {
 
   const [searchkey, setSearchkey] = useState("");
 
-  const [filteredAccounts, setFilteredAccounts] = useState(accounts);
+  const [filteredAccounts, setFilteredAccounts] = useState([]);
 
   const [page, setCurrentPage] = useState(1);
   const [numberPages, setNumberPages] = useState(1);
@@ -69,12 +69,6 @@ const AllAccounts = () => {
       );
     }
 
-    filtered.sort((a, b) => {
-      if (a.number > b.number) return 1;
-      if (a.number < b.number) return -1;
-      return 0;
-    });
-
     setNumberPages(Math.ceil(filtered.length / accountsPerPage));
     const lastItemIndex = page * accountsPerPage;
     const firstItemIndex = lastItemIndex - accountsPerPage;
@@ -110,7 +104,7 @@ const AllAccounts = () => {
       </Box>
 
       {filteredAccounts.map((account, index) => {
-        return <AccountCard key={`Account ${index}`} account={account} />;
+        return <AccountCard key={index} account={account} />;
       })}
       {numberPages !== 1 && (
         <Box display="flex" justifyContent="center">

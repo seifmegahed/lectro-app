@@ -20,23 +20,33 @@ const AccountPage = () => {
     <FormContainer>
       <Box
         display="flex"
-        alignAccounts="center"
+        alignItems="center"
         gap="20px"
         sx={{ gridColumn: "span 4" }}
       >
         <Box display="flex" width="100%" justifyContent="space-between">
-          <Box
-            display="flex"
-            flexDirection="column"
-            justifyContent="center"
-            alignItems="flex-start"
-          >
-            <Typography color="text.secondary" variant="h5">
-              {selectedAccount.arabicName}
-            </Typography>
-            <Typography color="text.primary" variant="h3">
-              {selectedAccount.englishName}
-            </Typography>
+          <Box display="flex">
+            <Box width="60px" display="flex" justifyContent="center">
+              <Typography
+                variant={isNonMobile ? "h1" : "h2"}
+                sx={{ cursor: "pointer" }}
+              >
+                {selectedAccount.number}
+              </Typography>
+            </Box>
+            <Box
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
+              alignItems="flex-start"
+            >
+              <Typography color="text.primary" variant="h3">
+                {selectedAccount.englishName}
+              </Typography>
+              <Typography color="text.secondary" variant="h5">
+                {selectedAccount.arabicName}
+              </Typography>
+            </Box>
           </Box>
           {isNonMobile && (
             <Box
@@ -45,7 +55,9 @@ const AccountPage = () => {
               justifyContent="center"
               alignItems="flex-end"
             >
-              <Typography color="text.secondary">{selectedAccount.id}</Typography>
+              <Typography color="text.secondary">
+                {selectedAccount.id}
+              </Typography>
               <Typography color="text.secondary" variant="h5">
                 {selectedAccount.taxNumber}
               </Typography>
@@ -61,7 +73,8 @@ const AccountPage = () => {
         <TableBody>
           {accountFields.map(
             (field) =>
-              !!selectedAccount[field.name] && field.display && (
+              !!selectedAccount[field.name] &&
+              field.display && (
                 <DataDisplay
                   key={field.name}
                   data={selectedAccount[field.name]}

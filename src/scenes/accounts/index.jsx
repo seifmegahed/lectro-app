@@ -48,6 +48,7 @@ const AccountsWrapper = ({ passedType }) => {
         collection(db, "accounts"),
         where("type", "==", passedType)
       );
+      
       onSnapshot(accountsQuery, function (snapshot) {
         snapshot.docChanges().forEach(function (change) {
           switch (change.type) {

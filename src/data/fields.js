@@ -1,9 +1,11 @@
 const display = true
 export const accountFields = [
   {
+    label: "Type",
     name: "type",
     type: "text",
     input: "toggle",
+    options: ["Supplier", "Client"],
     display,
   },
   {
