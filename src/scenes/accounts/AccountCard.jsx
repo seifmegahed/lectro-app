@@ -1,5 +1,8 @@
 import FormContainer from "../../components/FormContainer";
 
+import { db } from "../../firebase-config";
+import { doc, deleteDoc } from "firebase/firestore";
+
 import {
   Box,
   Typography,
@@ -17,10 +20,10 @@ import { MoreVert } from "@mui/icons-material";
 import useAccounts from "../../contexts/AccountsContext";
 
 const AccountCard = ({ account }) => {
-  const { setPage, setAccount, PAGES } =
-    useAccounts();
+  const { setPage, setAccount, PAGES } = useAccounts();
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [moreMenu, setMoreMenu] = useState(null);
+  const { id, number, englishName, arabicName, taxNumber } = account;
 
   const open = Boolean(moreMenu);
 
@@ -34,6 +37,14 @@ const AccountCard = ({ account }) => {
     setAccount(account);
     setPage(PAGES.ACCOUNT_PAGE);
   };
+
+  function handleDelete() {
+    async function deleteData() {
+      await deleteDoc(doc(db, "accounts", id));
+    }
+    deleteData();
+  }
+
   return (
     <FormContainer padding="15px">
       <Box
@@ -49,7 +60,7 @@ const AccountCard = ({ account }) => {
             onClick={handleSelectAccount}
             sx={{ cursor: "pointer" }}
           >
-            {account.number}
+            {number}
           </Typography>
         </Box>
         <Box display="flex" justifyContent="space-between" width="100%">
@@ -58,17 +69,17 @@ const AccountCard = ({ account }) => {
               variant={isNonMobile ? "h3" : "h4"}
               onClick={handleSelectAccount}
               sx={{ cursor: "pointer" }}
-              // color={account.done ? "primary" : "error"}
+              // color={done ? "primary" : "error"}
             >
-              {account.englishName}
+              {englishName}
             </Typography>
             <Typography variant={isNonMobile ? "h5" : "h6"}>
-              {account.arabicName}
+              {arabicName}
             </Typography>
           </Box>
           {isNonMobile && (
             <Box display="flex" flexDirection="column" textAlign="right">
-              <Typography variant="h6">{account.taxNumber || ""}</Typography>
+              <Typography variant="h6">{taxNumber || ""}</Typography>
             </Box>
           )}
         </Box>
@@ -101,6 +112,7 @@ const AccountCard = ({ account }) => {
                 </MenuItem>
                 <MenuItem
                   onClick={() => {
+                    handleDelete();
                     handleMenuClose();
                   }}
                   color="error"

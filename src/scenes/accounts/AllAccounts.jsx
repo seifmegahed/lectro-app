@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 
 import AccountCard from "./AccountCard";
 import useAccounts from "../../contexts/AccountsContext";
-import { accountFields } from "../../data/fields";
 import { tokens } from "../../theme";
 
 import {
@@ -23,7 +22,7 @@ const AllAccounts = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const colors = tokens(theme.palette.mode);
 
-  const { accounts, setPage, updateAccount, PAGES } = useAccounts();
+  const { accounts, setPage, PAGES } = useAccounts();
 
   const [searchkey, setSearchkey] = useState("");
 
@@ -31,13 +30,6 @@ const AllAccounts = () => {
 
   const [page, setCurrentPage] = useState(1);
   const [numberPages, setNumberPages] = useState(1);
-
-  // function handleDelete(docId) {
-  //   async function deleteData() {
-  //     await deleteDoc(doc(db, "accounts", docId));
-  //   }
-  //   deleteData();
-  // }
 
   const handleSearch = (event) => {
     const value = event.target.value.toLowerCase();

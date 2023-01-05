@@ -8,6 +8,7 @@ const name = {
   type: "text",
   input: "textField",
   required,
+  display,
   span: "2",
 };
 const make = {
@@ -16,6 +17,7 @@ const make = {
   type: "text",
   input: "textField",
   required,
+  display,
   span: "2",
 };
 
@@ -26,6 +28,7 @@ const power = {
   type: "number",
   input: "textField",
   required,
+  display,
   span: "2",
 };
 
@@ -35,6 +38,7 @@ const country = {
   type: "text",
   input: "textField",
   span: "2",
+  display,
 };
 
 const notes = {
@@ -43,7 +47,8 @@ const notes = {
   type: "text",
   input: "textField",
   span: "2",
-  editable
+  editable,
+  display,
 };
 
 const image = {
@@ -55,14 +60,17 @@ const createdOn = {
   name: "createdOn",
   label: "Date of Creation",
   type: "date",
+  display,
 };
 
-const createdBy = { name: "createdBy", label: "Created By" };
+const createdBy = { name: "createdBy", label: "Created By",
+display, };
 
 const lastModifiedOn = {
   name: "lastModifiedOn",
   label: "Date of Modification",
   type: "date",
+  display,
 };
 
 const modifiedBy = { name: "modifiedBy", label: "Modified By" };
@@ -74,6 +82,7 @@ const length = {
   input: "textField",
   type: "number",
   span: "1",
+  display,
 };
 
 const width = {
@@ -83,6 +92,7 @@ const width = {
   input: "textField",
   type: "number",
   span: "1",
+  display,
 };
 
 const thickness = {
@@ -92,6 +102,7 @@ const thickness = {
   input: "textField",
   type: "number",
   span: "1",
+  display,
 };
 
 const weight = {
@@ -101,6 +112,7 @@ const weight = {
   input: "textField",
   type: "number",
   span: "1",
+  display,
 };
 
 export const itemFields = {
@@ -125,6 +137,7 @@ export const itemFields = {
         "DC-DC Buck",
         "DC-DC Boost",
       ],
+      display,
     },
     {
       name: "inputVoltage",
@@ -133,6 +146,7 @@ export const itemFields = {
       type: "text",
       input: "textField",
       span: "1",
+      display,
     },
     {
       name: "outputVoltage",
@@ -142,6 +156,7 @@ export const itemFields = {
       input: "textField",
       span: "1",
       required,
+      display,
     },
     {
       name: "outputCurrent",
@@ -151,6 +166,7 @@ export const itemFields = {
       input: "textField",
       required,
       span: "1",
+      display,
     },
     {
       name: "powerFactor",
@@ -159,6 +175,7 @@ export const itemFields = {
       type: "number",
       input: "textField",
       span: "1",
+      display,
     },
     {
       name: "ipRating",
@@ -167,6 +184,7 @@ export const itemFields = {
       type: "number",
       input: "textField",
       span: "2",
+      display,
     },
     {
       name: "caseMaterial",
@@ -174,6 +192,7 @@ export const itemFields = {
       input: "toggle",
       span: "2",
       required,
+      display,
       options: ["Aluminum", "Plastic", "Bare PCB"],
     },
     createdOn,
@@ -195,6 +214,7 @@ export const itemFields = {
       required: true,
       span: "2",
       options: ["PCB", "COB", "Reel"],
+      display,
     },
     {
       name: "numberOfLeds",
@@ -202,6 +222,7 @@ export const itemFields = {
       input: "textField",
       type: "number",
       span: "2",
+      display,
     },
     {
       name: "forwardVoltage",
@@ -211,6 +232,7 @@ export const itemFields = {
       type: "number",
       required: true,
       span: "2",
+      display,
     },
     {
       name: "forwardCurrent",
@@ -220,6 +242,7 @@ export const itemFields = {
       type: "number",
       required: true,
       span: "2",
+      display,
     },
     {
       name: "lmPw",
@@ -228,6 +251,7 @@ export const itemFields = {
       input: "textField",
       type: "number",
       span: "2",
+      display,
     },
     {
       name: "colorTemperature",
@@ -236,6 +260,7 @@ export const itemFields = {
       input: "textField",
       type: "number",
       span: "2",
+      display,
     },
     {
       name: "cri",
@@ -244,6 +269,7 @@ export const itemFields = {
       input: "textField",
       type: "number",
       span: "2",
+      display,
     },
     length,
     width,
@@ -264,7 +290,8 @@ export const itemFields = {
       input: "textField",
       type: "number",
       preFix: "°",
-      span: "2"
+      span: "2",
+      display,
     },
     length,
     width,
@@ -291,6 +318,7 @@ export const itemFields = {
         "Stainless 316",
       ],
       span: "2",
+      display,
     },
     { ...length, required },
     { ...width, required },
@@ -377,6 +405,7 @@ export const accountFields = [
     type: "text",
     input: "textField",
     required,
+    display,
   },
   {
     label: "Arabic Name",
@@ -384,6 +413,7 @@ export const accountFields = [
     type: "text",
     input: "textField",
     required,
+    display,
   },
   {
     name: "taxNumber",
@@ -418,7 +448,7 @@ export const accountFields = [
   },
   {
     name: "address",
-    label: "Adress",
+    label: "Address",
     type: "text",
     input: "textField",
     display,
