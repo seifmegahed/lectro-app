@@ -7,6 +7,7 @@ import useInventory, {
 import NewItem from "./NewItem";
 import AllItems from "./AllItems";
 import ItemPage from "./ItemPage";
+import EditItem from "./EditItem"
 import Header from "../../components/Header";
 
 import { db } from "../../firebase-config";
@@ -34,6 +35,8 @@ const InventoryWrapper = () => {
         return <NewItem />;
       case PAGES.ITEM_PAGE:
         return <ItemPage />;
+      case PAGES.EDIT_ITEM:
+        return <EditItem />;
       default:
         return <AllItems />;
     }

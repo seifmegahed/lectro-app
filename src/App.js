@@ -1,6 +1,6 @@
 import React, { lazy, Suspense } from "react";
 import { useState } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import { ColorModeContext, useMode } from "./theme";
 import { CssBaseline, ThemeProvider, Box, Typography } from "@mui/material";
@@ -38,31 +38,23 @@ function App() {
             )}
             <Box className="content">
               <Topbar collapse={collapse} />
-              <Box pt="85px" pl="2vw" maxWidth="850px" position="relative">
-                <Routes>
-                  {!!currentUser ? (
-                    <>
-                      <Route path="/" element={<Dashboard />} />
-                      <Route path="/projects" element={<Projects />} />
-                      <Route path="/clients" element={<Clients />} />
-                      <Route path="/new-project" element={<NewProject />} />
-                      <Route path="/items" element={<Inventory />} />
-                      <Route path="/suppliers" element={<Suppliers />} />
-                    </>
-                  ) : (
+              {!!currentUser ? (
+                <Box p="85px 2vw" maxWidth="850px" position="relative">
+                  <Routes>
+                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/projects" element={<Projects />} />
+                    <Route path="/clients" element={<Clients />} />
+                    <Route path="/new-project" element={<NewProject />} />
+                    <Route path="/items" element={<Inventory />} />
+                    <Route path="/suppliers" element={<Suppliers />} />
                     <Route
-                      path="/"
-                      element={
-                        <Box
-                          display="flex"
-                          alignItems="center"
-                          justifyContent="center"
-                        >
-                          <Typography variant="h2">Welcome!</Typography>
-                        </Box>
-                      }
+                      path="/*"
+                      element={<Navigate to="/" />}
                     />
-                  )}
+                  </Routes>
+                </Box>
+              ) : (
+                <Routes>
                   <Route
                     path="*"
                     element={
@@ -70,13 +62,14 @@ function App() {
                         display="flex"
                         alignItems="center"
                         justifyContent="center"
+                        padding="150px"
                       >
-                        <h2>Error: Page Not Found</h2>
+                        <Typography variant="h2">Welcome!</Typography>
                       </Box>
                     }
                   />
                 </Routes>
-              </Box>
+              )}
             </Box>
           </Box>
         </Suspense>

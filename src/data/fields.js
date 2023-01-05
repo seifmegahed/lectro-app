@@ -151,6 +151,7 @@ export const itemFields = {
       input: "textField",
       span: "1",
       display,
+      editable,
     },
     {
       name: "outputVoltage",

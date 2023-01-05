@@ -23,14 +23,27 @@ const AccountCard = ({ account }) => {
   const { setPage, setAccount, PAGES } = useAccounts();
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [moreMenu, setMoreMenu] = useState(null);
-  const { id, number, englishName, arabicName, taxNumber } = account;
+  const { id, number, taxNumber } = account;
+  const maxStringSize = 15;
+  const maxStringSize2 = 25;
+
+  const englishName = isNonMobile
+    ? account.englishName
+    : account.englishName.length > maxStringSize
+    ? account.englishName.substring(0, maxStringSize).trimEnd() + "..."
+    : account.englishName;
+  const arabicName = isNonMobile
+    ? account.arabicName
+    : account.arabicName.length > maxStringSize2
+    ? "..." + account.arabicName.substring(0, maxStringSize2).trimEnd()
+    : account.arabicName;
 
   const open = Boolean(moreMenu);
 
   const handleMenu = (event) => {
     setMoreMenu(event.currentTarget);
   };
-  
+
   const handleMenuClose = () => {
     setMoreMenu(null);
   };
@@ -76,6 +89,7 @@ const AccountCard = ({ account }) => {
               variant={isNonMobile ? "h3" : "h4"}
               onClick={handleSelectAccount}
               sx={{ cursor: "pointer" }}
+              
               // color={done ? "primary" : "error"}
             >
               {englishName}

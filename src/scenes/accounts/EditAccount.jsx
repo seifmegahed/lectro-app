@@ -8,9 +8,11 @@ import AutoForm from "../../components/AutoForm";
 
 const EditAccount = () => {
   const { account, setPage, PAGES } = useAccounts();
+
   const returnHome = () => {
     setPage(PAGES.ACCOUNT_PAGE);
   };
+  
   return (
     <FormContainer>
       <Box sx={{ gridColumn: "span 4" }}>

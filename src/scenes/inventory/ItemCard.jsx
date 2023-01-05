@@ -19,7 +19,7 @@ import { PAGES } from "../../reducers/inventoryReducer";
 import useInventory from "../../contexts/InventoryContext";
 
 const ItemCard = ({ product, handleDelete }) => {
-  const { updatePage, updateSelectedItem, items } = useInventory();
+  const { updatePage, updateSelectedItem } = useInventory();
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [moreMenu, setMoreMenu] = useState(null);
 
@@ -35,6 +35,10 @@ const ItemCard = ({ product, handleDelete }) => {
     updateSelectedItem(product);
     updatePage(PAGES.ITEM_PAGE);
   };
+  const handleEditItem = () => {
+    updateSelectedItem(product);
+    updatePage(PAGES.EDIT_ITEM);
+  }
   return (
     <FormContainer padding="15px">
       <Box
@@ -107,7 +111,7 @@ const ItemCard = ({ product, handleDelete }) => {
               <Paper>
                 <MenuItem
                   onClick={() => {
-                    console.log(items);
+                    handleEditItem();
                     handleMenuClose();
                   }}
                 >

@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-
 import useAccounts, { AccountsProvider } from "../../contexts/AccountsContext";
 
 import Header from "../../components/Header";
@@ -7,7 +6,7 @@ import Header from "../../components/Header";
 import { db } from "../../firebase-config";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 
-import { Box, IconButton } from "@mui/material";
+import { Box, IconButton, useMediaQuery } from "@mui/material";
 import { ChevronLeft } from "@mui/icons-material";
 import AllAccounts from "./AllAccounts";
 import AccountPage from "./AccountPage";
@@ -22,8 +21,15 @@ const Accounts = ({ type }) => {
 };
 
 const AccountsWrapper = ({ passedType }) => {
-  const { page, setPage, addToAccounts, setAccount, removeFromAccounts, PAGES } =
-    useAccounts();
+  const {
+    page,
+    setPage,
+    addToAccounts,
+    setAccount,
+    removeFromAccounts,
+    PAGES,
+  } = useAccounts();
+  const isNonMobile = useMediaQuery("(min-width:600px)");
 
   const PageElements = () => {
     switch (page) {
@@ -61,7 +67,7 @@ const AccountsWrapper = ({ passedType }) => {
             case "modified": {
               removeFromAccounts(change.doc.id);
               addToAccounts({ ...change.doc.data(), id: change.doc.id });
-              setAccount({ ...change.doc.data(), id: change.doc.id })
+              setAccount({ ...change.doc.data(), id: change.doc.id });
               break;
             }
             default:
@@ -80,7 +86,12 @@ const AccountsWrapper = ({ passedType }) => {
   };
 
   return (
-    <div style={{ margin: "20px", maxWidth: "700px" }}>
+    <div
+      className="main-page-container"
+      style={{
+        padding: `${isNonMobile ? "20px" : "10px"}`,
+      }}
+    >
       <Box display="flex" gap="10px" flexDirection="column">
         <Box display="flex" alignItems="center">
           {page !== PAGES.ACCOUNTS && (
