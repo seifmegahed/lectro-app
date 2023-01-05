@@ -10,7 +10,7 @@ import useInventory from "../../contexts/InventoryContext";
 
 import DataDisplay from "../../components/DataDisplay";
 import FormContainer from "../../components/FormContainer";
-import { itemData } from "../../data/items";
+import { itemFields } from "../../data/fields";
 
 const ItemPage = () => {
   const { selectedItem } = useInventory();
@@ -68,7 +68,7 @@ const ItemPage = () => {
         sx={{ gridColumn: `span ${isNonMobile ? "3" : "4"}`, width: "100%" }}
       >
         <TableBody>
-          {itemData[selectedItem.category].map(
+          {itemFields[selectedItem.category].map(
             (item) =>
               !!selectedItem[item.name] && (
                 <DataDisplay

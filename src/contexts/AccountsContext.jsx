@@ -62,15 +62,6 @@ export const AccountsProvider = ({ children }) => {
       });
     };
 
-    const resetAccount = () => {
-      dispatch({
-        type: ACTIONS.SET_ACCOUNT,
-        payload: {
-          selectedAccount: {},
-        },
-      });
-    };
-
     const updateAccount = (field, value) => {
       dispatch({
         type: ACTIONS.UPDATE_ACCOUNT,
@@ -92,7 +83,6 @@ export const AccountsProvider = ({ children }) => {
       addToAccounts,
       removeFromAccounts,
       setAccount,
-      resetAccount,
       updateAccount,
       PAGES,
     };

@@ -11,7 +11,15 @@ export const ACTIONS = {
   UPDATE: "update",
 };
 
-const NewAccount = () => {
+const NewAccount = ({type}) => {
+  const { accounts, setPage, PAGES } = useAccounts();
+  const newAccount = {
+    number: accounts.length + 1,
+    type: type,
+  };
+  const returnHome = () => {
+    setPage(PAGES.ALL_ACOUNTS);
+  };
   return (
     <FormContainer>
       <Box sx={{ gridColumn: "span 4" }}>
@@ -20,8 +28,10 @@ const NewAccount = () => {
         </Typography>
       </Box>
       <AutoForm
+        initData={newAccount}
+        returnHome={returnHome}
         fields={accountFields}
-        type="accounts"
+        collectionName="accounts"
       />
     </FormContainer>
   );

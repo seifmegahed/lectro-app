@@ -23,7 +23,7 @@ const AllAccounts = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const colors = tokens(theme.palette.mode);
 
-  const { accounts, setPage, resetAccount, updateAccount, PAGES } = useAccounts();
+  const { accounts, setPage, updateAccount, PAGES } = useAccounts();
 
   const [searchkey, setSearchkey] = useState("");
 
@@ -49,12 +49,6 @@ const AllAccounts = () => {
   };
 
   const handleNewItem = () => {
-    resetAccount();
-    accountFields.forEach((field) => {
-      if (field.input) {
-        updateAccount(field.name, "");
-      }
-    });
     setPage(PAGES.NEW_ACCOUNT);
   };
 

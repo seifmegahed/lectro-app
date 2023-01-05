@@ -14,22 +14,20 @@ import {
 import { LoadingButton } from "@mui/lab";
 import { PhotoCamera } from "@mui/icons-material";
 
-// import {
-//   getStorage,
-//   ref,
-//   uploadBytesResumable,
-//   getDownloadURL,
-// } from "firebase/storage";
-// import { db } from "../firebase-config";
-// import { addDoc, collection, updateDoc } from "firebase/firestore";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import { db } from "../firebase-config";
+import { addDoc, collection, updateDoc } from "firebase/firestore";
 
 import { useState } from "react";
 
 import { tokens } from "../theme";
-import useAccounts from "../contexts/AccountsContext";
-import useInventory from "../contexts/InventoryContext";
 
-// import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 
 const Field = ({
   value,
@@ -188,25 +186,12 @@ const Field = ({
   return <>{inputField()}</>;
 };
 
-const AutoForm = ({ fields, type }) => {
-  let data = {};
-  let updateData;
-  let returnHome;
+const AutoForm = ({ fields, initData, returnHome, collectionName }) => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [file, setFile] = useState(null);
-  // const { currentUser } = useAuth();
-
-  switch (type) {
-    case "accounts":
-      const { account, updateAccount, setPage } = useAccounts();
-      data = account;
-      updateData = updateAccount;
-      returnHome = setPage;
-      break;
-    default:
-      throw new Error(`No Form for ${type}`);
-  }
+  const [data, setData] = useState(initData);
+  const { currentUser } = useAuth();
 
   const handleImageUpload = (event) => {
     event.preventDefault();
@@ -224,66 +209,66 @@ const AutoForm = ({ fields, type }) => {
     setFile(temp);
   };
 
-  // async function saveData() {
-  //   try {
-  //     const newData = {
-  //       ...data,
-  //       createdBy: currentUser.displayName,
-  //       createdOn: new Date(),
-  //     };
-  //     const itemRef = await addDoc(collection(db, collectionName), newData);
+  async function saveData() {
+    try {
+      const newData = {
+        ...data,
+        createdBy: currentUser.displayName,
+        createdOn: new Date(),
+      };
+      const itemRef = await addDoc(collection(db, collectionName), newData);
 
-  //     if (!!file) {
-  //       const filePath = `${collectionName}/${itemRef.id}/${file.name}`;
-  //       const newImageRef = ref(getStorage(), filePath);
-  //       const fileSnapshot = await uploadBytesResumable(newImageRef, file);
-  //       const publicImageUrl = await getDownloadURL(newImageRef);
+      if (!!file) {
+        const filePath = `${collectionName}/${itemRef.id}/${file.name}`;
+        const newImageRef = ref(getStorage(), filePath);
+        const fileSnapshot = await uploadBytesResumable(newImageRef, file);
+        const publicImageUrl = await getDownloadURL(newImageRef);
 
-  //       await updateDoc(itemRef, {
-  //         imageUrl: publicImageUrl,
-  //         storageUri: fileSnapshot.metadata.fullPath,
-  //       });
-  //     }
-  //   } catch (error) {
-  //     console.error("Error writing new message to Firebase Database", error);
-  //   }
-  // }
+        await updateDoc(itemRef, {
+          imageUrl: publicImageUrl,
+          storageUri: fileSnapshot.metadata.fullPath,
+        });
+      }
+    } catch (error) {
+      console.error("Error writing new message to Firebase Database", error);
+    }
+  }
 
   const handleSubmit = () => {
     setLoading(true);
-    // var allValid = true;
-    // fields.forEach((field) => {
-    //   if (!!field.required) {
-    //     setErrors((prev) => ({ ...prev, [field.name]: false }));
-    //     if (data[field.name] === undefined || !data[field.name]) {
-    //       allValid = false;
-    //       setErrors((prev) => ({ ...prev, [field.name]: true }));
-    //     }
-    //   }
-    // });
-    // if (allValid) {
-    //   saveData().then(returnPage());
-    // } else {
-    setErrors({});
+    var allValid = true;
+    fields.forEach((field) => {
+      if (!!field.required) {
+        setErrors((prev) => ({ ...prev, [field.name]: false }));
+        if (data[field.name] === undefined || !data[field.name]) {
+          allValid = false;
+          setErrors((prev) => ({ ...prev, [field.name]: true }));
+        }
+      }
+    });
+    if (allValid) {
+      saveData().then(returnHome());
+    } else {
     setLoading(false);
-    returnHome();
-    // }
+    }
   };
-
+  const updateData = (field, value) => {
+    setData((prev) => ({ ...prev, [field]: value }));
+  };
   return (
     <>
       {fields.map((field, index) => {
-        const { name, input } = field
+        const { name, input } = field;
         if (!!input) {
           return (
             <Field
               key={name}
-              field={field}
-              value={data[name]}
-              updateData={updateData}
-              error={errors[name]}
-              index={index}
               file={file}
+              field={field}
+              index={index}
+              value={data[name]}
+              error={errors[name]}
+              updateData={updateData}
               handleImageUpload={handleImageUpload}
             />
           );

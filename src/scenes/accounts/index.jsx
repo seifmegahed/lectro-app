@@ -34,7 +34,7 @@ const AccountsWrapper = ({ passedType }) => {
       case PAGES.ACCOUNTS:
         return <AllAccounts />;
       case PAGES.NEW_ACCOUNT:
-        return <NewAccount />;
+        return <NewAccount type={passedType}/>;
       case PAGES.ACCOUNT_PAGE:
         return <AccountPage />;
       default:
