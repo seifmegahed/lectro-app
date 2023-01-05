@@ -30,12 +30,19 @@ const AccountCard = ({ account }) => {
   const handleMenu = (event) => {
     setMoreMenu(event.currentTarget);
   };
+  
   const handleMenuClose = () => {
     setMoreMenu(null);
   };
+
   const handleSelectAccount = () => {
     setAccount(account);
     setPage(PAGES.ACCOUNT_PAGE);
+  };
+
+  const handleEditAccount = () => {
+    setAccount(account);
+    setPage(PAGES.EDIT_ACCOUNT);
   };
 
   function handleDelete() {
@@ -105,6 +112,7 @@ const AccountCard = ({ account }) => {
               <Paper>
                 <MenuItem
                   onClick={() => {
+                    handleEditAccount();
                     handleMenuClose();
                   }}
                 >

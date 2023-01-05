@@ -51,9 +51,9 @@ const accountsReducer = (state, action) => {
       if (isNotIncluded) {
         const newAccounts = [...state.accounts, payload.account];
         newAccounts.sort((a, b) => {
-            if (a.number > b.number) return 1;
-            if (a.number < b.number) return -1;
-            return 0;
+          if (a.number > b.number) return 1;
+          if (a.number < b.number) return -1;
+          return 0;
         });
         return {
           ...state,
@@ -79,10 +79,10 @@ const accountsReducer = (state, action) => {
       console.log(ACTIONS.UPDATE_ACCOUNT, payload);
       return {
         ...state,
-        
+
         account: {
           ...state.account,
-          [payload.field]: payload.value
+          [payload.field]: payload.value,
         },
       };
     default:

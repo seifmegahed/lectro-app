@@ -6,30 +6,27 @@ import { accountFields } from "../../data/fields";
 import FormContainer from "../../components/FormContainer";
 import AutoForm from "../../components/AutoForm";
 
-const NewAccount = ({type}) => {
-  const { accounts, setPage, PAGES } = useAccounts();
-  const newAccount = {
-    number: accounts.length + 1,
-    type: type,
-  };
+const EditAccount = () => {
+  const { account, setPage, PAGES } = useAccounts();
   const returnHome = () => {
-    setPage(PAGES.ACCOUNTS);
+    setPage(PAGES.ACCOUNT_PAGE);
   };
   return (
     <FormContainer>
       <Box sx={{ gridColumn: "span 4" }}>
         <Typography variant="h3" mb="20px">
-          New Account
+          Edit Account
         </Typography>
       </Box>
       <AutoForm
-        initData={newAccount}
+        initData={account}
         returnHome={returnHome}
         fields={accountFields}
         collectionName="accounts"
+        edit={true}
       />
     </FormContainer>
   );
 };
 
-export default NewAccount;
+export default EditAccount;

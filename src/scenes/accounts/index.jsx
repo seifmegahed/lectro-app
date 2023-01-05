@@ -12,6 +12,7 @@ import { ChevronLeft } from "@mui/icons-material";
 import AllAccounts from "./AllAccounts";
 import AccountPage from "./AccountPage";
 import NewAccount from "./NewAccount";
+import EditAccount from "./EditAccount";
 const Accounts = ({ type }) => {
   return (
     <AccountsProvider>
@@ -21,22 +22,19 @@ const Accounts = ({ type }) => {
 };
 
 const AccountsWrapper = ({ passedType }) => {
-  const {
-    page,
-    setPage,
-    addToAccounts,
-    removeFromAccounts,
-    PAGES,
-  } = useAccounts();
+  const { page, setPage, addToAccounts, setAccount, removeFromAccounts, PAGES } =
+    useAccounts();
 
   const PageElements = () => {
     switch (page) {
       case PAGES.ACCOUNTS:
         return <AllAccounts />;
       case PAGES.NEW_ACCOUNT:
-        return <NewAccount type={passedType}/>;
+        return <NewAccount type={passedType} />;
       case PAGES.ACCOUNT_PAGE:
         return <AccountPage />;
+      case PAGES.EDIT_ACCOUNT:
+        return <EditAccount />;
       default:
         return <AllAccounts />;
     }
@@ -48,7 +46,7 @@ const AccountsWrapper = ({ passedType }) => {
         collection(db, "accounts"),
         where("type", "==", passedType)
       );
-      
+
       onSnapshot(accountsQuery, function (snapshot) {
         snapshot.docChanges().forEach(function (change) {
           switch (change.type) {
@@ -60,6 +58,12 @@ const AccountsWrapper = ({ passedType }) => {
               addToAccounts({ ...change.doc.data(), id: change.doc.id });
               break;
             }
+            case "modified": {
+              removeFromAccounts(change.doc.id);
+              addToAccounts({ ...change.doc.data(), id: change.doc.id });
+              setAccount({ ...change.doc.data(), id: change.doc.id })
+              break;
+            }
             default:
               return;
           }
@@ -69,7 +73,7 @@ const AccountsWrapper = ({ passedType }) => {
       console.log("There was an Error");
       console.log(error);
     }
-  }, [addToAccounts, removeFromAccounts, passedType]);
+  }, [addToAccounts, removeFromAccounts, setAccount, passedType]);
 
   const returnHome = () => {
     setPage(PAGES.ACCOUNTS);

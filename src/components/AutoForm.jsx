@@ -21,7 +21,7 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import { db } from "../firebase-config";
-import { addDoc, collection, updateDoc } from "firebase/firestore";
+import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 
 import { useState } from "react";
 
@@ -35,14 +35,26 @@ const Field = ({
   updateData,
   error,
   index,
+  edit,
+  prevData,
   handleImageUpload,
   file,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const { input, label, name, type, span, required, options, preFix, postFix } =
-    field;
+  const {
+    input,
+    label,
+    name,
+    type,
+    span,
+    required,
+    options,
+    preFix,
+    postFix,
+    editable,
+  } = field;
 
   const handleChange = (event) => {
     const value = event.target.value;
@@ -65,6 +77,12 @@ const Field = ({
     };
   }
 
+  const disabled = edit ? !editable : false;
+  const color = edit
+    ? value === prevData
+      ? ""
+      : colors.yellowAccent[300]
+    : "";
   const inputField = () => {
     try {
       switch (input) {
@@ -74,6 +92,7 @@ const Field = ({
               label={label}
               name={name}
               type={type}
+              disabled={disabled}
               error={required ? error : false}
               value={value || ""}
               onChange={handleChange}
@@ -81,6 +100,7 @@ const Field = ({
                 gridColumn: `span ${span || "2"}`,
                 backgroundColor: `${colors.grey[900]}`,
                 input: {
+                  color: `${color}`,
                   backgroundColor: `${colors.grey[900]}`,
                   borderRadius: "4px",
                 },
@@ -96,10 +116,18 @@ const Field = ({
                 <Select
                   labelId={`${name}SelectLabel`}
                   label={label}
+                  disabled={edit ? !editable : false}
                   name={name}
                   error={error}
                   value={value || ""}
                   onChange={handleChange}
+                  color={
+                    edit
+                      ? value === prevData
+                        ? "success"
+                        : "primary"
+                      : "primary"
+                  }
                   sx={{
                     backgroundColor: `${colors.grey[900]}`,
                   }}
@@ -124,6 +152,7 @@ const Field = ({
                 exclusive
                 color="primary"
                 value={value || ""}
+                disabled={edit ? !editable : false}
                 onChange={handleChange}
                 error={error}
                 sx={{ backgroundColor: `${colors.grey[900]}` }}
@@ -186,7 +215,7 @@ const Field = ({
   return <>{inputField()}</>;
 };
 
-const AutoForm = ({ fields, initData, returnHome, collectionName }) => {
+const AutoForm = ({ fields, initData, returnHome, collectionName, edit }) => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [file, setFile] = useState(null);
@@ -233,6 +262,26 @@ const AutoForm = ({ fields, initData, returnHome, collectionName }) => {
       console.error("Error writing new message to Firebase Database", error);
     }
   }
+  async function editData() {
+    try {
+      const newData = {};
+      const keys = Object.keys(data);
+      keys.forEach((key) => {
+        if (data[key] !== (!!initData[key] ? initData[key] : "")) {
+          newData[key] = data[key];
+        }
+      });
+      const newDataKeys = Object.keys(newData);
+
+      if (newDataKeys.length > 0) {
+        newData.modifiedBy = currentUser.displayName;
+        newData.lastModifiedOn = new Date();
+        updateDoc(doc(db, collectionName, initData.id), newData);
+      }
+    } catch (error) {
+      console.error("Error writing new message to Firebase Database", error);
+    }
+  }
 
   const handleSubmit = () => {
     setLoading(true);
@@ -247,9 +296,10 @@ const AutoForm = ({ fields, initData, returnHome, collectionName }) => {
       }
     });
     if (allValid) {
-      saveData().then(returnHome());
+      edit ? editData().then(returnHome()) : saveData().then(returnHome());
+      setLoading(false);
     } else {
-    setLoading(false);
+      setLoading(false);
     }
   };
   const updateData = (field, value) => {
@@ -265,8 +315,10 @@ const AutoForm = ({ fields, initData, returnHome, collectionName }) => {
               key={name}
               file={file}
               field={field}
+              edit={edit}
               index={index}
               value={data[name]}
+              prevData={!!initData[name] ? initData[name] : ""}
               error={errors[name]}
               updateData={updateData}
               handleImageUpload={handleImageUpload}

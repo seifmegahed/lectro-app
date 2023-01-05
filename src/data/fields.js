@@ -63,8 +63,7 @@ const createdOn = {
   display,
 };
 
-const createdBy = { name: "createdBy", label: "Created By",
-display, };
+const createdBy = { name: "createdBy", label: "Created By", display };
 
 const lastModifiedOn = {
   name: "lastModifiedOn",
@@ -73,7 +72,7 @@ const lastModifiedOn = {
   display,
 };
 
-const modifiedBy = { name: "modifiedBy", label: "Modified By" };
+const modifiedBy = { name: "modifiedBy", label: "Modified By", display };
 
 const length = {
   name: "length",
@@ -114,7 +113,12 @@ const weight = {
   span: "1",
   display,
 };
-
+const userData = [
+  modifiedBy,
+  lastModifiedOn,
+  createdBy,
+  createdOn
+]
 export const itemFields = {
   Driver: [
     name,
@@ -195,10 +199,7 @@ export const itemFields = {
       display,
       options: ["Aluminum", "Plastic", "Bare PCB"],
     },
-    createdOn,
-    createdBy,
-    lastModifiedOn,
-    modifiedBy,
+    ...userData,
     notes,
     image,
   ],
@@ -273,10 +274,7 @@ export const itemFields = {
     },
     length,
     width,
-    createdOn,
-    createdBy,
-    lastModifiedOn,
-    modifiedBy,
+    ...userData,
     notes,
     image,
   ],
@@ -295,10 +293,7 @@ export const itemFields = {
     },
     length,
     width,
-    createdOn,
-    createdBy,
-    lastModifiedOn,
-    modifiedBy,
+    ...userData,
     notes,
     image,
   ],
@@ -324,20 +319,14 @@ export const itemFields = {
     { ...width, required },
     { ...thickness, required },
     { ...weight, required },
-    createdOn,
-    createdBy,
-    lastModifiedOn,
-    modifiedBy,
+    ...userData,
     notes,
   ],
   Screws: [
     name,
     make,
     country,
-    createdOn,
-    createdBy,
-    lastModifiedOn,
-    modifiedBy,
+    ...userData,
     notes,
   ],
   Products: [
@@ -348,30 +337,21 @@ export const itemFields = {
     width,
     thickness,
     weight,
-    createdOn,
-    createdBy,
-    lastModifiedOn,
-    modifiedBy,
+    ...userData,
     notes,
   ],
   Cables: [
     name,
     make,
     country,
-    createdOn,
-    createdBy,
-    lastModifiedOn,
-    modifiedBy,
+    ...userData,
     notes,
   ],
   Tools: [
     name,
     make,
     country,
-    createdOn,
-    createdBy,
-    lastModifiedOn,
-    modifiedBy,
+    ...userData,
     notes,
     image,
   ],
@@ -379,10 +359,7 @@ export const itemFields = {
     name,
     make,
     country,
-    createdOn,
-    createdBy,
-    lastModifiedOn,
-    modifiedBy,
+    ...userData,
     notes,
     image,
   ],
@@ -428,6 +405,7 @@ export const accountFields = [
     label: "Contact Person",
     type: "text",
     input: "textField",
+    editable,
     display,
     required,
   },
@@ -436,6 +414,7 @@ export const accountFields = [
     label: "Contact Phone Number",
     type: "text",
     input: "textField",
+    editable,
     display,
     required,
   },
@@ -444,6 +423,7 @@ export const accountFields = [
     label: "Contact Email",
     type: "text",
     input: "textField",
+    editable,
     display,
   },
   {
@@ -451,6 +431,7 @@ export const accountFields = [
     label: "Address",
     type: "text",
     input: "textField",
+    editable,
     display,
   },
   {
@@ -458,6 +439,7 @@ export const accountFields = [
     label: "City",
     type: "text",
     input: "textField",
+    editable,
     display,
     required,
   },
@@ -466,11 +448,9 @@ export const accountFields = [
     label: "Country",
     type: "text",
     input: "textField",
+    editable,
     display,
   },
-  createdOn,
-  createdBy,
-  lastModifiedOn,
-  modifiedBy,
+  ...userData,
   notes,
 ];
