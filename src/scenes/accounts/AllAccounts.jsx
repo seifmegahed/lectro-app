@@ -1,4 +1,13 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+
+import { db } from "../../firebase-config";
+import {
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
 
 import {
   Box,
@@ -18,16 +27,13 @@ import AccountCard from "./AccountCard";
 
 const accountsPerPage = 10;
 
-const AllAccounts = () => {
+const AllAccounts = ({ type }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
-  const {
-    accounts,
-    setPage,
-    PAGES,
-  } = useAccounts();
+  const { setPage, PAGES } = useAccounts();
+  const [accounts, setAccounts] = useState([]);
   const [searchkey, setSearchkey] = useState("");
   const [page, setCurrentPage] = useState(1);
 
@@ -48,6 +54,25 @@ const AllAccounts = () => {
     const firstItemIndex = lastItemIndex - accountsPerPage;
     return filteredAccounts.slice(firstItemIndex, lastItemIndex);
   }, [filteredAccounts, page]);
+
+  useEffect(
+    () =>
+      onSnapshot(
+        query(
+          collection(db, "accounts"),
+          where("type", "==", type),
+          orderBy("number", "asc")
+        ),
+        function (snapshot) {
+          let newAccounts = [];
+          snapshot.docs.forEach((doc) =>
+            newAccounts.push({ ...doc.data(), id: doc.id })
+          );
+          setAccounts(newAccounts);
+        }
+      ),
+    [type]
+  );
 
   return (
     <Box display="grid" gap="20px">

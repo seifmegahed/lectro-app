@@ -11,7 +11,6 @@ const EditItem = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   const returnHome = (data) => {
-    console.log({...item, ...data})
     setItem({...item, ...data})
     setPage(PAGES.ITEM_PAGE);
   };

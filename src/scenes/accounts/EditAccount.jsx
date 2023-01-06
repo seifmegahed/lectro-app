@@ -7,9 +7,10 @@ import FormContainer from "../../components/FormContainer";
 import AutoForm from "../../components/AutoForm";
 
 const EditAccount = () => {
-  const { account, setPage, PAGES } = useAccounts();
+  const { account, setPage, setAccount, PAGES } = useAccounts();
 
-  const returnHome = () => {
+  const returnHome = (data) => {
+    setAccount({...account, ...data})
     setPage(PAGES.ACCOUNT_PAGE);
   };
   

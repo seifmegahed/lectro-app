@@ -27,9 +27,9 @@ const AllItems = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   const { setPage, PAGES } = useInventory();
+  const [items, setItems] = useState([]);
   const [searchkey, setSearchkey] = useState("");
   const [page, setCurrentPage] = useState(1);
-  const [items, setItems] = useState([]);
 
   const filteredItems = useMemo(() => {
     return items.filter(

@@ -1,16 +1,6 @@
-import { useEffect } from "react";
 import useAccounts, { AccountsProvider } from "../../contexts/AccountsContext";
 
 import Header from "../../components/Header";
-
-import { db } from "../../firebase-config";
-import {
-  collection,
-  onSnapshot,
-  orderBy,
-  query,
-  where,
-} from "firebase/firestore";
 
 import { Box, IconButton, useMediaQuery } from "@mui/material";
 import { ChevronLeft } from "@mui/icons-material";
@@ -18,75 +8,36 @@ import AllAccounts from "./AllAccounts";
 import AccountPage from "./AccountPage";
 import NewAccount from "./NewAccount";
 import EditAccount from "./EditAccount";
+
 const Accounts = ({ type }) => {
   return (
     <AccountsProvider>
-      <AccountsWrapper passedType={type} />
+      <AccountsWrapper type={type} />
     </AccountsProvider>
   );
 };
 
-const AccountsWrapper = ({ passedType }) => {
-  const {
-    page,
-    setPage,
-    modifyAccount,
-    addToAccounts,
-    removeFromAccounts,
-    PAGES,
-  } = useAccounts();
+const AccountsWrapper = ({ type }) => {
+  const { page, setPage, PAGES } = useAccounts();
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   const PageElements = () => {
     switch (page) {
-      case PAGES.ACCOUNTS:
-        return <AllAccounts />;
+      case PAGES.ALL_ACCOUNTS:
+        return <AllAccounts type={type} />;
       case PAGES.NEW_ACCOUNT:
-        return <NewAccount type={passedType} />;
+        return <NewAccount type={type} />;
       case PAGES.ACCOUNT_PAGE:
         return <AccountPage />;
       case PAGES.EDIT_ACCOUNT:
         return <EditAccount />;
       default:
-        return <AllAccounts />;
+        return <AllAccounts type={type} />;
     }
   };
 
-  useEffect(() => {
-    const accountsQuery = query(
-      collection(db, "accounts"),
-      orderBy("number", "asc"),
-      where("type", "==", passedType)
-    );
-    console.log("useEffect")
-    const unsubscribe = onSnapshot(accountsQuery, (snapshot) => {
-      snapshot.docChanges().forEach(function (change) {
-        switch (change.type) {
-          case "added": {
-            addToAccounts({ ...change.doc.data(), id: change.doc.id });
-            break;
-          }
-          case "modified": {
-            modifyAccount({ ...change.doc.data(), id: change.doc.id });
-            break;
-          }
-          case "removed": {
-            removeFromAccounts(change.doc.id);
-            break;
-          }
-          default:
-            return;
-        }
-      });
-    });
-    return () => {
-      unsubscribe();
-      console.log("unsubscribe")
-    };
-  }, [passedType, addToAccounts, modifyAccount, removeFromAccounts]);
-
   const returnHome = () => {
-    setPage(PAGES.ACCOUNTS);
+    setPage(PAGES.ALL_ACCOUNTS);
   };
 
   return (
@@ -103,7 +54,7 @@ const AccountsWrapper = ({ passedType }) => {
               <ChevronLeft fontSize="large" />
             </IconButton>
           )}
-          <Header title={passedType + "s"} />
+          <Header title={type + "s"} />
         </Box>
         <PageElements />
       </Box>
