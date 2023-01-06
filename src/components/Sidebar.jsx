@@ -93,7 +93,7 @@ const Sidebar = ({isCollapsed, toggle}) => {
     <Box
         component="nav"
         height="100"
-        boxShadow="rgba(0, 0, 0, 0.24) 0px 3px 8px"
+        boxShadow="0px 3px 8px rgba(0, 0, 0, 0.24)"
         sx={{
           "& .pro-sidebar-inner": {
             background: `${colors.primary[700]} !important`,

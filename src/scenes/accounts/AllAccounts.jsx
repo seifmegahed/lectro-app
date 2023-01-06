@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState, useMemo } from "react";
 
 import AccountCard from "./AccountCard";
 import useAccounts from "../../contexts/AccountsContext";
@@ -6,12 +6,12 @@ import { tokens } from "../../theme";
 
 import {
   Box,
-  InputBase,
   IconButton,
   useTheme,
   Button,
   Pagination,
   useMediaQuery,
+  Input,
 } from "@mui/material";
 import { Search as SearchIcon } from "@mui/icons-material";
 
@@ -23,49 +23,32 @@ const AllAccounts = () => {
   const colors = tokens(theme.palette.mode);
 
   const { accounts, setPage, PAGES } = useAccounts();
-
   const [searchkey, setSearchkey] = useState("");
-
-  const [filteredAccounts, setFilteredAccounts] = useState([]);
-
   const [page, setCurrentPage] = useState(1);
-  const [numberPages, setNumberPages] = useState(1);
-
-  const handleSearch = (event) => {
-    const value = event.target.value.toLowerCase();
-    setSearchkey(value);
-  };
-
-  const handlePagination = (event, value) => {
-    setCurrentPage(value);
-  };
+  
 
   const handleNewItem = () => {
     setPage(PAGES.NEW_ACCOUNT);
   };
 
-  useEffect(() => {
+  const filteredAccounts = useMemo(() => {
     setCurrentPage(1);
-  }, [searchkey]);
+    return accounts.filter(
+      (account) =>
+        account.arabicName.includes(searchkey) ||
+        account.englishName.toLowerCase().includes(searchkey.toLowerCase())
+    );
+  }, [searchkey, accounts]);
 
-  useEffect(() => {
-    let filtered = [];
+  const numberPages = useMemo(() => {
+    return Math.ceil(filteredAccounts.length / accountsPerPage);
+  }, [filteredAccounts]);
 
-    if (searchkey === "") {
-      filtered = accounts;
-    } else {
-      filtered = accounts.filter(
-        (account) =>
-          account.arabicName.includes(searchkey) ||
-          account.englishName.toLowerCase().includes(searchkey)
-      );
-    }
-
-    setNumberPages(Math.ceil(filtered.length / accountsPerPage));
+  const pageContent = useMemo(() => {
     const lastItemIndex = page * accountsPerPage;
     const firstItemIndex = lastItemIndex - accountsPerPage;
-    setFilteredAccounts(filtered.slice(firstItemIndex, lastItemIndex));
-  }, [searchkey, accounts, page]);
+    return filteredAccounts.slice(firstItemIndex, lastItemIndex);
+  }, [filteredAccounts, page]);
 
   return (
     <Box display="grid" gap="20px">
@@ -75,11 +58,13 @@ const AllAccounts = () => {
           backgroundColor={colors.primary[400]}
           borderRadius="3px"
         >
-          <InputBase
+          <Input
+            disableUnderline={true}
             sx={{ ml: 2, flex: 1 }}
             placeholder="Search"
-            value={searchkey || ""}
-            onChange={handleSearch}
+            value={searchkey}
+            onChange={e => setSearchkey(e.target.value)}
+            
           />
           <IconButton type="button" sx={{ p: 1 }}>
             <SearchIcon />
@@ -95,16 +80,16 @@ const AllAccounts = () => {
         </Button>
       </Box>
 
-      {filteredAccounts.map((account, index) => {
+      {pageContent.map((account, index) => {
         return <AccountCard key={index} account={account} />;
       })}
       {numberPages !== 1 && (
         <Box display="flex" justifyContent="center">
           <Pagination
             count={numberPages}
-            size={isNonMobile ? "large" : "medium"}
+            size={isNonMobile ? "large" : "small"}
             page={page}
-            onChange={handlePagination}
+            onChange={(e, val) => setCurrentPage(val)}
           />
         </Box>
       )}
