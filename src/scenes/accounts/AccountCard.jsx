@@ -47,7 +47,7 @@ const AccountCard = ({ account }) => {
     setMoreMenu(null);
   };
 
-  const handleSelectAccount = () => {
+  const visitAccount = () => {
     setAccount(account);
     setPage(PAGES.ACCOUNT_PAGE);
   };
@@ -76,7 +76,7 @@ const AccountCard = ({ account }) => {
         <Box width="60px" display="flex" justifyContent="center">
           <Typography
             variant={isNonMobile ? "h1" : "h2"}
-            onClick={handleSelectAccount}
+            onClick={visitAccount}
             sx={{ cursor: "pointer" }}
           >
             {number}
@@ -86,7 +86,7 @@ const AccountCard = ({ account }) => {
           <Box>
             <Typography
               variant={isNonMobile ? "h3" : "h4"}
-              onClick={handleSelectAccount}
+              onClick={visitAccount}
               sx={{ cursor: "pointer" }}  
               // color={done ? "primary" : "error"}
             >

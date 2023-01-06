@@ -13,9 +13,9 @@ import FormContainer from "../../components/FormContainer";
 import { itemFields } from "../../data/fields";
 
 const ItemPage = () => {
-  const { selectedItem } = useInventory();
+  const { item } = useInventory();
   const isNonMobile = useMediaQuery("(min-width:600px)");
-
+  
   return (
     <FormContainer>
       <Box
@@ -27,7 +27,7 @@ const ItemPage = () => {
         {isNonMobile && (
           <Box width="100px" display="flex" alignItems="center">
             <img
-              src={selectedItem.imageUrl || "/images/imageplaceholder.png"}
+              src={item.imageUrl || "/images/imageplaceholder.png"}
               style={{ maxWidth: "100%", maxHeight: "100%" }}
               alt=""
             />
@@ -41,10 +41,10 @@ const ItemPage = () => {
             alignItems="flex-start"
           >
             <Typography color="text.secondary" variant="h5">
-              {selectedItem.category}
+              {item.category}
             </Typography>
             <Typography color="text.primary" variant="h3">
-              {selectedItem.name}
+              {item.name}
             </Typography>
           </Box>
           {isNonMobile && (
@@ -54,9 +54,9 @@ const ItemPage = () => {
               justifyContent="center"
               alignItems="flex-end"
             >
-              <Typography color="text.secondary">{selectedItem.id}</Typography>
+              <Typography color="text.secondary">{item.id}</Typography>
               <Typography color="text.secondary" variant="h5">
-                {selectedItem.make}
+                {item.make}
               </Typography>
             </Box>
           )}
@@ -68,13 +68,13 @@ const ItemPage = () => {
         sx={{ gridColumn: `span ${isNonMobile ? "3" : "4"}`, width: "100%" }}
       >
         <TableBody>
-          {itemFields[selectedItem.category].map(
-            (item) =>
-              !!selectedItem[item.name] && (
+          {itemFields[item.category].map(
+            (field) =>
+              !!item[field.name] && (
                 <DataDisplay
-                  key={item.name}
-                  data={selectedItem[item.name]}
-                  details={item}
+                  key={field.name}
+                  data={item[field.name]}
+                  details={field}
                 />
               )
           )}

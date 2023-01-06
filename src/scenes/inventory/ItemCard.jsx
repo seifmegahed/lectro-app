@@ -21,7 +21,7 @@ import FormContainer from "../../components/FormContainer";
 
 const ItemCard = ({ item }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const { updatePage, updateSelectedItem, PAGES } = useInventory();
+  const { setPage, setItem, PAGES } = useInventory();
   const [moreMenu, setMoreMenu] = useState(null);
   const { id, imageUrl, name, make, category, quantity } = item;
   const maxStringSize = 10;
@@ -43,14 +43,14 @@ const ItemCard = ({ item }) => {
     setMoreMenu(null);
   };
 
-  const handleSelectProduct = () => {
-    updateSelectedItem(item);
-    updatePage(PAGES.ITEM_PAGE);
+  const visitItem = () => {
+    setItem(item);
+    setPage(PAGES.ITEM_PAGE);
   };
 
   const handleEditItem = () => {
-    updateSelectedItem(item);
-    updatePage(PAGES.EDIT_ITEM);
+    setItem(item);
+    setPage(PAGES.EDIT_ITEM);
   };
 
   function handleDelete() {
@@ -93,7 +93,7 @@ const ItemCard = ({ item }) => {
           <Box>
             <Typography
               variant={isNonMobile ? "h3" : "h4"}
-              onClick={handleSelectProduct}
+              onClick={visitItem}
               sx={{ cursor: "pointer" }}
             >
               {title}

@@ -7,11 +7,11 @@ import AutoForm from "../../components/AutoForm";
 import useInventory from "../../contexts/InventoryContext";
 
 const EditItem = () => {
-  const { selectedItem, updatePage, PAGES } = useInventory();
+  const { item, setPage, PAGES } = useInventory();
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   const returnHome = () => {
-    updatePage(PAGES.ALL_ITEMS);
+    setPage(PAGES.ITEM_PAGE);
   };
 
   return (
@@ -26,7 +26,7 @@ const EditItem = () => {
               alignItems="center"
             >
               <img
-                src={selectedItem.imageUrl || "/images/imageplaceholder.png"}
+                src={item.imageUrl || "/images/imageplaceholder.png"}
                 style={{ maxWidth: "100%", maxHeight: "70px" }}
                 alt=""
               />
@@ -37,15 +37,15 @@ const EditItem = () => {
               Edit Item
             </Typography>
             <Typography variant="h3" mb="20px">
-              {selectedItem.category}
+              {item.category}
             </Typography>
           </Box>
         </Box>
       </Box>
 
       <AutoForm
-        initData={selectedItem}
-        fields={itemFields[selectedItem.category]}
+        initData={item}
+        fields={itemFields[item.category]}
         returnHome={returnHome}
         collectionName="items"
         edit={true}

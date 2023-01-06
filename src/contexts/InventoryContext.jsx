@@ -11,9 +11,9 @@ export const InventoryProvider = ({ children }) => {
   const [state, dispatch] = useReducer(inventoryReducer, initialState);
 
   const value = useMemo(() => {
-    const updatePage = (page) => {
+    const setPage = (page) => {
       dispatch({
-        type: ACTIONS.UPDATE_PAGE,
+        type: ACTIONS.SET_PAGE,
         payload: {
           page,
         },
@@ -38,59 +38,48 @@ export const InventoryProvider = ({ children }) => {
       });
     };
 
-    const addToSelectedItems = (item) => {
-      let updatedSelectedItems = [];
-      let isNotIncluded = true;
-      state.selectedItems.forEach((currentItem) => {
-        isNotIncluded &= currentItem.id !== item.id;
+    const setItem = (item) => {
+      dispatch({
+        type: ACTIONS.SET_ITEM,
+        payload: {
+          item,
+        },
       });
-      updatedSelectedItems = state.items;
-      if (isNotIncluded) {
-        updatedSelectedItems.push(item);
+    };
+
+    const modifyItem = (item) => {
+      dispatch({
+        type: ACTIONS.REMOVE_ITEM,
+        payload: {
+          id: item.id,
+        },
+      });
+      dispatch({
+        type: ACTIONS.ADD_ITEM,
+        payload: {
+          item,
+        },
+      });
+      if (item.id === state.item.id)
         dispatch({
-          type: ACTIONS.UPDATE_SELECTEDITEMS,
+          type: ACTIONS.SET_ITEM,
           payload: {
-            selectedItems: updatedSelectedItems,
+            item,
           },
         });
-      }
-    };
-
-    const removeFromSelectedItems = (item) => {
-      let updatedSelectedItems = [];
-      updatedSelectedItems = state.selectedItems.filter(
-        (currentItem) => currentItem.id !== item.id
-      );
-      dispatch({
-        type: ACTIONS.UPDATE_SELECTEDITEMS,
-        payload: {
-          selectedItems: updatedSelectedItems,
-        },
-      });
-    };
-
-    const updateSelectedItem = (selectedItem) => {
-      dispatch({
-        type: ACTIONS.UPDATE_SELECTEDITEM,
-        payload: {
-          selectedItem,
-        },
-      });
     };
 
     return {
+      PAGES,
       page: state.page,
+      item: state.item,
       items: state.items,
       selectedItems: state.selectedItems,
-      selectedItem: state.selectedItem,
-      updatePage,
+      setPage,
+      setItem,
       addToItems,
+      modifyItem,
       removeFromItems,
-      addToSelectedItems,
-      removeFromSelectedItems,
-      updateSelectedItem,
-      PAGES,
-      ACTIONS,
     };
   }, [state]);
 

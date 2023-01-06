@@ -20,12 +20,6 @@ export const AccountsProvider = ({ children }) => {
       });
     };
 
-    const resetAccounts = () => {
-      dispatch({
-        type: ACTIONS.RESET_ACCOUNTS,
-      });
-    };
-
     const setPage = (page) => {
       dispatch({
         type: ACTIONS.SET_PAGE,
@@ -66,7 +60,7 @@ export const AccountsProvider = ({ children }) => {
       dispatch({
         type: ACTIONS.REMOVE_ACCOUNT,
         payload: {
-          id: account.id,
+          AccountId: account.id,
         },
       });
       dispatch({
@@ -84,30 +78,18 @@ export const AccountsProvider = ({ children }) => {
         });
     };
 
-    const updateAccount = (field, value) => {
-      dispatch({
-        type: ACTIONS.UPDATE_ACCOUNT,
-        payload: {
-          field,
-          value,
-        },
-      });
-    };
-
     return {
+      PAGES,
       type: state.type,
       page: state.page,
-      accounts: state.accounts,
       account: state.account,
+      accounts: state.accounts,
       setType,
       setPage,
       setAccount,
       modifyAccount,
-      updateAccount,
-      resetAccounts,
       addToAccounts,
       removeFromAccounts,
-      PAGES,
     };
   }, [state]);
 

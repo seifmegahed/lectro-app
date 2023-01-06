@@ -1,14 +1,13 @@
 export const ACTIONS = {
-  UPDATE_PAGE: "UPDATE_PAGE",
-  UPDATE_ITEMS: "UPDATE_ITEMS",
+  SET_PAGE: "SET_PAGE",
   ADD_ITEM: "ADD_ITEM",
+  SET_ITEM: "SET_ITEM",
   REMOVE_ITEM: "REMOVE_ITEM",
   UPDATE_SELECTEDITEMS: "UPDATE_SELECTEDITEMS",
-  UPDATE_SELECTEDITEM: "UPDATE_SELECTEDITEM",
 };
 
 export const PAGES = {
-  STORE: "STORE",
+  ALL_ITEMS: "ALL_ITEMS",
   NEW_ITEM: "NEW_ITEM",
   ITEM_PAGE: "ITEM_PAGE",
   EDIT_ITEM: "EDIT_ITEM",
@@ -16,18 +15,18 @@ export const PAGES = {
 };
 
 export const initialState = {
-  page: PAGES.STORE,
+  page: PAGES.ALL_ITEMS,
   items: [],
+  item: {},
   selectedItems: [],
-  selectedItem: {},
 };
 
 const inventoryReducer = (state, action) => {
   const { type, payload } = action;
 
   switch (type) {
-    case ACTIONS.UPDATE_PAGE:
-      console.log(ACTIONS.UPDATE_PAGE, payload);
+    case ACTIONS.SET_PAGE:
+      console.log(ACTIONS.SET_PAGE, payload);
       return {
         ...state,
         page: payload.page,
@@ -56,17 +55,11 @@ const inventoryReducer = (state, action) => {
           (currentItem) => currentItem.id !== payload.itemID
         ),
       };
-    case ACTIONS.UPDATE_SELECTEDITEMS:
-      console.log(ACTIONS.UPDATE_SELECTEDITEMS, payload);
+    case ACTIONS.SET_ITEM:
+      console.log(ACTIONS.SET_ITEM, payload);
       return {
         ...state,
-        selectedItems: payload.selectedItems,
-      };
-    case ACTIONS.UPDATE_SELECTEDITEM:
-      console.log(ACTIONS.UPDATE_SELECTEDITEM, payload);
-      return {
-        ...state,
-        selectedItem: payload.selectedItem,
+        item: payload.item,
       };
     default:
       throw new Error(`No case for type ${type} found in inventoryReducer`);

@@ -3,8 +3,6 @@ export const ACTIONS = {
   SET_PAGE: "SET_PAGE",
   ADD_ACCOUNT: "ADD_ACCOUNT",
   SET_ACCOUNT: "SET_ACCOUNT",
-  RESET_ACCOUNTS: "RESET_ACCOUNTS",
-  UPDATE_ACCOUNT: "UPDATE_ACCOUNT",
   REMOVE_ACCOUNT: "REMOVE_ACCOUNT",
 };
 
@@ -23,8 +21,6 @@ export const initialState = {
 
 const accountsReducer = (state, action) => {
   const { type, payload } = action;
-  let isNotIncluded = true;
-  let newAccounts = [];
 
   switch (type) {
     case ACTIONS.SET_TYPE:
@@ -39,19 +35,13 @@ const accountsReducer = (state, action) => {
         ...state,
         page: payload.page,
       };
-    case ACTIONS.RESET_ACCOUNTS:
-      console.log(ACTIONS.RESET_ACCOUNTS);
-      return {
-        ...state,
-        accounts: [],
-      };
     case ACTIONS.ADD_ACCOUNT:
-      isNotIncluded = true;
+      let isNotIncluded = true;
       state.accounts.forEach((account) => {
         isNotIncluded &= account.id !== payload.account.id;
       });
       if (isNotIncluded) {
-        newAccounts = [...state.accounts, payload.account];
+        const newAccounts = [...state.accounts, payload.account];
         newAccounts.sort((a, b) => {
           if (a.number > b.number) return 1;
           if (a.number < b.number) return -1;
@@ -76,16 +66,6 @@ const accountsReducer = (state, action) => {
       return {
         ...state,
         account: payload.account,
-      };
-    case ACTIONS.UPDATE_ACCOUNT:
-      console.log(ACTIONS.UPDATE_ACCOUNT, payload);
-      return {
-        ...state,
-
-        account: {
-          ...state.account,
-          [payload.field]: payload.value,
-        },
       };
     default:
       throw new Error(`No case for type ${type} found in accountsReducer`);

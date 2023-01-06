@@ -25,12 +25,12 @@ const Inventory = () => {
 };
 
 const InventoryWrapper = () => {
-  const { page, addToItems, removeFromItems, updatePage, PAGES } =
+  const { page, addToItems, removeFromItems, modifyItem, setPage, PAGES } =
     useInventory();
 
   const PageElements = () => {
     switch (page) {
-      case PAGES.STORE:
+      case PAGES.ALL_ITEMS:
         return <AllItems />;
       case PAGES.NEW_ITEM:
         return <NewItem />;
@@ -57,8 +57,7 @@ const InventoryWrapper = () => {
               break;
             }
             case "modified": {
-              removeFromItems(change.doc.id);
-              addToItems({ ...change.doc.data(), id: change.doc.id });
+              modifyItem({ ...change.doc.data(), id: change.doc.id });
               break;
             }
             default:
@@ -73,7 +72,7 @@ const InventoryWrapper = () => {
   }, [removeFromItems, addToItems]);
 
   const returnHome = () => {
-    updatePage(PAGES.STORE);
+    setPage(PAGES.STORE);
   };
 
   return (

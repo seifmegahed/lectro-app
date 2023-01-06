@@ -1,7 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
-
-import { db } from "../../firebase-config";
-import { deleteDoc, doc } from "firebase/firestore";
+import { useMemo, useState } from "react";
 
 import {
   Box,
@@ -26,7 +23,7 @@ const AllItems = () => {
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
-  const { items, updatePage, PAGES } = useInventory();
+  const { items, setPage, PAGES } = useInventory();
   const [searchkey, setSearchkey] = useState("");
   const [page, setCurrentPage] = useState(1);
 
@@ -72,7 +69,7 @@ const AllItems = () => {
           sx={{ minWidth: "110px" }}
           variant="contained"
           size="large"
-          onClick={() => updatePage(PAGES.NEW_ITEM)}
+          onClick={() => setPage(PAGES.NEW_ITEM)}
         >
           New Item
         </Button>
