@@ -2,10 +2,10 @@ import { Box, TextField, useTheme, Autocomplete } from "@mui/material";
 
 import { Formik } from "formik";
 import * as yup from "yup";
-import { tokens } from "../../theme";
-import { clients } from "../../data/accounts";
-import FormContainer from "../../components/FormContainer";
-import NavButton from "../../components/navButton";
+import { tokens } from "../../../theme";
+import { clients } from "../../../data/accounts";
+import FormContainer from "../../../components/FormContainer";
+import NavButton from "../../../components/navButton";
 import { ACTIONS } from "./index";
 
 const userSchema = yup.object().shape({

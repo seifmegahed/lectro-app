@@ -1,38 +1,36 @@
 import { useState, useMemo } from "react";
 
-import AccountCard from "./AccountCard";
-import useAccounts from "../../contexts/AccountsContext";
-import { tokens } from "../../theme";
+import { db } from "../../firebase-config";
+import { deleteDoc, doc } from "firebase/firestore";
 
 import {
   Box,
-  IconButton,
-  useTheme,
+  Input,
   Button,
+  useTheme,
+  IconButton,
   Pagination,
   useMediaQuery,
-  Input,
 } from "@mui/material";
 import { Search as SearchIcon } from "@mui/icons-material";
+
+import { tokens } from "../../theme";
+import useAccounts from "../../contexts/AccountsContext";
+
+import AccountCard from "./AccountCard";
 
 const accountsPerPage = 10;
 
 const AllAccounts = () => {
   const theme = useTheme();
-  const isNonMobile = useMediaQuery("(min-width:600px)");
   const colors = tokens(theme.palette.mode);
+  const isNonMobile = useMediaQuery("(min-width:600px)");
 
   const { accounts, setPage, PAGES } = useAccounts();
   const [searchkey, setSearchkey] = useState("");
   const [page, setCurrentPage] = useState(1);
-  
-
-  const handleNewItem = () => {
-    setPage(PAGES.NEW_ACCOUNT);
-  };
 
   const filteredAccounts = useMemo(() => {
-    setCurrentPage(1);
     return accounts.filter(
       (account) =>
         account.arabicName.includes(searchkey) ||
@@ -63,8 +61,7 @@ const AllAccounts = () => {
             sx={{ ml: 2, flex: 1 }}
             placeholder="Search"
             value={searchkey}
-            onChange={e => setSearchkey(e.target.value)}
-            
+            onChange={(e) => setSearchkey(e.target.value)}
           />
           <IconButton type="button" sx={{ p: 1 }}>
             <SearchIcon />
@@ -74,7 +71,7 @@ const AllAccounts = () => {
           sx={{ minWidth: "130px" }}
           variant="contained"
           size="large"
-          onClick={handleNewItem}
+          onClick={() => setPage(PAGES.NEW_ACCOUNT)}
         >
           New Account
         </Button>

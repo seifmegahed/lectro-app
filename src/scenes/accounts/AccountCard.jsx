@@ -1,4 +1,5 @@
-import FormContainer from "../../components/FormContainer";
+import { useState } from "react";
+import useAccounts from "../../contexts/AccountsContext";
 
 import { db } from "../../firebase-config";
 import { doc, deleteDoc } from "firebase/firestore";
@@ -13,19 +14,17 @@ import {
   ClickAwayListener,
   useMediaQuery,
 } from "@mui/material";
-
-import { useState } from "react";
 import { MoreVert } from "@mui/icons-material";
 
-import useAccounts from "../../contexts/AccountsContext";
+import FormContainer from "../../components/FormContainer";
 
 const AccountCard = ({ account }) => {
-  const { setPage, setAccount, PAGES } = useAccounts();
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const { setPage, setAccount, PAGES } = useAccounts();
   const [moreMenu, setMoreMenu] = useState(null);
   const { id, number, taxNumber } = account;
   const maxStringSize = 15;
-  const maxStringSize2 = 25;
+  const maxSubStringSize = 25;
 
   const englishName = isNonMobile
     ? account.englishName
@@ -34,8 +33,8 @@ const AccountCard = ({ account }) => {
     : account.englishName;
   const arabicName = isNonMobile
     ? account.arabicName
-    : account.arabicName.length > maxStringSize2
-    ? "..." + account.arabicName.substring(0, maxStringSize2).trimEnd()
+    : account.arabicName.length > maxSubStringSize
+    ? "..." + account.arabicName.substring(0, maxSubStringSize).trimEnd()
     : account.arabicName;
 
   const open = Boolean(moreMenu);
@@ -88,8 +87,7 @@ const AccountCard = ({ account }) => {
             <Typography
               variant={isNonMobile ? "h3" : "h4"}
               onClick={handleSelectAccount}
-              sx={{ cursor: "pointer" }}
-              
+              sx={{ cursor: "pointer" }}  
               // color={done ? "primary" : "error"}
             >
               {englishName}

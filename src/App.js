@@ -9,7 +9,7 @@ import Loading from "./components/Loading";
 
 import { useAuth } from "./contexts/AuthContext";
 
-const NewProject = lazy(() => import("./scenes/newProject"));
+const NewProject = lazy(() => import("./scenes/projects/newProject"));
 const Dashboard = lazy(() => import("./scenes/dashboard"));
 const Projects = lazy(() => import("./scenes/projects"));
 const Inventory = lazy(() => import("./scenes/inventory/"));

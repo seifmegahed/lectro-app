@@ -13,11 +13,11 @@ import {
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-import NavButton from "../../components/navButton";
-import FormContainer from "../../components/FormContainer";
+import NavButton from "../../../components/navButton";
+import FormContainer from "../../../components/FormContainer";
 import DriverData from "./driverData";
 
-import { tokens } from "../../theme";
+import { tokens } from "../../../theme";
 import { ACTIONS } from "./index";
 
 const Study = ({ dispatch, project }) => {

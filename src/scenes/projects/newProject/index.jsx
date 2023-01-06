@@ -1,5 +1,5 @@
 import { useState, useReducer } from "react";
-import { projects } from "../../data/mockData";
+import { projects } from "../../../data/mockData";
 import {
   Box,
   Stepper,
@@ -11,7 +11,7 @@ import {
   Alert,
 } from "@mui/material";
 
-import Header from "../../components/Header";
+import Header from "../../../components/Header";
 import Form from "./form";
 import ProductsForm from "./productsForm";
 import Study from "./study";

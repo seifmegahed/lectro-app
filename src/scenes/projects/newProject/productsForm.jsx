@@ -11,17 +11,17 @@ import {
 } from "@mui/material";
 
 import { Add, Close } from "@mui/icons-material";
-import { tokens } from "../../theme";
+import { tokens } from "../../../theme";
 
 import {
   productsCategories,
   products as allProducts,
-} from "../../data/products";
+} from "../../../data/products";
 
 import { ACTIONS } from "./index";
 
-import NavButton from "../../components/navButton";
-import FormContainer from "../../components/FormContainer";
+import NavButton from "../../../components/navButton";
+import FormContainer from "../../../components/FormContainer";
 
 const ProductsForm = ({
   project,

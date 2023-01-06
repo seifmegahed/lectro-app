@@ -1,4 +1,8 @@
-import FormContainer from "../../components/FormContainer";
+import { useState } from "react";
+import useInventory from "../../contexts/InventoryContext";
+
+import { db } from "../../firebase-config";
+import { doc, deleteDoc } from "firebase/firestore";
 
 import {
   Box,
@@ -11,34 +15,51 @@ import {
   Checkbox,
   useMediaQuery,
 } from "@mui/material";
-
-import { useState } from "react";
 import { MoreVert } from "@mui/icons-material";
 
-import { PAGES } from "../../reducers/inventoryReducer";
-import useInventory from "../../contexts/InventoryContext";
+import FormContainer from "../../components/FormContainer";
 
-const ItemCard = ({ product, handleDelete }) => {
-  const { updatePage, updateSelectedItem } = useInventory();
+const ItemCard = ({ item }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const { updatePage, updateSelectedItem, PAGES } = useInventory();
   const [moreMenu, setMoreMenu] = useState(null);
+  const { id, imageUrl, name, make, category, quantity } = item;
+  const maxStringSize = 15;
+
+  const title = isNonMobile
+    ? name
+    : name.length > maxStringSize
+    ? name.substring(0, maxStringSize).trimEnd() + "..."
+    : name;
+  const subTitle = (make + "-" + category)
 
   const open = Boolean(moreMenu);
 
   const handleMenu = (event) => {
     setMoreMenu(event.currentTarget);
   };
+
   const handleMenuClose = () => {
     setMoreMenu(null);
   };
+
   const handleSelectProduct = () => {
-    updateSelectedItem(product);
+    updateSelectedItem(item);
     updatePage(PAGES.ITEM_PAGE);
   };
+
   const handleEditItem = () => {
-    updateSelectedItem(product);
+    updateSelectedItem(item);
     updatePage(PAGES.EDIT_ITEM);
+  };
+
+  function handleDelete() {
+    async function deleteData() {
+      await deleteDoc(doc(db, "items", id));
+    }
+    deleteData();
   }
+
   return (
     <FormContainer padding="15px">
       <Box
@@ -62,7 +83,7 @@ const ItemCard = ({ product, handleDelete }) => {
             alignItems="center"
           >
             <img
-              src={product.imageUrl || "/images/imageplaceholder.png"}
+              src={imageUrl || "/images/imageplaceholder.png"}
               style={{ maxWidth: "100%", maxHeight: "70px" }}
               alt=""
             />
@@ -75,17 +96,15 @@ const ItemCard = ({ product, handleDelete }) => {
               onClick={handleSelectProduct}
               sx={{ cursor: "pointer" }}
             >
-              {product.name}
+              {title}
             </Typography>
             <Typography variant={isNonMobile ? "h5" : "h6"}>
-              {product.category} - {product.make}
+              {subTitle}
             </Typography>
           </Box>
           {isNonMobile && (
             <Box display="flex" flexDirection="column" textAlign="right">
-              <Typography variant="h6">
-                Quantity: {product.quantity || "0"}
-              </Typography>
+              <Typography variant="h6">Quantity: {quantity || "0"}</Typography>
             </Box>
           )}
         </Box>
@@ -123,13 +142,6 @@ const ItemCard = ({ product, handleDelete }) => {
                   }}
                 >
                   Recieve
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    handleMenuClose();
-                  }}
-                >
-                  Return
                 </MenuItem>
                 <MenuItem
                   onClick={() => {

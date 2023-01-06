@@ -12,12 +12,12 @@ import {
   Typography,
 } from "@mui/material";
 
-import LabelContainer from "../../components/LabelContainer";
+import LabelContainer from "../../../components/LabelContainer";
 
-import { tokens } from "../../theme";
+import { tokens } from "../../../theme";
 
 import { ACTIONS } from "./index";
-import { drivers } from "../../data/items";
+import { drivers } from "../../../data/items";
 
 const DriverData = ({ product, dispatch }) => {
   const theme = useTheme();
