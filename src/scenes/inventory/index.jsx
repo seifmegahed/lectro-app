@@ -7,7 +7,7 @@ import useInventory, {
 import NewItem from "./NewItem";
 import AllItems from "./AllItems";
 import ItemPage from "./ItemPage";
-import EditItem from "./EditItem"
+import EditItem from "./EditItem";
 import Header from "../../components/Header";
 
 import { db } from "../../firebase-config";
@@ -25,7 +25,8 @@ const Inventory = () => {
 };
 
 const InventoryWrapper = () => {
-  const { page, addToItems, removeFromItems, updatePage, PAGES } = useInventory();
+  const { page, addToItems, removeFromItems, updatePage, PAGES } =
+    useInventory();
 
   const PageElements = () => {
     switch (page) {
@@ -71,18 +72,16 @@ const InventoryWrapper = () => {
   };
 
   return (
-    <Box m="20px" maxWidth="700px">
-      <Box display="flex" gap="10px" flexDirection="column">
-        <Box display="flex" alignItems="center">
-          {page !== PAGES.STORE && (
-            <IconButton onClick={returnHome}>
-              <ChevronLeft fontSize="large" />
-            </IconButton>
-          )}
-          <Header title="Inventory" />
-        </Box>
-        <PageElements />
+    <Box display="flex" gap="10px" flexDirection="column">
+      <Box display="flex" alignItems="center">
+        {page !== PAGES.STORE && (
+          <IconButton onClick={returnHome}>
+            <ChevronLeft fontSize="large" />
+          </IconButton>
+        )}
+        <Header title="Inventory" />
       </Box>
+      <PageElements />
     </Box>
   );
 };

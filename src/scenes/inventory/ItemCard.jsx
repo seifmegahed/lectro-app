@@ -24,7 +24,7 @@ const ItemCard = ({ item }) => {
   const { updatePage, updateSelectedItem, PAGES } = useInventory();
   const [moreMenu, setMoreMenu] = useState(null);
   const { id, imageUrl, name, make, category, quantity } = item;
-  const maxStringSize = 15;
+  const maxStringSize = 10;
 
   const title = isNonMobile
     ? name

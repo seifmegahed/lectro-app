@@ -2,7 +2,7 @@ import React, { lazy, Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 import { ColorModeContext, useMode } from "./theme";
-import { CssBaseline, ThemeProvider, Box, Typography } from "@mui/material";
+import { CssBaseline, ThemeProvider, Box, Typography, useMediaQuery } from "@mui/material";
 
 import Topbar from "./components/Topbar";
 import Loading from "./components/Loading";
@@ -19,6 +19,7 @@ const Suppliers = () => <Accounts type="Supplier" />;
 const Clients = () => <Accounts type="Client" />;
 
 function App() {
+  const isNonMobile = useMediaQuery("(min-width:600px)")
   const [theme, colorMode] = useMode();
   const { currentUser } = useAuth();
 
@@ -32,6 +33,7 @@ function App() {
           <Box
             className="content"
             pt="85px"
+            m={isNonMobile ? "40px" : "20px"}
             maxWidth="700px"
             position="relative"
           >

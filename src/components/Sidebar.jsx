@@ -92,7 +92,7 @@ const Sidebar = ({isCollapsed, toggle}) => {
   return (
     <Box
         component="nav"
-        height="100"
+        height="100%"
         boxShadow="0px 3px 8px rgba(0, 0, 0, 0.24)"
         sx={{
           "& .pro-sidebar-inner": {
@@ -116,6 +116,7 @@ const Sidebar = ({isCollapsed, toggle}) => {
           toggled={isCollapsed}
           onToggle={toggle}
           breakPoint="md"
+          sx={{height: "100%"}}
         >
           <Menu>
               {/* USER */}

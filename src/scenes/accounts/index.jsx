@@ -66,8 +66,6 @@ const AccountsWrapper = ({ passedType }) => {
             }
             case "modified": {
               removeFromAccounts(change.doc.id);
-              addToAccounts({ ...change.doc.data(), id: change.doc.id });
-              setAccount({ ...change.doc.data(), id: change.doc.id });
               break;
             }
             default:

@@ -33,7 +33,7 @@ const AllItems = () => {
   const filteredItems = useMemo(() => {
     return items.filter(
       (item) =>
-        items.name.toLowerCase().includes(searchkey.toLowerCase()) ||
+        item.name.toLowerCase().includes(searchkey.toLowerCase()) ||
         item.make.toLowerCase().includes(searchkey.toLowerCase()) ||
         item.category.toLowerCase().includes(searchkey.toLowerCase())
     );
@@ -47,7 +47,7 @@ const AllItems = () => {
     const lastItemIndex = page * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
     return filteredItems.slice(firstItemIndex, lastItemIndex);
-  }, [filteredItems]);
+  }, [filteredItems, page]);
 
   return (
     <Box display="grid" gap="20px">

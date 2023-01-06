@@ -7,16 +7,16 @@ import AutoForm from "../../components/AutoForm";
 import useInventory from "../../contexts/InventoryContext";
 
 const EditItem = () => {
-  const { updatePage, selectedItem, PAGES } = useInventory();
+  const { selectedItem, updatePage, PAGES } = useInventory();
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   const returnHome = () => {
     updatePage(PAGES.ALL_ITEMS);
   };
-  const category = selectedItem.category;
+
   return (
     <FormContainer>
-      <Box  sx={{ gridColumn: "span 4" }}>
+      <Box sx={{ gridColumn: "span 4" }}>
         <Box display="flex" flexDirection="row">
           {isNonMobile && (
             <Box
@@ -32,12 +32,12 @@ const EditItem = () => {
               />
             </Box>
           )}
-          <Box width="100%" display="flex"  justifyContent="space-between">
+          <Box width="100%" display="flex" justifyContent="space-between">
             <Typography variant="h3" mb="20px">
               Edit Item
             </Typography>
             <Typography variant="h3" mb="20px">
-              {category}
+              {selectedItem.category}
             </Typography>
           </Box>
         </Box>

@@ -45,7 +45,7 @@ const Topbar = () => {
 
   const breakPoint = useMediaQuery("(min-width:768px)", { noSsr: true });
   return (
-    <div>
+    <Box>
       {!!currentUser && <Sidebar isCollapsed={isCollapsed} toggle={collapse} />}
       <div className="content">
         <AppBar component="nav" sx={{ zIndex: 1010 }}>
@@ -127,7 +127,7 @@ const Topbar = () => {
           </Box>
         </AppBar>
       </div>
-    </div>
+    </Box>
   );
 };
 
