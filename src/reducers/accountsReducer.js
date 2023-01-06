@@ -1,11 +1,11 @@
 export const ACTIONS = {
   SET_TYPE: "SET_TYPE",
   SET_PAGE: "SET_PAGE",
-  RESET_ACCOUNTS: "RESET_ACCOUNTS",
   ADD_ACCOUNT: "ADD_ACCOUNT",
-  REMOVE_ACCOUNT: "REMOVE_ACCOUNT",
   SET_ACCOUNT: "SET_ACCOUNT",
+  RESET_ACCOUNTS: "RESET_ACCOUNTS",
   UPDATE_ACCOUNT: "UPDATE_ACCOUNT",
+  REMOVE_ACCOUNT: "REMOVE_ACCOUNT",
 };
 
 export const PAGES = {
@@ -23,6 +23,8 @@ export const initialState = {
 
 const accountsReducer = (state, action) => {
   const { type, payload } = action;
+  let isNotIncluded = true;
+  let newAccounts = [];
 
   switch (type) {
     case ACTIONS.SET_TYPE:
@@ -44,12 +46,12 @@ const accountsReducer = (state, action) => {
         accounts: [],
       };
     case ACTIONS.ADD_ACCOUNT:
-      let isNotIncluded = true;
+      isNotIncluded = true;
       state.accounts.forEach((account) => {
         isNotIncluded &= account.id !== payload.account.id;
       });
       if (isNotIncluded) {
-        const newAccounts = [...state.accounts, payload.account];
+        newAccounts = [...state.accounts, payload.account];
         newAccounts.sort((a, b) => {
           if (a.number > b.number) return 1;
           if (a.number < b.number) return -1;

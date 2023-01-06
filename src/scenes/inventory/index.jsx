@@ -56,6 +56,11 @@ const InventoryWrapper = () => {
               addToItems({ ...change.doc.data(), id: change.doc.id });
               break;
             }
+            case "modified": {
+              removeFromItems(change.doc.id);
+              addToItems({ ...change.doc.data(), id: change.doc.id });
+              break;
+            }
             default:
               return;
           }

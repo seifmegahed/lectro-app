@@ -24,8 +24,9 @@ const AccountsWrapper = ({ passedType }) => {
   const {
     page,
     setPage,
-    addToAccounts,
     setAccount,
+    modifyAccount,
+    addToAccounts,
     removeFromAccounts,
     PAGES,
   } = useAccounts();
@@ -65,7 +66,7 @@ const AccountsWrapper = ({ passedType }) => {
               break;
             }
             case "modified": {
-              removeFromAccounts(change.doc.id);
+              modifyAccount({ ...change.doc.data(), id: change.doc.id });
               break;
             }
             default:
