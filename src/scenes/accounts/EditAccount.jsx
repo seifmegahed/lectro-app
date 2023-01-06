@@ -10,10 +10,10 @@ const EditAccount = () => {
   const { account, setPage, setAccount, PAGES } = useAccounts();
 
   const returnHome = (data) => {
-    setAccount({...account, ...data})
+    if (!!data) setAccount({ ...account, ...data });
     setPage(PAGES.ACCOUNT_PAGE);
   };
-  
+
   return (
     <FormContainer>
       <Box sx={{ gridColumn: "span 4" }}>

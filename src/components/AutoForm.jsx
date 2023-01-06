@@ -21,7 +21,13 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import { db } from "../firebase-config";
-import { addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  serverTimestamp,
+  updateDoc,
+} from "firebase/firestore";
 
 import { useState } from "react";
 
@@ -206,23 +212,23 @@ const Field = ({
           );
         default:
           throw new Error(`No input case for ${field.input} available`);
-        }
-      } catch (error) {
-        console.log(error);
       }
-    };
-
-    return <>{inputField()}</>;
+    } catch (error) {
+      console.log(error);
+    }
   };
-  
-  const AutoForm = ({ fields, initData, returnHome, collectionName, edit }) => {
+
+  return <>{inputField()}</>;
+};
+
+const AutoForm = ({ fields, initData, returnHome, collectionName, edit }) => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [file, setFile] = useState(null);
   const [data, setData] = useState(initData);
   const { currentUser } = useAuth();
   const newData = {};
-  
+
   const handleImageUpload = (event) => {
     event.preventDefault();
 
@@ -296,7 +302,18 @@ const Field = ({
       }
     });
     if (allValid) {
-      edit ? editData().then(returnHome(newData)) : saveData().then(returnHome());
+      let noChange = true;
+      fields.forEach((field) => {
+        noChange &= data[field.name] === initData[field.name];
+      });
+
+      edit
+        ? noChange
+          ? editData().then(
+              returnHome({ ...newData, lastModifiedOn: new Date() })
+            )
+          : returnHome()
+        : saveData().then(returnHome());
       setLoading(false);
     } else {
       setLoading(false);
