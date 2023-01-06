@@ -71,15 +71,11 @@ const InventoryWrapper = () => {
     }
   }, [removeFromItems, addToItems]);
 
-  const returnHome = () => {
-    setPage(PAGES.STORE);
-  };
-
   return (
     <Box display="flex" gap="10px" flexDirection="column">
       <Box display="flex" alignItems="center">
         {page !== PAGES.STORE && (
-          <IconButton onClick={returnHome}>
+          <IconButton onClick={() => setPage(PAGES.ALL_ITEMS)}>
             <ChevronLeft fontSize="large" />
           </IconButton>
         )}
