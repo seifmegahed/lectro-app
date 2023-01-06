@@ -1,8 +1,6 @@
 export const ACTIONS = {
   SET_PAGE: "SET_PAGE",
-  ADD_ITEM: "ADD_ITEM",
   SET_ITEM: "SET_ITEM",
-  REMOVE_ITEM: "REMOVE_ITEM",
   UPDATE_SELECTEDITEMS: "UPDATE_SELECTEDITEMS",
 };
 
@@ -30,30 +28,6 @@ const inventoryReducer = (state, action) => {
       return {
         ...state,
         page: payload.page,
-      };
-    case ACTIONS.UPDATE_ITEMS:
-      console.log(ACTIONS.UPDATE_ITEMS, payload);
-      return {
-        ...state,
-        items: payload.items,
-      };
-    case ACTIONS.ADD_ITEM:
-      let isNotIncluded = true;
-      state.items.forEach((item) => {
-        isNotIncluded &= item.id !== payload.item.id;
-      });
-      if (isNotIncluded)
-        return {
-          ...state,
-          items: [...state.items, payload.item],
-        };
-      else return state;
-    case ACTIONS.REMOVE_ITEM:
-      return {
-        ...state,
-        items: state.items.filter(
-          (currentItem) => currentItem.id !== payload.itemID
-        ),
       };
     case ACTIONS.SET_ITEM:
       console.log(ACTIONS.SET_ITEM, payload);

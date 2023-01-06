@@ -4,7 +4,13 @@ import useAccounts, { AccountsProvider } from "../../contexts/AccountsContext";
 import Header from "../../components/Header";
 
 import { db } from "../../firebase-config";
-import { collection, onSnapshot, query, where } from "firebase/firestore";
+import {
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
 
 import { Box, IconButton, useMediaQuery } from "@mui/material";
 import { ChevronLeft } from "@mui/icons-material";
@@ -24,7 +30,6 @@ const AccountsWrapper = ({ passedType }) => {
   const {
     page,
     setPage,
-    setAccount,
     modifyAccount,
     addToAccounts,
     removeFromAccounts,
@@ -48,37 +53,37 @@ const AccountsWrapper = ({ passedType }) => {
   };
 
   useEffect(() => {
-    try {
-      const accountsQuery = query(
-        collection(db, "accounts"),
-        where("type", "==", passedType)
-      );
-
-      onSnapshot(accountsQuery, function (snapshot) {
-        snapshot.docChanges().forEach(function (change) {
-          switch (change.type) {
-            case "removed": {
-              removeFromAccounts(change.doc.id);
-              break;
-            }
-            case "added": {
-              addToAccounts({ ...change.doc.data(), id: change.doc.id });
-              break;
-            }
-            case "modified": {
-              modifyAccount({ ...change.doc.data(), id: change.doc.id });
-              break;
-            }
-            default:
-              return;
+    const accountsQuery = query(
+      collection(db, "accounts"),
+      orderBy("number", "asc"),
+      where("type", "==", passedType)
+    );
+    console.log("useEffect")
+    const unsubscribe = onSnapshot(accountsQuery, (snapshot) => {
+      snapshot.docChanges().forEach(function (change) {
+        switch (change.type) {
+          case "added": {
+            addToAccounts({ ...change.doc.data(), id: change.doc.id });
+            break;
           }
-        });
+          case "modified": {
+            modifyAccount({ ...change.doc.data(), id: change.doc.id });
+            break;
+          }
+          case "removed": {
+            removeFromAccounts(change.doc.id);
+            break;
+          }
+          default:
+            return;
+        }
       });
-    } catch (error) {
-      console.log("There was an Error");
-      console.log(error);
-    }
-  }, [addToAccounts, removeFromAccounts, setAccount, passedType]);
+    });
+    return () => {
+      unsubscribe();
+      console.log("unsubscribe")
+    };
+  }, [passedType, addToAccounts, modifyAccount, removeFromAccounts]);
 
   const returnHome = () => {
     setPage(PAGES.ACCOUNTS);

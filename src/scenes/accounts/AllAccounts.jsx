@@ -1,8 +1,5 @@
 import { useState, useMemo } from "react";
 
-import { db } from "../../firebase-config";
-import { deleteDoc, doc } from "firebase/firestore";
-
 import {
   Box,
   Input,
@@ -26,7 +23,11 @@ const AllAccounts = () => {
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
-  const { accounts, setPage, PAGES } = useAccounts();
+  const {
+    accounts,
+    setPage,
+    PAGES,
+  } = useAccounts();
   const [searchkey, setSearchkey] = useState("");
   const [page, setCurrentPage] = useState(1);
 
@@ -86,7 +87,9 @@ const AllAccounts = () => {
             count={numberPages}
             size={isNonMobile ? "large" : "small"}
             page={page}
-            onChange={(e, val) => setCurrentPage(val)}
+            onChange={(e, val) => {
+              setCurrentPage(val);
+            }}
           />
         </Box>
       )}

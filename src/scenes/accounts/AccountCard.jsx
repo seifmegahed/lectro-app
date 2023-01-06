@@ -1,6 +1,6 @@
 import { useState } from "react";
 import useAccounts from "../../contexts/AccountsContext";
-
+import { ADMIN } from "../../data/accounts";
 import { db } from "../../firebase-config";
 import { doc, deleteDoc } from "firebase/firestore";
 
@@ -17,11 +17,14 @@ import {
 import { MoreVert } from "@mui/icons-material";
 
 import FormContainer from "../../components/FormContainer";
+import { useAuth } from "../../contexts/AuthContext";
 
 const AccountCard = ({ account }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const { setPage, setAccount, PAGES } = useAccounts();
   const [moreMenu, setMoreMenu] = useState(null);
+  const { currentUser } = useAuth();
+
   const { id, number, taxNumber } = account;
   const maxStringSize = 15;
   const maxSubStringSize = 25;
@@ -63,7 +66,6 @@ const AccountCard = ({ account }) => {
     }
     deleteData();
   }
-
   return (
     <FormContainer padding="15px">
       <Box
@@ -87,7 +89,7 @@ const AccountCard = ({ account }) => {
             <Typography
               variant={isNonMobile ? "h3" : "h4"}
               onClick={visitAccount}
-              sx={{ cursor: "pointer" }}  
+              sx={{ cursor: "pointer" }}
               // color={done ? "primary" : "error"}
             >
               {englishName}
@@ -130,15 +132,17 @@ const AccountCard = ({ account }) => {
                 >
                   Edit
                 </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    handleDelete();
-                    handleMenuClose();
-                  }}
-                  color="error"
-                >
-                  <Typography color="error">Delete</Typography>
-                </MenuItem>
+                {currentUser.uid === ADMIN && (
+                  <MenuItem
+                    onClick={() => {
+                      handleDelete();
+                      handleMenuClose();
+                    }}
+                    color="error"
+                  >
+                    <Typography color="error">Delete</Typography>
+                  </MenuItem>
+                )}
               </Paper>
             </ClickAwayListener>
           </Popper>

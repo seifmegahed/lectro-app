@@ -7,3 +7,5 @@ export const clients = [
   {id:6, name: "el Terssana5"},
   {id:7, name: "el Terssana6"},
 ]
+
+export const ADMIN = "I54vuaBUwyPgRHKl3UbyzfHRo3r1"

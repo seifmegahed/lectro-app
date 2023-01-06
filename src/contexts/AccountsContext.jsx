@@ -27,6 +27,12 @@ export const AccountsProvider = ({ children }) => {
           page,
         },
       });
+      dispatch({
+        type: ACTIONS.SET_ALLACCOUNTS_CURRENTPAGE,
+        payload: {
+          currentPage: 1,
+        },
+      });
     };
 
     const addToAccounts = (account) => {

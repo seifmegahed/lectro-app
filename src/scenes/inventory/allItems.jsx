@@ -1,4 +1,7 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+
+import { db } from "../../firebase-config";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 
 import {
   Box,
@@ -23,9 +26,10 @@ const AllItems = () => {
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
-  const { items, setPage, PAGES } = useInventory();
+  const { setPage, PAGES } = useInventory();
   const [searchkey, setSearchkey] = useState("");
   const [page, setCurrentPage] = useState(1);
+  const [items, setItems] = useState([]);
 
   const filteredItems = useMemo(() => {
     return items.filter(
@@ -36,7 +40,7 @@ const AllItems = () => {
     );
   }, [searchkey, items]);
 
-  const numberPages = useMemo(() => {
+  let numberPages = useMemo(() => {
     return Math.ceil(filteredItems.length / itemsPerPage);
   }, [filteredItems]);
 
@@ -45,6 +49,21 @@ const AllItems = () => {
     const firstItemIndex = lastItemIndex - itemsPerPage;
     return filteredItems.slice(firstItemIndex, lastItemIndex);
   }, [filteredItems, page]);
+
+  useEffect(
+    () =>
+      onSnapshot(
+        query(collection(db, "items"), orderBy("createdOn", "desc")),
+        function (snapshot) {
+          let newItems = [];
+          snapshot.docs.forEach((doc) =>
+            newItems.push({ ...doc.data(), id: doc.id })
+          );
+          setItems(newItems);
+        }
+      ),
+    []
+  );
 
   return (
     <Box display="grid" gap="20px">
@@ -78,7 +97,7 @@ const AllItems = () => {
       {pageContent.map((item, index) => {
         return <ItemCard key={index} item={item} />;
       })}
-      {numberPages !== 1 && (
+      {numberPages >= 1 && (
         <Box display="flex" justifyContent="center">
           <Pagination
             count={numberPages}

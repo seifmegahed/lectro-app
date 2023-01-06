@@ -20,24 +20,6 @@ export const InventoryProvider = ({ children }) => {
       });
     };
 
-    const addToItems = (item) => {
-      dispatch({
-        type: ACTIONS.ADD_ITEM,
-        payload: {
-          item,
-        },
-      });
-    };
-
-    const removeFromItems = (itemID) => {
-      dispatch({
-        type: ACTIONS.REMOVE_ITEM,
-        payload: {
-          itemID,
-        },
-      });
-    };
-
     const setItem = (item) => {
       dispatch({
         type: ACTIONS.SET_ITEM,
@@ -47,39 +29,13 @@ export const InventoryProvider = ({ children }) => {
       });
     };
 
-    const modifyItem = (item) => {
-      dispatch({
-        type: ACTIONS.REMOVE_ITEM,
-        payload: {
-          id: item.id,
-        },
-      });
-      dispatch({
-        type: ACTIONS.ADD_ITEM,
-        payload: {
-          item,
-        },
-      });
-      if (item.id === state.item.id)
-        dispatch({
-          type: ACTIONS.SET_ITEM,
-          payload: {
-            item,
-          },
-        });
-    };
-
     return {
       PAGES,
       page: state.page,
       item: state.item,
-      items: state.items,
       selectedItems: state.selectedItems,
       setPage,
       setItem,
-      addToItems,
-      modifyItem,
-      removeFromItems,
     };
   }, [state]);
 

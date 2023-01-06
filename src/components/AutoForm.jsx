@@ -21,7 +21,7 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import { db } from "../firebase-config";
-import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
+import { addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
 
 import { useState } from "react";
 
@@ -206,22 +206,23 @@ const Field = ({
           );
         default:
           throw new Error(`No input case for ${field.input} available`);
+        }
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
-    }
+    };
+
+    return <>{inputField()}</>;
   };
-
-  return <>{inputField()}</>;
-};
-
-const AutoForm = ({ fields, initData, returnHome, collectionName, edit }) => {
+  
+  const AutoForm = ({ fields, initData, returnHome, collectionName, edit }) => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [file, setFile] = useState(null);
   const [data, setData] = useState(initData);
   const { currentUser } = useAuth();
-
+  const newData = {};
+  
   const handleImageUpload = (event) => {
     event.preventDefault();
 
@@ -243,7 +244,7 @@ const AutoForm = ({ fields, initData, returnHome, collectionName, edit }) => {
       const newData = {
         ...data,
         createdBy: currentUser.displayName,
-        createdOn: new Date(),
+        createdOn: serverTimestamp(),
       };
       const itemRef = await addDoc(collection(db, collectionName), newData);
 
@@ -263,23 +264,22 @@ const AutoForm = ({ fields, initData, returnHome, collectionName, edit }) => {
     }
   }
   async function editData() {
-    try {
-      const newData = {};
-      const keys = Object.keys(data);
-      keys.forEach((key) => {
-        if (data[key] !== (!!initData[key] ? initData[key] : "")) {
-          newData[key] = data[key];
-        }
-      });
-      const newDataKeys = Object.keys(newData);
-
-      if (newDataKeys.length > 0) {
-        newData.modifiedBy = currentUser.displayName;
-        newData.lastModifiedOn = new Date();
-        updateDoc(doc(db, collectionName, initData.id), newData);
+    const keys = Object.keys(data);
+    keys.forEach((key) => {
+      if (data[key] !== (!!initData[key] ? initData[key] : "")) {
+        newData[key] = data[key];
       }
-    } catch (error) {
-      console.error("Error writing new message to Firebase Database", error);
+    });
+    const newDataKeys = Object.keys(newData);
+
+    if (newDataKeys.length > 0) {
+      newData.modifiedBy = currentUser.displayName;
+      newData.lastModifiedOn = serverTimestamp();
+      try {
+        updateDoc(doc(db, collectionName, initData.id), newData);
+      } catch (error) {
+        console.error("Error writing new message to Firebase Database", error);
+      }
     }
   }
 
@@ -296,7 +296,7 @@ const AutoForm = ({ fields, initData, returnHome, collectionName, edit }) => {
       }
     });
     if (allValid) {
-      edit ? editData().then(returnHome()) : saveData().then(returnHome());
+      edit ? editData().then(returnHome(newData)) : saveData().then(returnHome());
       setLoading(false);
     } else {
       setLoading(false);
