@@ -1,8 +1,5 @@
 import { useState } from "react";
 
-import { db } from "../../firebase-config";
-import { doc, deleteDoc } from "firebase/firestore";
-
 import {
   Box,
   Typography,
@@ -19,7 +16,7 @@ import PopperMenu from "../../components/PopperMenu";
 import { ARABIC_MENU } from "./AllItems";
 import { useAuth } from "../../contexts/AuthContext";
 
-const ItemCard = ({ item, toggleSelected }) => {
+const ItemCard = ({ item, toggleSelected, handleDelete }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const { admin } = useAuth();
   const { setPage, setItem, setSelectedItems, PAGES } = useInventory();
@@ -52,13 +49,6 @@ const ItemCard = ({ item, toggleSelected }) => {
     setItem(item);
     setPage(PAGES.EDIT_ITEM);
   };
-
-  function handleDelete() {
-    async function deleteData() {
-      await deleteDoc(doc(db, "items", id));
-    }
-    deleteData();
-  }
 
   const eznEdafa = () => {
     setSelectedItems([item]);
@@ -96,7 +86,7 @@ const ItemCard = ({ item, toggleSelected }) => {
     },
     {
       label: "Delete",
-      callback: handleDelete,
+      callback: () => handleDelete(id),
       color: "error",
       disabled: !admin,
     },

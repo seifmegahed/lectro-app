@@ -2,11 +2,13 @@ import { useState, useMemo, useEffect } from "react";
 
 import { db } from "../../firebase-config";
 import {
-  collection,
-  onSnapshot,
-  orderBy,
-  query,
+  doc,
   where,
+  query,
+  getDocs,
+  orderBy,
+  deleteDoc,
+  collection,
 } from "firebase/firestore";
 
 import {
@@ -55,24 +57,30 @@ const AllAccounts = ({ type }) => {
     return filteredAccounts.slice(firstItemIndex, lastItemIndex);
   }, [filteredAccounts, page]);
 
-  useEffect(
-    () =>
-      onSnapshot(
-        query(
-          collection(db, "accounts"),
-          where("type", "==", type),
-          orderBy("number", "asc")
-        ),
-        function (snapshot) {
-          let newAccounts = [];
-          snapshot.docs.forEach((doc) =>
-            newAccounts.push({ ...doc.data(), id: doc.id })
-          );
-          setAccounts(newAccounts);
-        }
-      ),
-    [type]
-  );
+  function handleDelete(id) {
+    async function deleteData() {
+      await deleteDoc(doc(db, "accounts", id));
+    }
+    deleteData();
+    setAccounts((prev) => prev.filter((account) => account.id !== id));
+  }
+
+  useEffect(() => {
+    const getData = async () => {
+      const q = query(
+        collection(db, "accounts"),
+        where("type", "==", type),
+        orderBy("number", "asc")
+      );
+      let newAccounts = [];
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) =>
+        newAccounts.push({ ...doc.data(), id: doc.id })
+      );
+      setAccounts(newAccounts);
+    };
+    getData();
+  }, [type]);
 
   return (
     <Box display="grid" gap="20px">
@@ -104,7 +112,13 @@ const AllAccounts = ({ type }) => {
       </Box>
 
       {pageContent.map((account, index) => {
-        return <AccountCard key={index} account={account} />;
+        return (
+          <AccountCard
+            key={index}
+            account={account}
+            handleDelete={handleDelete}
+          />
+        );
       })}
       {numberPages !== 1 && (
         <Box display="flex" justifyContent="center">

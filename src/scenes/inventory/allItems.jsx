@@ -1,7 +1,14 @@
 import { useMemo, useState, useEffect } from "react";
 
 import { db } from "../../firebase-config";
-import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  deleteDoc,
+  orderBy,
+  query,
+  doc,
+} from "firebase/firestore";
 
 import {
   Box,
@@ -105,24 +112,31 @@ const AllItems = () => {
     setMoreMenu(null);
   };
 
-  useEffect(
-    () =>
-      onSnapshot(
-        query(collection(db, "items"), orderBy("createdOn", "desc")),
-        function (snapshot) {
-          let newItems = [];
-          snapshot.docs.forEach((doc) => {
-            let selected = false;
-            selectedItems.forEach((item) => {
-              if (item.id === doc.id) selected = item.selected;
-            });
-            newItems.push({ ...doc.data(), id: doc.id, selected: selected });
-          });
-          setItems(newItems);
-        }
-      ),
-    [selectedItems]
-  );
+  useEffect(() => {
+    let newItems = [];
+    const getData = async () => {
+      const q = query(collection(db, "items"), orderBy("createdOn", "desc"));
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        let selected = false;
+        selectedItems.forEach((item) => {
+          if (item.id === doc.id) selected = item.selected;
+        });
+        newItems.push({ ...doc.data(), id: doc.id, selected: selected });
+      });
+      setItems(newItems);
+    };
+    getData();
+  }, [selectedItems]);
+
+  function handleDelete(id) {
+    async function deleteData() {
+      await deleteDoc(doc(db, "items", id));
+    }
+    deleteData();
+    setItems((prev) => prev.filter((item) => item.id !== id));
+  }
+
   const menuItems = [
     {
       label: ARABIC_MENU.EDAFA,
@@ -203,6 +217,7 @@ const AllItems = () => {
           <ItemCard
             key={index}
             item={item}
+            handleDelete={handleDelete}
             toggleSelected={toggleSelected}
             updateSelected={updateSelected}
           />

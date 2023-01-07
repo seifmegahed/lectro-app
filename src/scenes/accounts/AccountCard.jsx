@@ -1,7 +1,6 @@
 import { useState } from "react";
+import { useAuth } from "../../contexts/AuthContext";
 import useAccounts from "../../contexts/AccountsContext";
-import { db } from "../../firebase-config";
-import { doc, deleteDoc } from "firebase/firestore";
 
 import {
   Box,
@@ -12,10 +11,9 @@ import {
 import { MoreVert } from "@mui/icons-material";
 
 import FormContainer from "../../components/FormContainer";
-import { useAuth } from "../../contexts/AuthContext";
 import PopperMenu from "../../components/PopperMenu";
 
-const AccountCard = ({ account }) => {
+const AccountCard = ({ account, handleDelete }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const { setPage, setAccount, PAGES } = useAccounts();
   const [moreMenu, setMoreMenu] = useState(null);
@@ -37,7 +35,7 @@ const AccountCard = ({ account }) => {
     : account.arabicName;
 
   const open = Boolean(moreMenu);
-  
+
   const handleMenu = (event) => {
     setMoreMenu(event.currentTarget);
   };
@@ -56,13 +54,6 @@ const AccountCard = ({ account }) => {
     setPage(PAGES.EDIT_ACCOUNT);
   };
 
-  function handleDelete() {
-    async function deleteData() {
-      await deleteDoc(doc(db, "accounts", id));
-    }
-    deleteData();
-  }
-
   const menuItems = [
     {
       label: "Details",
@@ -74,7 +65,7 @@ const AccountCard = ({ account }) => {
     },
     {
       label: "Delete",
-      callback: handleDelete,
+      callback: () => handleDelete(id),
       color: "error",
       disabled: !admin,
     },
