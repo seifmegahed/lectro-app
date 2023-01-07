@@ -1,6 +1,5 @@
 import { useState } from "react";
 import useAccounts from "../../contexts/AccountsContext";
-import { ADMIN } from "../../data/accounts";
 import { db } from "../../firebase-config";
 import { doc, deleteDoc } from "firebase/firestore";
 
@@ -8,22 +7,19 @@ import {
   Box,
   Typography,
   IconButton,
-  Popper,
-  MenuItem,
-  Paper,
-  ClickAwayListener,
   useMediaQuery,
 } from "@mui/material";
 import { MoreVert } from "@mui/icons-material";
 
 import FormContainer from "../../components/FormContainer";
 import { useAuth } from "../../contexts/AuthContext";
+import PopperMenu from "../../components/PopperMenu";
 
 const AccountCard = ({ account }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const { setPage, setAccount, PAGES } = useAccounts();
   const [moreMenu, setMoreMenu] = useState(null);
-  const { currentUser } = useAuth();
+  const { admin } = useAuth();
 
   const { id, number, taxNumber } = account;
   const maxStringSize = 15;
@@ -41,7 +37,7 @@ const AccountCard = ({ account }) => {
     : account.arabicName;
 
   const open = Boolean(moreMenu);
-
+  
   const handleMenu = (event) => {
     setMoreMenu(event.currentTarget);
   };
@@ -66,6 +62,23 @@ const AccountCard = ({ account }) => {
     }
     deleteData();
   }
+
+  const menuItems = [
+    {
+      label: "Details",
+      callback: visitAccount,
+    },
+    {
+      label: "Edit",
+      callback: handleEditAccount,
+    },
+    {
+      label: "Delete",
+      callback: handleDelete,
+      color: "error",
+      disabled: !admin,
+    },
+  ];
   return (
     <FormContainer padding="15px">
       <Box
@@ -114,38 +127,12 @@ const AccountCard = ({ account }) => {
           >
             <MoreVert fontSize="large" />
           </IconButton>
-          <Popper
-            id="moreMenu"
-            aria-labelledby="moreMenuButton"
-            anchorEl={moreMenu}
-            open={open}
-            onClose={handleMenuClose}
-            placement="bottom-start"
-          >
-            <ClickAwayListener onClickAway={handleMenuClose}>
-              <Paper>
-                <MenuItem
-                  onClick={() => {
-                    handleEditAccount();
-                    handleMenuClose();
-                  }}
-                >
-                  Edit
-                </MenuItem>
-                {currentUser.uid === ADMIN && (
-                  <MenuItem
-                    onClick={() => {
-                      handleDelete();
-                      handleMenuClose();
-                    }}
-                    color="error"
-                  >
-                    <Typography color="error">Delete</Typography>
-                  </MenuItem>
-                )}
-              </Paper>
-            </ClickAwayListener>
-          </Popper>
+          <PopperMenu
+            handleClose={handleMenuClose}
+            element={moreMenu}
+            placement="bottom-end"
+            menuItems={menuItems}
+          />
         </Box>
       </Box>
     </FormContainer>

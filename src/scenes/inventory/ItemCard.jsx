@@ -17,19 +17,21 @@ import FormContainer from "../../components/FormContainer";
 import PopperMenu from "../../components/PopperMenu";
 
 import { ARABIC_MENU } from "./AllItems";
+import { useAuth } from "../../contexts/AuthContext";
 
 const ItemCard = ({ item, toggleSelected, updateSelected }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
-
+  const { admin } = useAuth();
   const { setPage, setItem, PAGES } = useInventory();
   const [moreMenu, setMoreMenu] = useState(null);
   const { id, imageUrl, name, make, category, quantity, selected } = item;
   const maxStringSize = 10;
   const open = Boolean(moreMenu);
 
+  
   const title = isNonMobile
-    ? name
-    : name.length > maxStringSize
+  ? name
+  : name.length > maxStringSize
     ? name.substring(0, maxStringSize).trimEnd() + "..."
     : name;
   const subTitle = make + "-" + category;
@@ -61,7 +63,6 @@ const ItemCard = ({ item, toggleSelected, updateSelected }) => {
   }
   
   const menuItems = [
-    
     {
       label: ARABIC_MENU.EDAFA,
       arabic: true,
@@ -90,7 +91,7 @@ const ItemCard = ({ item, toggleSelected, updateSelected }) => {
       label: "Delete",
       callback: handleDelete,
       color: "error",
-      disabled: true,
+      disabled: !admin,
     },
   ];
 

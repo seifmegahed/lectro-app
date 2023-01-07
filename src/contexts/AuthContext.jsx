@@ -1,5 +1,6 @@
-import React , { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { auth } from "../firebase-config";
+import { ADMIN } from "../data/accounts";
 import {
   onAuthStateChanged,
   GoogleAuthProvider,
@@ -11,15 +12,17 @@ const AuthContext = React.createContext();
 
 export function useAuth() {
   return useContext(AuthContext);
-};
+}
 
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState();
+  const [admin, setAdmin] = useState(false);
 
   const value = {
     currentUser,
+    admin,
     logIn,
-    logOut
+    logOut,
   };
 
   async function logIn() {
@@ -35,10 +38,11 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
+       setAdmin(ADMIN === user.uid);
     });
 
     return unsubscribe;
   }, []);
 
-  return <AuthContext.Provider value={value} >{children}</AuthContext.Provider>;
-};
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}

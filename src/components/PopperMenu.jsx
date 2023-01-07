@@ -4,6 +4,7 @@ import {
   Popper,
   ClickAwayListener,
   Paper,
+  Typography,
 } from "@mui/material";
 
 import { tokens } from "../theme";
@@ -41,7 +42,7 @@ const PopperMenu = ({ menuItems, element, handleClose, placement }) => {
               sx={
                 item.arabic
                   ? arabicMenuItemStyle
-                  : index+1 === menuItems.length
+                  : index + 1 === menuItems.length
                   ? {}
                   : englishMenuItemStyle
               }
@@ -50,7 +51,11 @@ const PopperMenu = ({ menuItems, element, handleClose, placement }) => {
                 item.callback();
               }}
             >
-              {item.label}
+              {!!item.color ? (
+                <Typography color={item.color}>{item.label}</Typography>
+              ) : (
+                <>{item.label}</>
+              )}
             </MenuItem>
           ))}
         </Paper>

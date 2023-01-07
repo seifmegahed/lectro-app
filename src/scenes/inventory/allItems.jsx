@@ -188,7 +188,6 @@ const AllItems = () => {
           <PopperMenu
             handleClose={handleMenuClose}
             element={moreMenu}
-            placement="bottom-end"
             menuItems={menuItems}
           />
         </Box>
