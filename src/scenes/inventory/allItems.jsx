@@ -11,18 +11,22 @@ import {
   IconButton,
   Pagination,
   useMediaQuery,
-  MenuItem,
   Chip,
-  Popper,
-  ClickAwayListener,
-  Paper,
 } from "@mui/material";
-import { MoreVert, Search } from "@mui/icons-material";
+import { Search } from "@mui/icons-material";
 
 import { tokens } from "../../theme";
 import useInventory from "../../contexts/InventoryContext";
 
 import ItemCard from "./ItemCard";
+import PopperMenu from "../../components/PopperMenu";
+
+export const ARABIC_MENU = {
+  EDAFA: "إضافه",
+  SARF: "صرف",
+  KHOROOG: "خروج",
+  TALAB: "طلب شراء",
+};
 
 const itemsPerPage = 10;
 
@@ -86,7 +90,6 @@ const AllItems = () => {
 
   const clearSelected = () => {
     setItems((prev) => prev.map((item) => ({ ...item, selected: false })));
-    if (selectedItems.length > 0) setSelectedItems([]);
   };
 
   const handleMenu = (event) => {
@@ -113,8 +116,35 @@ const AllItems = () => {
           setItems(newItems);
         }
       ),
-    []
+    [selectedItems]
   );
+  const menuItems = [
+    {
+      label: ARABIC_MENU.EDAFA,
+      arabic: true,
+      callback: () => console.log("EDAFA"),
+    },
+    {
+      label: ARABIC_MENU.SARF,
+      arabic: true,
+      callback: () => console.log("SARF"),
+    },
+    {
+      label: ARABIC_MENU.KHOROOG,
+      arabic: true,
+      callback: () => console.log("KHOROOG"),
+    },
+    {
+      label: ARABIC_MENU.TALAB,
+      arabic: true,
+      callback: () => console.log("TALAB"),
+    },
+    {
+      label: "Delete",
+      callback: () => console.log("Delete"),
+      disabled: true,
+    },
+  ];
 
   return (
     <Box display="grid" gap="20px">
@@ -145,42 +175,22 @@ const AllItems = () => {
         </Button>
       </Box>
       {selected > 0 && (
-        <Box display="flex" justifyContent="space-between" gap="20px">
+        <Box display="flex" justifyContent="flex-start" gap="20px">
           <Chip
+            id="moreMenuButton"
+            aria-controls={open ? "moreMenu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? "true" : undefined}
+            onClick={handleMenu}
             onDelete={clearSelected}
             label={`${selected} Item${selected === 1 ? "" : "s"} Selected`}
           />
-          {/* <Box  display="grid" gap="10px"> */}
-          <Box display="flex" gap="10px">
-            <Chip
-              label="ACTIONS"
-              deleteIcon={<MoreVert />}
-              id="moreMenuButton"
-              aria-controls={open ? "moreMenu" : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? "true" : undefined}
-              onClick={handleMenu}
-              onDelete={handleMenu}
-            />
-            <Popper
-              id="moreMenu"
-              aria-labelledby="moreMenuButton"
-              anchorEl={moreMenu}
-              open={open}
-              onClose={handleMenuClose}
-              placement="bottom-start"
-            >
-              <ClickAwayListener onClickAway={handleMenuClose}>
-                <Paper>
-                  <MenuItem>Ezn Edafa</MenuItem>
-                  <MenuItem>Ezn Sarf</MenuItem>
-                  <MenuItem disabled color="error">
-                    Delete
-                  </MenuItem>
-                </Paper>
-              </ClickAwayListener>
-            </Popper>
-          </Box>
+          <PopperMenu
+            handleClose={handleMenuClose}
+            element={moreMenu}
+            placement="bottom-end"
+            menuItems={menuItems}
+          />
         </Box>
       )}
 

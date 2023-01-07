@@ -1,5 +1,4 @@
 import { useState } from "react";
-import useInventory from "../../contexts/InventoryContext";
 
 import { db } from "../../firebase-config";
 import { doc, deleteDoc } from "firebase/firestore";
@@ -8,23 +7,25 @@ import {
   Box,
   Typography,
   IconButton,
-  Popper,
-  MenuItem,
-  Paper,
-  ClickAwayListener,
   Checkbox,
   useMediaQuery,
 } from "@mui/material";
 import { MoreVert } from "@mui/icons-material";
 
+import useInventory from "../../contexts/InventoryContext";
 import FormContainer from "../../components/FormContainer";
+import PopperMenu from "../../components/PopperMenu";
+
+import { ARABIC_MENU } from "./AllItems";
 
 const ItemCard = ({ item, toggleSelected, updateSelected }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
+
   const { setPage, setItem, PAGES } = useInventory();
   const [moreMenu, setMoreMenu] = useState(null);
   const { id, imageUrl, name, make, category, quantity, selected } = item;
   const maxStringSize = 10;
+  const open = Boolean(moreMenu);
 
   const title = isNonMobile
     ? name
@@ -32,8 +33,6 @@ const ItemCard = ({ item, toggleSelected, updateSelected }) => {
     ? name.substring(0, maxStringSize).trimEnd() + "..."
     : name;
   const subTitle = make + "-" + category;
-
-  const open = Boolean(moreMenu);
 
   const handleMenu = (event) => {
     setMoreMenu(event.currentTarget);
@@ -60,6 +59,40 @@ const ItemCard = ({ item, toggleSelected, updateSelected }) => {
     }
     deleteData();
   }
+  
+  const menuItems = [
+    
+    {
+      label: ARABIC_MENU.EDAFA,
+      arabic: true,
+      callback: () => console.log("EDAFA"),
+    },
+    {
+      label: ARABIC_MENU.SARF,
+      arabic: true,
+      callback: () => console.log("SARF"),
+    },
+    {
+      label: ARABIC_MENU.TALAB,
+      arabic: true,
+      callback: () => console.log("TALAB"),
+    },
+    {
+      label: ARABIC_MENU.KHOROOG,
+      arabic: true,
+      callback: () => console.log("KHOROOG"),
+    },
+    {
+      label: "Edit",
+      callback: handleEditItem,
+    },
+    {
+      label: "Delete",
+      callback: handleDelete,
+      color: "error",
+      disabled: true,
+    },
+  ];
 
   return (
     <FormContainer padding="15px">
@@ -121,50 +154,12 @@ const ItemCard = ({ item, toggleSelected, updateSelected }) => {
           >
             <MoreVert fontSize="large" />
           </IconButton>
-          <Popper
-            id="moreMenu"
-            aria-labelledby="moreMenuButton"
-            anchorEl={moreMenu}
-            open={open}
-            onClose={handleMenuClose}
-            placement="bottom-start"
-          >
-            <ClickAwayListener onClickAway={handleMenuClose}>
-              <Paper>
-                <MenuItem
-                  onClick={() => {
-                    handleEditItem();
-                    handleMenuClose();
-                  }}
-                >
-                  Edit
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    handleMenuClose();
-                  }}
-                >
-                  Recieve
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    handleMenuClose();
-                  }}
-                >
-                  Request
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    handleDelete();
-                    handleMenuClose();
-                  }}
-                  color="error"
-                >
-                  <Typography color="error">Delete</Typography>
-                </MenuItem>
-              </Paper>
-            </ClickAwayListener>
-          </Popper>
+          <PopperMenu
+            handleClose={handleMenuClose}
+            element={moreMenu}
+            placement="bottom-end"
+            menuItems={menuItems}
+          />
         </Box>
       </Box>
     </FormContainer>
