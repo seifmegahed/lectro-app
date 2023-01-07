@@ -88,6 +88,11 @@ const AllItems = () => {
     setSelectedItems(temp);
   };
 
+  const eznEdafa = () => {
+    updateSelected();
+    setPage(PAGES.EZN_EDAFA);
+  };
+
   const clearSelected = () => {
     setItems((prev) => prev.map((item) => ({ ...item, selected: false })));
   };
@@ -122,7 +127,7 @@ const AllItems = () => {
     {
       label: ARABIC_MENU.EDAFA,
       arabic: true,
-      callback: () => console.log("EDAFA"),
+      callback: eznEdafa,
     },
     {
       label: ARABIC_MENU.SARF,

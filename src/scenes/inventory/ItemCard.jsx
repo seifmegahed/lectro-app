@@ -19,19 +19,18 @@ import PopperMenu from "../../components/PopperMenu";
 import { ARABIC_MENU } from "./AllItems";
 import { useAuth } from "../../contexts/AuthContext";
 
-const ItemCard = ({ item, toggleSelected, updateSelected }) => {
+const ItemCard = ({ item, toggleSelected }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const { admin } = useAuth();
-  const { setPage, setItem, PAGES } = useInventory();
+  const { setPage, setItem, setSelectedItems, PAGES } = useInventory();
   const [moreMenu, setMoreMenu] = useState(null);
   const { id, imageUrl, name, make, category, quantity, selected } = item;
   const maxStringSize = 10;
   const open = Boolean(moreMenu);
 
-  
   const title = isNonMobile
-  ? name
-  : name.length > maxStringSize
+    ? name
+    : name.length > maxStringSize
     ? name.substring(0, maxStringSize).trimEnd() + "..."
     : name;
   const subTitle = make + "-" + category;
@@ -46,7 +45,6 @@ const ItemCard = ({ item, toggleSelected, updateSelected }) => {
 
   const visitItem = () => {
     setItem(item);
-    updateSelected();
     setPage(PAGES.ITEM_PAGE);
   };
 
@@ -61,12 +59,17 @@ const ItemCard = ({ item, toggleSelected, updateSelected }) => {
     }
     deleteData();
   }
-  
+
+  const eznEdafa = () => {
+    setSelectedItems([item]);
+    setPage(PAGES.EZN_EDAFA);
+  };
+
   const menuItems = [
     {
       label: ARABIC_MENU.EDAFA,
       arabic: true,
-      callback: () => console.log("EDAFA"),
+      callback: eznEdafa,
     },
     {
       label: ARABIC_MENU.SARF,
@@ -82,6 +85,10 @@ const ItemCard = ({ item, toggleSelected, updateSelected }) => {
       label: ARABIC_MENU.KHOROOG,
       arabic: true,
       callback: () => console.log("KHOROOG"),
+    },
+    {
+      label: "Details",
+      callback: visitItem,
     },
     {
       label: "Edit",

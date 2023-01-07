@@ -2,8 +2,16 @@ import { createContext, useReducer, useContext, useMemo } from "react";
 import inventoryReducer, {
   initialState,
   ACTIONS,
-  PAGES,
 } from "../reducers/inventoryReducer";
+
+const PAGES = {
+  ALL_ITEMS: "ALL_ITEMS",
+  NEW_ITEM: "NEW_ITEM",
+  ITEM_PAGE: "ITEM_PAGE",
+  EDIT_ITEM: "EDIT_ITEM",
+  EZN_EDAFA: "EZN_EDAFA",
+  RECIEVE_ITEMS: "RECIEVE_ITEMS",
+};
 
 const InventoryContext = createContext(initialState);
 

@@ -10,6 +10,7 @@ import Header from "../../components/Header";
 
 import { Box, IconButton } from "@mui/material";
 import { ChevronLeft } from "@mui/icons-material";
+import Edafa from "./Edafa";
 
 const Inventory = () => {
   return (
@@ -20,8 +21,7 @@ const Inventory = () => {
 };
 
 const InventoryWrapper = () => {
-  const { page, setPage, PAGES } =
-    useInventory();
+  const { page, setPage, PAGES } = useInventory();
 
   const PageElements = () => {
     switch (page) {
@@ -33,6 +33,8 @@ const InventoryWrapper = () => {
         return <ItemPage />;
       case PAGES.EDIT_ITEM:
         return <EditItem />;
+      case PAGES.EZN_EDAFA:
+        return <Edafa />;
       default:
         return <AllItems />;
     }
