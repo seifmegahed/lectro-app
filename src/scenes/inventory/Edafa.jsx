@@ -5,6 +5,7 @@ import {
   TextField,
   Typography,
   useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { useState, useMemo } from "react";
@@ -18,6 +19,7 @@ const title = "إذن إضافه";
 const Edafa = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const isNonMobile = useMediaQuery("(min-width:600px)");
 
   const { selectedItems } = useInventory();
   const [edafaData, setEdafaData] = useState(
@@ -55,9 +57,18 @@ const Edafa = () => {
           taxNumber,
         });
       });
+      data.push({ label: "" });
+      data.sort(function (a, b) {
+        if (a.label > b.label) {
+            return 1;
+        }
+        if (b.label > a.label) {
+            return -1;
+        }
+        return 0;
+    });
     };
-    getData();
-    data.push({ label: "" });
+    getData()
     return data;
   }, []);
   const globalSupplierChange = (event) => {
@@ -104,17 +115,26 @@ const Edafa = () => {
           gap="20px"
           display="grid"
           alignItems="baseline"
+          gridTemplateColumns="repeat(4, minmax(0, 1fr))"
           key={index}
-          sx={{ gridColumn: "span 4" }}
+          sx={{
+            gridColumn: "span 4",
+            "& > div": {
+              gridColumn: isNonMobile ? undefined : "span 4",
+            },
+          }}
         >
           <Box sx={{ gridColumn: "span 4" }}>
             <Divider />
           </Box>
-          <Box sx={{ gridColumn: "span 2" }}>
-            <Typography variant="h3">{item.name}</Typography>
-            <Typography variant="h5">
-              {item.make} - {item.category}
-            </Typography>
+          <Box display="flex" gap="10px" sx={{ gridColumn: "span 2" }}>
+            <Typography variant="h1">{index + 1}</Typography>
+            <Box>
+              <Typography variant="h3">{item.name}</Typography>
+              <Typography variant="h5">
+                {item.make} - {item.category}
+              </Typography>
+            </Box>
           </Box>
           <Autocomplete
             onChange={(e) => supplierChange(e, index)}
@@ -125,6 +145,25 @@ const Edafa = () => {
               backgroundColor: `${colors.grey[900]}`,
             }}
             renderInput={(params) => <TextField {...params} label="Supplier" />}
+          />
+          <TextField
+            label="Quantity"
+            type="number"
+            onChange={(e) => {
+              setEdafaData((prev) => {
+                const itemIndex = index;
+                return prev.map((val, index) => {
+                  if (index === itemIndex)
+                    return { ...val, quantity: e.target.value };
+                  return val;
+                });
+              });
+            }}
+            value={item.quantity || ""}
+            sx={{
+              gridColumn: "span 2",
+              backgroundColor: `${colors.grey[900]}`,
+            }}
           />
           <TextField
             label="Notes"
@@ -139,24 +178,6 @@ const Edafa = () => {
               });
             }}
             value={item.notes || ""}
-            sx={{
-              gridColumn: "span 2",
-              backgroundColor: `${colors.grey[900]}`,
-            }}
-          />
-          <TextField
-            label="Quantity"
-            onChange={(e) => {
-              setEdafaData((prev) => {
-                const itemIndex = index;
-                return prev.map((val, index) => {
-                  if (index === itemIndex)
-                    return { ...val, quantity: e.target.value };
-                  return val;
-                });
-              });
-            }}
-            value={item.quantity || ""}
             sx={{
               gridColumn: "span 2",
               backgroundColor: `${colors.grey[900]}`,
