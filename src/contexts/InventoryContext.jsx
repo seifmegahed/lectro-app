@@ -29,6 +29,14 @@ export const InventoryProvider = ({ children }) => {
       });
     };
 
+    const setSelectedItems = (selectedItems) => {
+      dispatch({
+        type: ACTIONS.SET_SELECTED_ITEMS,
+        payload: {
+          selectedItems,
+        }
+      })
+    } 
     return {
       PAGES,
       page: state.page,
@@ -36,6 +44,7 @@ export const InventoryProvider = ({ children }) => {
       selectedItems: state.selectedItems,
       setPage,
       setItem,
+      setSelectedItems,
     };
   }, [state]);
 

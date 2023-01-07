@@ -1,7 +1,7 @@
 export const ACTIONS = {
   SET_PAGE: "SET_PAGE",
   SET_ITEM: "SET_ITEM",
-  UPDATE_SELECTEDITEMS: "UPDATE_SELECTEDITEMS",
+  SET_SELECTED_ITEMS: "SET_SELECTED_ITEMS",
 };
 
 export const PAGES = {
@@ -34,6 +34,12 @@ const inventoryReducer = (state, action) => {
       return {
         ...state,
         item: payload.item,
+      };
+    case ACTIONS.SET_SELECTED_ITEMS:
+      console.log(ACTIONS.SET_SELECTED_ITEMS, payload);
+      return {
+        ...state,
+        selectedItems: payload.selectedItems,
       };
     default:
       throw new Error(`No case for type ${type} found in inventoryReducer`);

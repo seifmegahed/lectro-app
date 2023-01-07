@@ -41,7 +41,7 @@ const InventoryWrapper = () => {
   return (
     <Box display="flex" gap="10px" flexDirection="column">
       <Box display="flex" alignItems="center">
-        {page !== PAGES.STORE && (
+        {page !== PAGES.ALL_ITEMS && (
           <IconButton onClick={() => setPage(PAGES.ALL_ITEMS)}>
             <ChevronLeft fontSize="large" />
           </IconButton>

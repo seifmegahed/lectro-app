@@ -11,8 +11,13 @@ import {
   IconButton,
   Pagination,
   useMediaQuery,
+  MenuItem,
+  Chip,
+  Popper,
+  ClickAwayListener,
+  Paper,
 } from "@mui/material";
-import { Search as SearchIcon } from "@mui/icons-material";
+import { MoreVert, Search } from "@mui/icons-material";
 
 import { tokens } from "../../theme";
 import useInventory from "../../contexts/InventoryContext";
@@ -26,10 +31,12 @@ const AllItems = () => {
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
-  const { setPage, PAGES } = useInventory();
+  const { setPage, selectedItems, setSelectedItems, PAGES } = useInventory();
   const [items, setItems] = useState([]);
+  const [moreMenu, setMoreMenu] = useState(null);
   const [searchkey, setSearchkey] = useState("");
   const [page, setCurrentPage] = useState(1);
+  const open = Boolean(moreMenu);
 
   const filteredItems = useMemo(() => {
     return items.filter(
@@ -50,15 +57,59 @@ const AllItems = () => {
     return filteredItems.slice(firstItemIndex, lastItemIndex);
   }, [filteredItems, page]);
 
+  const selected = useMemo(() => {
+    let temp = 0;
+    items.forEach((item) => {
+      if (item.selected) temp++;
+    });
+    return temp;
+  }, [items]);
+
+  const toggleSelected = (itemId) => {
+    setItems((prev) =>
+      prev.map((item) => {
+        if (item.id === itemId) {
+          return { ...item, selected: !item.selected };
+        }
+        return item;
+      })
+    );
+  };
+
+  const updateSelected = () => {
+    const temp = [];
+    items.forEach((item) => {
+      if (item.selected) temp.push(item);
+    });
+    setSelectedItems(temp);
+  };
+
+  const clearSelected = () => {
+    setItems((prev) => prev.map((item) => ({ ...item, selected: false })));
+    if (selectedItems.length > 0) setSelectedItems([]);
+  };
+
+  const handleMenu = (event) => {
+    setMoreMenu(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setMoreMenu(null);
+  };
+
   useEffect(
     () =>
       onSnapshot(
         query(collection(db, "items"), orderBy("createdOn", "desc")),
         function (snapshot) {
           let newItems = [];
-          snapshot.docs.forEach((doc) =>
-            newItems.push({ ...doc.data(), id: doc.id })
-          );
+          snapshot.docs.forEach((doc) => {
+            let selected = false;
+            selectedItems.forEach((item) => {
+              if (item.id === doc.id) selected = item.selected;
+            });
+            newItems.push({ ...doc.data(), id: doc.id, selected: selected });
+          });
           setItems(newItems);
         }
       ),
@@ -81,7 +132,7 @@ const AllItems = () => {
             onChange={(e) => setSearchkey(e.target.value)}
           />
           <IconButton type="button" sx={{ p: 1 }}>
-            <SearchIcon />
+            <Search />
           </IconButton>
         </Box>
         <Button
@@ -93,9 +144,55 @@ const AllItems = () => {
           New Item
         </Button>
       </Box>
+      {selected > 0 && (
+        <Box display="flex" justifyContent="space-between" gap="20px">
+          <Chip
+            onDelete={clearSelected}
+            label={`${selected} Item${selected === 1 ? "" : "s"} Selected`}
+          />
+          {/* <Box  display="grid" gap="10px"> */}
+          <Box display="flex" gap="10px">
+            <Chip
+              label="ACTIONS"
+              deleteIcon={<MoreVert />}
+              id="moreMenuButton"
+              aria-controls={open ? "moreMenu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? "true" : undefined}
+              onClick={handleMenu}
+              onDelete={handleMenu}
+            />
+            <Popper
+              id="moreMenu"
+              aria-labelledby="moreMenuButton"
+              anchorEl={moreMenu}
+              open={open}
+              onClose={handleMenuClose}
+              placement="bottom-start"
+            >
+              <ClickAwayListener onClickAway={handleMenuClose}>
+                <Paper>
+                  <MenuItem>Ezn Edafa</MenuItem>
+                  <MenuItem>Ezn Sarf</MenuItem>
+                  <MenuItem disabled color="error">
+                    Delete
+                  </MenuItem>
+                </Paper>
+              </ClickAwayListener>
+            </Popper>
+          </Box>
+        </Box>
+      )}
 
       {pageContent.map((item, index) => {
-        return <ItemCard key={index} item={item} />;
+        return (
+          <ItemCard
+            key={index}
+            item={item}
+            toggleSelected={toggleSelected}
+            updateSelected={updateSelected}
+          />
+        );
       })}
       {numberPages >= 1 && (
         <Box display="flex" justifyContent="center">

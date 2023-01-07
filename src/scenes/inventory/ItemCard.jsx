@@ -19,11 +19,11 @@ import { MoreVert } from "@mui/icons-material";
 
 import FormContainer from "../../components/FormContainer";
 
-const ItemCard = ({ item }) => {
+const ItemCard = ({ item, toggleSelected, updateSelected }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const { setPage, setItem, PAGES } = useInventory();
   const [moreMenu, setMoreMenu] = useState(null);
-  const { id, imageUrl, name, make, category, quantity } = item;
+  const { id, imageUrl, name, make, category, quantity, selected } = item;
   const maxStringSize = 10;
 
   const title = isNonMobile
@@ -31,7 +31,7 @@ const ItemCard = ({ item }) => {
     : name.length > maxStringSize
     ? name.substring(0, maxStringSize).trimEnd() + "..."
     : name;
-  const subTitle = (make + "-" + category)
+  const subTitle = make + "-" + category;
 
   const open = Boolean(moreMenu);
 
@@ -45,6 +45,7 @@ const ItemCard = ({ item }) => {
 
   const visitItem = () => {
     setItem(item);
+    updateSelected();
     setPage(PAGES.ITEM_PAGE);
   };
 
@@ -71,6 +72,8 @@ const ItemCard = ({ item }) => {
       >
         <Box>
           <Checkbox
+            checked={selected || false}
+            onChange={() => toggleSelected(id)}
             inputProps={{ "aria-label": "checkbox" }}
             sx={{ "& .MuiSvgIcon-root": { fontSize: 28 } }}
           />
