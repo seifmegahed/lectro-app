@@ -29,12 +29,23 @@ export const AccountsProvider = ({ children }) => {
       });
     };
 
+    const setAccountsLength = (acountsLength) => {
+      dispatch({
+        type: ACTIONS.SET_ACCOUNTS_LENGTH,
+        payload: {
+          acountsLength,
+        },
+      });
+    };
+
     return {
       PAGES,
       page: state.page,
       account: state.account,
+      acountsLength: state.acountsLength,
       setPage,
       setAccount,
+      setAccountsLength,
     };
   }, [state]);
 

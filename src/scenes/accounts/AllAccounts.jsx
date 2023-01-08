@@ -34,7 +34,7 @@ const AllAccounts = ({ type }) => {
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
-  const { setPage, PAGES } = useAccounts();
+  const { setPage, setAccountsLength, PAGES } = useAccounts();
   const [accounts, setAccounts] = useState([]);
   const [searchkey, setSearchkey] = useState("");
   const [page, setCurrentPage] = useState(1);
@@ -105,7 +105,10 @@ const AllAccounts = ({ type }) => {
           sx={{ minWidth: "130px" }}
           variant="contained"
           size="large"
-          onClick={() => setPage(PAGES.NEW_ACCOUNT)}
+          onClick={() => {
+            setAccountsLength(accounts.length);
+            setPage(PAGES.NEW_ACCOUNT);
+          }}
         >
           New Account
         </Button>

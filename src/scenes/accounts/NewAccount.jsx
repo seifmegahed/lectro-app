@@ -7,9 +7,9 @@ import FormContainer from "../../components/FormContainer";
 import AutoForm from "../../components/AutoForm";
 
 const NewAccount = ({type}) => {
-  const { accounts, setPage, PAGES } = useAccounts();
+  const { accountsLength, setPage, PAGES } = useAccounts();
   const newAccount = {
-    number: accounts.length + 1,
+    number: accountsLength + 1,
     type: type,
   };
   const returnHome = () => {

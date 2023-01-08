@@ -1,6 +1,7 @@
 export const ACTIONS = {
   SET_PAGE: "SET_PAGE",
   SET_ACCOUNT: "SET_ACCOUNT",
+  SET_ACCOUNTS_LENGTH: "SET_ACCOUNTS_LENGTH",
 };
 
 export const PAGES = {
@@ -12,6 +13,7 @@ export const PAGES = {
 
 export const initialState = {
   page: PAGES.ALL_ACCOUNTS,
+  acountsLength: 0,
   account: {},
 };
 
@@ -30,6 +32,12 @@ const accountsReducer = (state, action) => {
       return {
         ...state,
         account: payload.account,
+      };
+    case ACTIONS.SET_ACCOUNTS_LENGTH:
+      console.log(ACTIONS.SET_ACCOUNTS_LENGTH, payload);
+      return {
+        ...state,
+        acountsLength: payload.acountsLength,
       };
     default:
       throw new Error(`No case for type ${type} found in accountsReducer`);
