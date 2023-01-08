@@ -1,15 +1,7 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 
 import { db } from "../../firebase-config";
-import {
-  doc,
-  where,
-  query,
-  getDocs,
-  orderBy,
-  deleteDoc,
-  collection,
-} from "firebase/firestore";
+import { doc, deleteDoc } from "firebase/firestore";
 
 import {
   Box,
@@ -29,22 +21,23 @@ import AccountCard from "./AccountCard";
 
 const accountsPerPage = 10;
 
-const AllAccounts = ({ type }) => {
+const AllAccounts = ({ accounts, deleteAccount }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   const { setPage, setAccountsLength, PAGES } = useAccounts();
-  const [accounts, setAccounts] = useState([]);
   const [searchkey, setSearchkey] = useState("");
   const [page, setCurrentPage] = useState(1);
 
   const filteredAccounts = useMemo(() => {
-    return accounts.filter(
-      (account) =>
-        account.arabicName.includes(searchkey) ||
-        account.englishName.toLowerCase().includes(searchkey.toLowerCase())
-    );
+    if (accounts.length > 1)
+      return accounts.filter(
+        (account) =>
+          account.arabicName.includes(searchkey) ||
+          account.englishName.toLowerCase().includes(searchkey.toLowerCase())
+      );
+    else return [];
   }, [searchkey, accounts]);
 
   const numberPages = useMemo(() => {
@@ -59,28 +52,11 @@ const AllAccounts = ({ type }) => {
 
   function handleDelete(id) {
     async function deleteData() {
-      await deleteDoc(doc(db, "accounts", id));
+      return await deleteDoc(doc(db, "accounts", id));
     }
     deleteData();
-    setAccounts((prev) => prev.filter((account) => account.id !== id));
+    deleteAccount(id);
   }
-
-  useEffect(() => {
-    const getData = async () => {
-      const q = query(
-        collection(db, "accounts"),
-        where("type", "==", type),
-        orderBy("number", "asc")
-      );
-      let newAccounts = [];
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) =>
-        newAccounts.push({ ...doc.data(), id: doc.id })
-      );
-      setAccounts(newAccounts);
-    };
-    getData();
-  }, [type]);
 
   return (
     <Box display="grid" gap="20px">

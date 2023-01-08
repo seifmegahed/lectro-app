@@ -1,19 +1,21 @@
 export const ACTIONS = {
   SET_PAGE: "SET_PAGE",
   SET_ACCOUNT: "SET_ACCOUNT",
+  SET_NEW_ACCOUNT: "SET_NEW_ACCOUNT",
   SET_ACCOUNTS_LENGTH: "SET_ACCOUNTS_LENGTH",
 };
 
 export const PAGES = {
-  ALL_ACCOUNTS: "ALL_ACCOUNTS",
-  NEW_ACCOUNT: "NEW_ACCOUNT",
   ACCOUNT_PAGE: "ACCOUNT_PAGE",
+  ALL_ACCOUNTS: "ALL_ACCOUNTS",
   EDIT_ACCOUNT: "EDIT_ACCOUNT",
+  NEW_ACCOUNT: "NEW_ACCOUNT",
 };
 
 export const initialState = {
   page: PAGES.ALL_ACCOUNTS,
-  acountsLength: 0,
+  accountsLength: 0,
+  newAccount: {},
   account: {},
 };
 
@@ -33,11 +35,17 @@ const accountsReducer = (state, action) => {
         ...state,
         account: payload.account,
       };
+    case ACTIONS.SET_NEW_ACCOUNT:
+      console.log(ACTIONS.SET_NEW_ACCOUNT, payload);
+      return {
+        ...state,
+        newAccount: payload.newAccount,
+      };
     case ACTIONS.SET_ACCOUNTS_LENGTH:
       console.log(ACTIONS.SET_ACCOUNTS_LENGTH, payload);
       return {
         ...state,
-        acountsLength: payload.acountsLength,
+        accountsLength: payload.accountsLength,
       };
     default:
       throw new Error(`No case for type ${type} found in accountsReducer`);

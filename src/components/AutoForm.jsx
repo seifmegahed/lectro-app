@@ -99,7 +99,7 @@ const Field = ({
               name={name}
               type={type}
               disabled={disabled}
-              error={required ? error : false}
+              error={!!required ? !!error : false}
               value={value || ""}
               onChange={handleChange}
               sx={{
@@ -124,7 +124,7 @@ const Field = ({
                   label={label}
                   disabled={edit ? !editable : false}
                   name={name}
-                  error={error}
+                  error={!!required ? !!error : false}
                   value={value || ""}
                   onChange={handleChange}
                   color={
@@ -160,7 +160,7 @@ const Field = ({
                 value={value || ""}
                 disabled={edit ? !editable : false}
                 onChange={handleChange}
-                error={error}
+                error={!!required ? !!error : false}
                 sx={{ backgroundColor: `${colors.grey[900]}` }}
               >
                 {options.map((option) => (
@@ -227,7 +227,6 @@ const AutoForm = ({ fields, initData, returnHome, collectionName, edit }) => {
   const [file, setFile] = useState(null);
   const [data, setData] = useState(initData);
   const { currentUser } = useAuth();
-  const newData = {};
 
   const handleImageUpload = (event) => {
     event.preventDefault();
@@ -247,13 +246,13 @@ const AutoForm = ({ fields, initData, returnHome, collectionName, edit }) => {
 
   async function saveData() {
     try {
-      const newData = {
+      let newData = {
         ...data,
         createdBy: currentUser.displayName,
         createdOn: serverTimestamp(),
       };
       const itemRef = await addDoc(collection(db, collectionName), newData);
-
+      newData.id = itemRef.id;
       if (!!file) {
         const filePath = `${collectionName}/${itemRef.id}/${file.name}`;
         const newImageRef = ref(getStorage(), filePath);
@@ -265,11 +264,14 @@ const AutoForm = ({ fields, initData, returnHome, collectionName, edit }) => {
           storageUri: fileSnapshot.metadata.fullPath,
         });
       }
+      returnHome({ ...newData, createdOn: new Date() });
     } catch (error) {
       console.error("Error writing new message to Firebase Database", error);
     }
   }
+
   async function editData() {
+    let newData = {};
     const keys = Object.keys(data);
     keys.forEach((key) => {
       if (data[key] !== (!!initData[key] ? initData[key] : "")) {
@@ -283,6 +285,7 @@ const AutoForm = ({ fields, initData, returnHome, collectionName, edit }) => {
       newData.lastModifiedOn = serverTimestamp();
       try {
         updateDoc(doc(db, collectionName, initData.id), newData);
+        returnHome({ ...newData, lastModifiedOn: new Date() });
       } catch (error) {
         console.error("Error writing new message to Firebase Database", error);
       }
@@ -307,13 +310,8 @@ const AutoForm = ({ fields, initData, returnHome, collectionName, edit }) => {
         noChange &= data[field.name] === initData[field.name];
       });
 
-      edit
-        ? noChange
-          ? editData().then(
-              returnHome({ ...newData, lastModifiedOn: new Date() })
-            )
-          : returnHome()
-        : saveData().then(returnHome());
+      edit ? (noChange ? editData() : returnHome()) : saveData();
+
       setLoading(false);
     } else {
       setLoading(false);

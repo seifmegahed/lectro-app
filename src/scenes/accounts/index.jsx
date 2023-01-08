@@ -1,4 +1,8 @@
+import { useState, useEffect } from "react";
 import useAccounts, { AccountsProvider } from "../../contexts/AccountsContext";
+
+import { db } from "../../firebase-config";
+import { where, query, getDocs, orderBy, collection } from "firebase/firestore";
 
 import Header from "../../components/Header";
 
@@ -18,13 +22,60 @@ const Accounts = ({ type }) => {
 };
 
 const AccountsWrapper = ({ type }) => {
-  const { page, setPage, PAGES } = useAccounts();
+  const { page, setPage, PAGES, newAccount } = useAccounts();
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const [accounts, setAccounts] = useState([]);
+
+  const returnHome = () => {
+    setPage(PAGES.ALL_ACCOUNTS);
+  };
+
+  const deleteAccount = (id) => {
+    setAccounts((prev) => prev.filter((account) => account.id !== id));
+  };
+
+  const addAccount = (newAccount) => {
+    setAccounts((prev) => {
+      const filtered = prev.filter((account) => account.id !== newAccount.id);
+      return [...filtered, newAccount];
+    });
+  };
+
+  useEffect(() => {
+    if (!!newAccount.id) {
+      addAccount(newAccount)
+    }
+  }, [newAccount]);
+
+  useEffect(() => {
+    const getData = async () => {
+      const q = query(
+        collection(db, "accounts"),
+        where("type", "==", type),
+        orderBy("number", "asc")
+      );
+      let newAccounts = [];
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) =>
+        newAccounts.push({ ...doc.data(), id: doc.id })
+      );
+      setAccounts(newAccounts);
+      console.log("here");
+    };
+    getData();
+  }, [type]);
 
   const PageElements = () => {
+    const { PAGES } = useAccounts();
     switch (page) {
       case PAGES.ALL_ACCOUNTS:
-        return <AllAccounts type={type} />;
+        return (
+          <AllAccounts
+            accounts={accounts}
+            addAccount={addAccount}
+            deleteAccount={deleteAccount}
+          />
+        );
       case PAGES.NEW_ACCOUNT:
         return <NewAccount type={type} />;
       case PAGES.ACCOUNT_PAGE:
@@ -32,12 +83,14 @@ const AccountsWrapper = ({ type }) => {
       case PAGES.EDIT_ACCOUNT:
         return <EditAccount />;
       default:
-        return <AllAccounts type={type} />;
+        return (
+          <AllAccounts
+            accounts={accounts}
+            addAccount={addAccount}
+            deleteAccount={deleteAccount}
+          />
+        );
     }
-  };
-
-  const returnHome = () => {
-    setPage(PAGES.ALL_ACCOUNTS);
   };
 
   return (
@@ -49,7 +102,7 @@ const AccountsWrapper = ({ type }) => {
     >
       <Box display="flex" gap="10px" flexDirection="column">
         <Box display="flex" alignItems="center">
-          {page !== PAGES.ACCOUNTS && (
+          {page !== PAGES.ALL_ACCOUNTS && (
             <IconButton onClick={returnHome}>
               <ChevronLeft fontSize="large" />
             </IconButton>

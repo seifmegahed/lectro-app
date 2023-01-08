@@ -29,22 +29,33 @@ export const AccountsProvider = ({ children }) => {
       });
     };
 
-    const setAccountsLength = (acountsLength) => {
+    const setAccountsLength = (accountsLength) => {
       dispatch({
         type: ACTIONS.SET_ACCOUNTS_LENGTH,
         payload: {
-          acountsLength,
+          accountsLength,
         },
       });
     };
+
+    const setNewAccount = (newAccount) => {
+      dispatch({
+        type: ACTIONS.SET_NEW_ACCOUNT,
+        payload: {
+          newAccount,
+        },
+      });
+    }
 
     return {
       PAGES,
       page: state.page,
       account: state.account,
-      acountsLength: state.acountsLength,
+      newAccount: state.newAccount,
+      accountsLength: state.accountsLength,
       setPage,
       setAccount,
+      setNewAccount,
       setAccountsLength,
     };
   }, [state]);
