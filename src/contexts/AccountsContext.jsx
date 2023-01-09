@@ -2,8 +2,14 @@ import { createContext, useReducer, useContext, useMemo } from "react";
 import accountsReducer, {
   initialState,
   ACTIONS,
-  PAGES,
 } from "../reducers/accountsReducer";
+
+const PAGES = {
+  ALL_ACCOUNTS: "ALL_ACCOUNTS",
+  ACCOUNT_PAGE: "ACCOUNT_PAGE",
+  EDIT_ACCOUNT: "EDIT_ACCOUNT",
+  NEW_ACCOUNT: "NEW_ACCOUNT",
+};
 
 const AccountsContext = createContext(initialState);
 

@@ -5,15 +5,8 @@ export const ACTIONS = {
   SET_ACCOUNTS_LENGTH: "SET_ACCOUNTS_LENGTH",
 };
 
-export const PAGES = {
-  ACCOUNT_PAGE: "ACCOUNT_PAGE",
-  ALL_ACCOUNTS: "ALL_ACCOUNTS",
-  EDIT_ACCOUNT: "EDIT_ACCOUNT",
-  NEW_ACCOUNT: "NEW_ACCOUNT",
-};
-
 export const initialState = {
-  page: PAGES.ALL_ACCOUNTS,
+  page: "ALL_ACCOUNTS",
   accountsLength: 0,
   newAccount: {},
   account: {},
