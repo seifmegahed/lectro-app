@@ -60,15 +60,15 @@ const Edafa = () => {
       data.push({ label: "" });
       data.sort(function (a, b) {
         if (a.label > b.label) {
-            return 1;
+          return 1;
         }
         if (b.label > a.label) {
-            return -1;
+          return -1;
         }
         return 0;
-    });
+      });
     };
-    getData()
+    getData();
     return data;
   }, []);
   const globalSupplierChange = (event) => {
@@ -102,14 +102,16 @@ const Edafa = () => {
       >
         <Typography variant="h3">{title}</Typography>
       </Box>
-      <Box sx={{ gridColumn: "span 4" }}>
-        <Autocomplete
-          onChange={globalSupplierChange}
-          options={suppliersList}
-          sx={{ backgroundColor: `${colors.grey[900]}` }}
-          renderInput={(params) => <TextField {...params} label="Supplier" />}
-        />
-      </Box>
+      {edafaData.length > 1 && (
+        <Box sx={{ gridColumn: "span 4" }}>
+          <Autocomplete
+            onChange={globalSupplierChange}
+            options={suppliersList}
+            sx={{ backgroundColor: `${colors.grey[900]}` }}
+            renderInput={(params) => <TextField {...params} label="Supplier" />}
+          />
+        </Box>
+      )}
       {edafaData.map((item, index) => (
         <Box
           gap="20px"

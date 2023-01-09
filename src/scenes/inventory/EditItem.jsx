@@ -11,7 +11,6 @@ const EditItem = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   const returnHome = (data) => {
-    console.log(data)
     if (!!data) {
       setItem({ ...item, ...data });
       modifyItem({ ...item, ...data });
