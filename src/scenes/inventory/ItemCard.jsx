@@ -1,5 +1,10 @@
 import { useState } from "react";
 
+import { getStorage, deleteObject } from "firebase/storage";
+import { collection, doc } from "firebase/firestore";
+import { db } from "../../firebase-config";
+import { useFirestoreDocumentDeletion } from "@react-query-firebase/firestore";
+
 import {
   Box,
   Typography,
@@ -16,15 +21,31 @@ import PopperMenu from "../../components/PopperMenu";
 import { ARABIC_MENU } from "./AllItems";
 import { useAuth } from "../../contexts/AuthContext";
 
-const ItemCard = ({ item, toggleSelected, handleDelete }) => {
+const ItemCard = ({ item, toggleSelected, updateSelected }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const { admin } = useAuth();
-  const { setPage, setItem, setSelectedItems, PAGES } = useInventory();
+  const { setPage, setItem, setSelectedItems, removeItem, PAGES } =
+    useInventory();
   const [moreMenu, setMoreMenu] = useState(null);
-  const { id, imageUrl, name, make, category, quantity, selected } = item;
+  const { id, imageUrl, storageUri, name, make, category, quantity, selected } =
+    item;
   const maxStringSize = 10;
   const open = Boolean(moreMenu);
+  const collectionReferance = collection(db, "items");
+  const documentReferance = doc(collectionReferance, id);
 
+  const deleteMutation = useFirestoreDocumentDeletion(documentReferance, {
+    onSuccess() {
+      if (!!storageUri)
+        deleteObject(getStorage(), storageUri)
+          .then(() => removeItem(id))
+          .catch((error) => console.log(error));
+      else removeItem(id);
+    },
+    onError(error) {
+      console.log(error);
+    },
+  });
   const title = isNonMobile
     ? name
     : name.length > maxStringSize
@@ -41,6 +62,7 @@ const ItemCard = ({ item, toggleSelected, handleDelete }) => {
   };
 
   const visitItem = () => {
+    updateSelected();
     setItem(item);
     setPage(PAGES.ITEM_PAGE);
   };
@@ -86,7 +108,7 @@ const ItemCard = ({ item, toggleSelected, handleDelete }) => {
     },
     {
       label: "Delete",
-      callback: () => handleDelete(id),
+      callback: () => deleteMutation.mutate(),
       color: "error",
       disabled: !admin,
     },

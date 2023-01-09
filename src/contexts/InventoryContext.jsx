@@ -37,6 +37,42 @@ export const InventoryProvider = ({ children }) => {
       });
     };
 
+    const addItem = (item) => {
+      dispatch({
+        type: ACTIONS.ADD_ITEM,
+        payload: {
+          item,
+        },
+      });
+    };
+
+    const modifyItem = (item) => {
+      dispatch({
+        type: ACTIONS.MODIFY_ITEM,
+        payload: {
+          item,
+        },
+      });
+    };
+
+    const removeItem = (itemId) => {
+      dispatch({
+        type: ACTIONS.REMOVE_ITEM,
+        payload: {
+          itemId,
+        },
+      });
+    };
+
+    const setItems = (items) => {
+      dispatch({
+        type: ACTIONS.SET_ITEMS,
+        payload: {
+          items,
+        },
+      });
+    }
+    
     const setSelectedItems = (selectedItems) => {
       dispatch({
         type: ACTIONS.SET_SELECTED_ITEMS,
@@ -44,14 +80,19 @@ export const InventoryProvider = ({ children }) => {
           selectedItems,
         }
       })
-    } 
+    }
     return {
       PAGES,
       page: state.page,
       item: state.item,
+      items: state.items,
       selectedItems: state.selectedItems,
       setPage,
       setItem,
+      addItem,
+      setItems,
+      modifyItem,
+      removeItem,
       setSelectedItems,
     };
   }, [state]);

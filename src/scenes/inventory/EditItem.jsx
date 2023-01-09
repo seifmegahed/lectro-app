@@ -7,11 +7,16 @@ import AutoForm from "../../components/AutoForm";
 import useInventory from "../../contexts/InventoryContext";
 
 const EditItem = () => {
-  const { item, setItem, setPage, PAGES } = useInventory();
+  const { item, setItem, modifyItem, setSelectedItems, setPage, PAGES } = useInventory();
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   const returnHome = (data) => {
-    if (!!data) setItem({ ...item, ...data });
+    console.log(data)
+    if (!!data) {
+      setItem({ ...item, ...data });
+      modifyItem({ ...item, ...data });
+      setSelectedItems([])
+    }
     setPage(PAGES.ITEM_PAGE);
   };
 

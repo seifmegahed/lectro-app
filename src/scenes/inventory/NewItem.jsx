@@ -19,15 +19,18 @@ import useInventory from "../../contexts/InventoryContext";
 const NewItem = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const { setPage, PAGES } = useInventory();
+  const { setPage, setItem, addItem, setSelectedItems, PAGES } = useInventory();
   const [category, setCategory] = useState("");
 
   const handleCategoryChange = (event) => {
     setCategory(event.target.value);
   };
 
-  const returnHome = () => {
-    setPage(PAGES.ALL_ITEMS);
+  const returnHome = (data) => {
+    addItem(data);
+    setItem(data);
+    setSelectedItems([]);
+    setPage(PAGES.ITEM_PAGE);
   };
   return (
     <FormContainer>

@@ -1,15 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
 
-import { db } from "../../firebase-config";
-import {
-  collection,
-  getDocs,
-  deleteDoc,
-  orderBy,
-  query,
-  doc,
-} from "firebase/firestore";
-
 import {
   Box,
   Input,
@@ -42,21 +32,28 @@ const AllItems = () => {
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
-  const { setPage, selectedItems, setSelectedItems, PAGES } = useInventory();
-  const [items, setItems] = useState([]);
+  const { setPage, items, selectedItems, setSelectedItems, PAGES } =
+    useInventory();
+
+  const [currentItems, setCurrentItems] = useState(
+    items.map((item) => ({ ...item, selected: false }))
+  );
+
   const [moreMenu, setMoreMenu] = useState(null);
   const [searchkey, setSearchkey] = useState("");
   const [page, setCurrentPage] = useState(1);
   const open = Boolean(moreMenu);
 
-  const filteredItems = useMemo(() => {
-    return items.filter(
-      (item) =>
-        item.name.toLowerCase().includes(searchkey.toLowerCase()) ||
-        item.make.toLowerCase().includes(searchkey.toLowerCase()) ||
-        item.category.toLowerCase().includes(searchkey.toLowerCase())
-    );
-  }, [searchkey, items]);
+  const filteredItems = useMemo(
+    () =>
+      currentItems.filter(
+        (item) =>
+          item.name.toLowerCase().includes(searchkey.toLowerCase()) ||
+          item.make.toLowerCase().includes(searchkey.toLowerCase()) ||
+          item.category.toLowerCase().includes(searchkey.toLowerCase())
+      ),
+    [searchkey, currentItems]
+  );
 
   let numberPages = useMemo(() => {
     return Math.ceil(filteredItems.length / itemsPerPage);
@@ -70,14 +67,14 @@ const AllItems = () => {
 
   const selected = useMemo(() => {
     let temp = 0;
-    items.forEach((item) => {
+    currentItems.forEach((item) => {
       if (item.selected) temp++;
     });
     return temp;
-  }, [items]);
+  }, [currentItems]);
 
   const toggleSelected = (itemId) => {
-    setItems((prev) =>
+    setCurrentItems((prev) =>
       prev.map((item) => {
         if (item.id === itemId) {
           return { ...item, selected: !item.selected };
@@ -89,7 +86,7 @@ const AllItems = () => {
 
   const updateSelected = () => {
     const temp = [];
-    items.forEach((item) => {
+    currentItems.forEach((item) => {
       if (item.selected) temp.push(item);
     });
     setSelectedItems(temp);
@@ -101,7 +98,9 @@ const AllItems = () => {
   };
 
   const clearSelected = () => {
-    setItems((prev) => prev.map((item) => ({ ...item, selected: false })));
+    setCurrentItems((prev) =>
+      prev.map((item) => ({ ...item, selected: false }))
+    );
   };
 
   const handleMenu = (event) => {
@@ -113,29 +112,15 @@ const AllItems = () => {
   };
 
   useEffect(() => {
-    let newItems = [];
-    const getData = async () => {
-      const q = query(collection(db, "items"), orderBy("createdOn", "desc"));
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-        let selected = false;
-        selectedItems.forEach((item) => {
-          if (item.id === doc.id) selected = item.selected;
-        });
-        newItems.push({ ...doc.data(), id: doc.id, selected: selected });
-      });
-      setItems(newItems);
-    };
-    getData();
+    selectedItems.forEach((item) => {
+      setCurrentItems((prev) =>
+        prev.map((stateItem) => {
+          if (item.id === stateItem.id) return { ...item, selected: true };
+          else return stateItem;
+        })
+      );
+    });
   }, [selectedItems]);
-
-  function handleDelete(id) {
-    async function deleteData() {
-      await deleteDoc(doc(db, "items", id));
-    }
-    deleteData();
-    setItems((prev) => prev.filter((item) => item.id !== id));
-  }
 
   const menuItems = [
     {
@@ -157,11 +142,6 @@ const AllItems = () => {
       label: ARABIC_MENU.TALAB,
       arabic: true,
       callback: () => console.log("TALAB"),
-    },
-    {
-      label: "Delete",
-      callback: () => console.log("Delete"),
-      disabled: true,
     },
   ];
 
@@ -217,7 +197,6 @@ const AllItems = () => {
           <ItemCard
             key={index}
             item={item}
-            handleDelete={handleDelete}
             toggleSelected={toggleSelected}
             updateSelected={updateSelected}
           />
