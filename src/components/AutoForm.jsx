@@ -124,11 +124,13 @@ const AutoForm = ({ fields, initData, returnHome, collectionName, edit }) => {
     var allValid = true;
     fields.forEach((field) => {
       if (!!field.required) {
-        setErrors((prev) => ({ ...prev, [field.name]: false }));
-        if (data[field.name] === undefined || !data[field.name]) {
-          allValid = false;
-          setErrors((prev) => ({ ...prev, [field.name]: true }));
-        }
+        setErrors((prev) => {
+          if (data[field.name] === undefined || !data[field.name]) {
+            allValid = false;
+            console.log("all false");
+            return { ...prev, [field.name]: true };
+          } else return { ...prev, [field.name]: false };
+        });
       }
     });
     if (allValid) {

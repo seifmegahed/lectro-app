@@ -106,7 +106,7 @@ const FieldSelector = ({
                   label={label}
                   disabled={edit ? !editable : false}
                   name={name}
-                  error={!!required ? !!error : false}
+                  error={!!required ? error : false}
                   value={value || ""}
                   onChange={handleChange}
                   color={
@@ -142,7 +142,7 @@ const FieldSelector = ({
                 value={value || ""}
                 disabled={edit ? !editable : false}
                 onChange={handleChange}
-                error={!!required ? !!error : false}
+                error={!!required ? error : false}
                 sx={{ backgroundColor: `${colors.grey[900]}` }}
               >
                 {options.map((option) => (
