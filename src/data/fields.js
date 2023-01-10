@@ -7,7 +7,18 @@ const name = {
   label: "Name",
   type: "text",
   input: "textField",
+  editable,
   required,
+  display,
+  span: "2",
+};
+const partNumber = {
+  name: "mpn",
+  label: "Part Number",
+  type: "text",
+  input: "textField",
+  required,
+  editable,
   display,
   span: "2",
 };
@@ -122,6 +133,7 @@ const userData = [
 export const itemFields = {
   Driver: [
     name,
+    partNumber,
     make,
     { ...country, required },
     power,
@@ -206,6 +218,7 @@ export const itemFields = {
   ],
   LED: [
     name,
+    partNumber,
     make,
     { ...country, required },
     power,
@@ -281,6 +294,7 @@ export const itemFields = {
   ],
   Lens: [
     name,
+    partNumber,
     make,
     { ...country, required },
     {

@@ -24,15 +24,37 @@ import { useAuth } from "../../contexts/AuthContext";
 const ItemCard = ({ item, toggleSelected, updateSelected }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const { admin } = useAuth();
-  const { setPage, setItem, setSelectedItems, removeItem, PAGES } =
+  const { setPage, setItem, removeItem, PAGES } =
     useInventory();
   const [moreMenu, setMoreMenu] = useState(null);
-  const { id, imageUrl, storageUri, name, make, category, quantity, selected } =
-    item;
-  const maxStringSize = 10;
+  const {
+    id,
+    imageUrl,
+    storageUri,
+    name,
+    make,
+    mpn,
+    category,
+    quantity,
+    selected,
+  } = item;
+  const maxStringSize = 12;
+  const maxSubStringSize = 18;
   const open = Boolean(moreMenu);
   const collectionReferance = collection(db, "items");
   const documentReferance = doc(collectionReferance, id);
+
+  const title = isNonMobile
+    ? name
+    : name.length > maxStringSize
+    ? name.substring(0, maxStringSize).trimEnd() + "..."
+    : name;
+  const temp = make + (!!mpn ? "-" + mpn : "");
+  const subTitle = isNonMobile
+    ? temp
+    : temp.length > maxSubStringSize
+    ? temp.substring(0, maxSubStringSize).trimEnd() + "..."
+    : temp;
 
   const deleteMutation = useFirestoreDocumentDeletion(documentReferance, {
     onSuccess() {
@@ -46,12 +68,6 @@ const ItemCard = ({ item, toggleSelected, updateSelected }) => {
       console.log(error);
     },
   });
-  const title = isNonMobile
-    ? name
-    : name.length > maxStringSize
-    ? name.substring(0, maxStringSize).trimEnd() + "..."
-    : name;
-  const subTitle = make + "-" + category;
 
   const handleMenu = (event) => {
     setMoreMenu(event.currentTarget);
@@ -73,7 +89,7 @@ const ItemCard = ({ item, toggleSelected, updateSelected }) => {
   };
 
   const eznEdafa = () => {
-    setSelectedItems([item]);
+    setItem(item);
     setPage(PAGES.EZN_EDAFA);
   };
 
@@ -161,6 +177,7 @@ const ItemCard = ({ item, toggleSelected, updateSelected }) => {
           {isNonMobile && (
             <Box display="flex" flexDirection="column" textAlign="right">
               <Typography variant="h6">Quantity: {quantity || "0"}</Typography>
+              <Typography variant="h6">{category}</Typography>
             </Box>
           )}
         </Box>

@@ -5,6 +5,7 @@ import {
   TextField,
   Typography,
   useTheme,
+  Button,
   useMediaQuery,
 } from "@mui/material";
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
@@ -21,14 +22,35 @@ const Edafa = () => {
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
-  const { selectedItems } = useInventory();
+  const { selectedItems, item } = useInventory();
   const [edafaData, setEdafaData] = useState(
-    selectedItems.map((item) => ({
-      ...item,
-      quantity: "",
-      notes: "",
-      supplier: { label: "" },
-    }))
+    selectedItems.length > 0
+      ? selectedItems.map((currentItem) => ({
+          itemData: {
+            id: currentItem.id,
+            mpn: currentItem.mpn,
+            name: currentItem.name,
+            make: currentItem.make,
+            category: currentItem.category,
+          },
+          quantity: "",
+          notes: "",
+          supplier: { label: "" },
+        }))
+      : [
+          {
+            itemData: {
+              id: item.id,
+              mpn: item.mpn,
+              name: item.name,
+              make: item.make,
+              category: item.category,
+            },
+            quantity: "",
+            notes: "",
+            supplier: { label: "" },
+          },
+        ]
   );
 
   const suppliersList = useMemo(() => {
@@ -71,6 +93,7 @@ const Edafa = () => {
     getData();
     return data;
   }, []);
+
   const globalSupplierChange = (event) => {
     const optionIndex = event.target.dataset.optionIndex;
     const supplier = !!optionIndex ? suppliersList[optionIndex] : "";
@@ -92,6 +115,18 @@ const Edafa = () => {
         return item;
       })
     );
+  };
+
+  const handleSubmit = () => {
+    //TODO check for required fields
+    edafaData.forEach(item => {
+      //TODO Create Ezn Edafa Serial Number
+      //TODO Add Ezn Edafa Document 
+      //TODO get Ezn Edafa Document ID
+      //TODO get Ezn Edafa Document ID
+      //TODO Modify Item Documen to include Ezn Edafa id in a subCollection
+      console.log(item)
+    })
   };
   return (
     <FormContainer>
@@ -129,12 +164,24 @@ const Edafa = () => {
           <Box sx={{ gridColumn: "span 4" }}>
             <Divider />
           </Box>
-          <Box display="flex" gap="10px" sx={{ gridColumn: "span 2" }}>
-            <Typography variant="h1">{index + 1}</Typography>
+          <Box
+            display="flex"
+            alignSelf="center"
+            gap="10px"
+            sx={{ gridColumn: "span 2" }}
+          >
+            <Box alignSelf="center">
+              <Typography variant="h1">{index + 1}</Typography>
+            </Box>
             <Box>
-              <Typography variant="h3">{item.name}</Typography>
-              <Typography variant="h5">
-                {item.make} - {item.category}
+              <Typography variant="h3">{item.itemData.name}</Typography>
+              {!!item.itemData.mpn && (
+                <Typography color="text.secondary" variant="h6">
+                  {item.mpn}
+                </Typography>
+              )}
+              <Typography color="text.secondary" variant="h6">
+                {item.itemData.make} - {item.itemData.category}
               </Typography>
             </Box>
           </Box>
@@ -187,6 +234,22 @@ const Edafa = () => {
           />
         </Box>
       ))}
+      <Box
+        display="flex"
+        justifyContent="flex-end"
+        sx={{ gridColumn: "span 4" }}
+      >
+        <Button
+          onClick={handleSubmit}
+          variant="contained"
+          sx={{
+            width: "6rem",
+            height: "2.5rem",
+          }}
+        >
+          Save
+        </Button>
+      </Box>
     </FormContainer>
   );
 };

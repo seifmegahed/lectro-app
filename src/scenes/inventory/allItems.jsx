@@ -50,6 +50,9 @@ const AllItems = () => {
         (item) =>
           item.name.toLowerCase().includes(searchkey.toLowerCase()) ||
           item.make.toLowerCase().includes(searchkey.toLowerCase()) ||
+          (!!item.mpn
+            ? item.mpn.toLowerCase().includes(searchkey.toLowerCase())
+            : false) ||
           item.category.toLowerCase().includes(searchkey.toLowerCase())
       ),
     [searchkey, currentItems]
