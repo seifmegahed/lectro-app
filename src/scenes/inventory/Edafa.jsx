@@ -21,8 +21,20 @@ const Edafa = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
-
   const { selectedItems, item } = useInventory();
+  const [errors, setErrors] = useState(
+    selectedItems.length > 0
+      ? selectedItems.map(() => ({
+          supplier: false,
+          quantity: false,
+        }))
+      : [
+          {
+            supplier: false,
+            quantity: false,
+          },
+        ]
+  );
   const [edafaData, setEdafaData] = useState(
     selectedItems.length > 0
       ? selectedItems.map((currentItem) => ({
@@ -35,7 +47,7 @@ const Edafa = () => {
           },
           quantity: "",
           notes: "",
-          supplier: { label: "" },
+          supplier: {},
         }))
       : [
           {
@@ -48,7 +60,7 @@ const Edafa = () => {
             },
             quantity: "",
             notes: "",
-            supplier: { label: "" },
+            supplier: {},
           },
         ]
   );
@@ -79,7 +91,6 @@ const Edafa = () => {
           taxNumber,
         });
       });
-      data.push({ label: "" });
       data.sort(function (a, b) {
         if (a.label > b.label) {
           return 1;
@@ -96,37 +107,68 @@ const Edafa = () => {
 
   const globalSupplierChange = (event) => {
     const optionIndex = event.target.dataset.optionIndex;
-    const supplier = !!optionIndex ? suppliersList[optionIndex] : "";
+    const supplier = !!optionIndex
+      ? suppliersList[optionIndex]
+      : { label: null };
     setEdafaData((prev) =>
       prev.map((item) => {
-        return { ...item, supplier, supplierLabel: supplier.label };
+        return { ...item, supplier};
       })
     );
   };
 
-  const supplierChange = (event, itemIndex) => {
-    const optionIndex = event.target.dataset.optionIndex;
-    const supplier = !!optionIndex ? suppliersList[optionIndex] : "";
-
+  const supplierChange = (event, itemIndex, value) => {
+    const supplier = !!value ? value : {label: null}
     setEdafaData((prev) =>
       prev.map((item, index) => {
         if (index === itemIndex)
-          return { ...item, supplier, supplierLabel: supplier.label };
+          return { ...item, supplier};
         return item;
       })
     );
   };
 
   const handleSubmit = () => {
-    //TODO check for required fields
-    edafaData.forEach(item => {
+    let isValid = true;
+
+    //Reset Errors
+    setErrors((prev) =>
+      prev.map(() => ({
+        supplier: false,
+        quantity: false,
+      }))
+    );
+
+    edafaData.forEach((item, index) => {
+      // check validity
+      if (!!!item.supplier.label) {
+        isValid = false;
+        setErrors((prev) => {
+          let newErrors = prev;
+          newErrors[index].supplier = true;
+          return newErrors;
+        });
+      }
+      // check validity
+      if (item.quantity === "") {
+        isValid = false;
+        setErrors((prev) => {
+          let newErrors = prev;
+          newErrors[index].quantity = true;
+          return newErrors;
+        });
+      }
+
       //TODO Create Ezn Edafa Serial Number
-      //TODO Add Ezn Edafa Document 
+      //TODO Add Ezn Edafa Document
       //TODO get Ezn Edafa Document ID
       //TODO get Ezn Edafa Document ID
       //TODO Modify Item Documen to include Ezn Edafa id in a subCollection
-      console.log(item)
-    })
+      //TODO Add edafa quantity to existing item quantity
+      if (isValid) {
+        console.log(item);
+      }
+    });
   };
   return (
     <FormContainer>
@@ -186,18 +228,26 @@ const Edafa = () => {
             </Box>
           </Box>
           <Autocomplete
-            onChange={(e) => supplierChange(e, index)}
-            value={item.supplier.label || ""}
+            isOptionEqualToValue={(option, value) => option.label === value}
+            onChange={(e, value) => supplierChange(e, index, value)}
+            value={item.supplier.label || null}
             options={suppliersList}
             sx={{
               gridColumn: "span 2",
               backgroundColor: `${colors.grey[900]}`,
             }}
-            renderInput={(params) => <TextField {...params} label="Supplier" />}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                error={errors[index].supplier}
+                label="Supplier"
+              />
+            )}
           />
           <TextField
             label="Quantity"
             type="number"
+            error={errors[index].quantity}
             onChange={(e) => {
               setEdafaData((prev) => {
                 const itemIndex = index;
