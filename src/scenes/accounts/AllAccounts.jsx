@@ -31,7 +31,7 @@ const AllAccounts = ({ accounts, deleteAccount }) => {
   const [page, setCurrentPage] = useState(1);
 
   const filteredAccounts = useMemo(() => {
-    if (accounts.length > 1)
+    if (accounts.length > 0)
       return accounts.filter(
         (account) =>
           account.arabicName.includes(searchkey) ||

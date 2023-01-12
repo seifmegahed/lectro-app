@@ -12,6 +12,8 @@ import { MoreVert } from "@mui/icons-material";
 
 import FormContainer from "../../components/FormContainer";
 import PopperMenu from "../../components/PopperMenu";
+import { collection, doc, getDoc } from "firebase/firestore";
+import { db } from "../../firebase-config";
 
 const AccountCard = ({ account, handleDelete }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -19,7 +21,7 @@ const AccountCard = ({ account, handleDelete }) => {
   const [moreMenu, setMoreMenu] = useState(null);
   const { admin } = useAuth();
 
-  const { id, number, taxNumber } = account;
+  const { doc_id, number, taxNumber } = account;
   const maxStringSize = 15;
   const maxSubStringSize = 25;
 
@@ -44,13 +46,18 @@ const AccountCard = ({ account, handleDelete }) => {
     setMoreMenu(null);
   };
 
+  const getAccount = async () => {
+    const document = await getDoc(doc(collection(db, "accounts"), doc_id))
+    setAccount({...document.data(), id: document.id})
+  }
+
   const visitAccount = () => {
-    setAccount(account);
+    getAccount();
     setPage(PAGES.ACCOUNT_PAGE);
   };
-
+  
   const handleEditAccount = () => {
-    setAccount(account);
+    getAccount();
     setPage(PAGES.EDIT_ACCOUNT);
   };
 
@@ -65,7 +72,7 @@ const AccountCard = ({ account, handleDelete }) => {
     },
     {
       label: "Delete",
-      callback: () => handleDelete(id),
+      callback: () => handleDelete(doc_id),
       color: "error",
       disabled: !admin,
     },
@@ -110,7 +117,7 @@ const AccountCard = ({ account, handleDelete }) => {
         </Box>
         <Box display="flex" alignItems="center">
           <IconButton
-            id="moreMenuButton"
+            doc_id="moreMenuButton"
             aria-controls={open ? "moreMenu" : undefined}
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}

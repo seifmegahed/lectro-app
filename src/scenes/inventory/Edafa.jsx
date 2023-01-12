@@ -8,7 +8,7 @@ import {
   Button,
   useMediaQuery,
 } from "@mui/material";
-import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
+import { collection, doc, getDoc } from "firebase/firestore";
 import { useState, useMemo } from "react";
 import FormContainer from "../../components/FormContainer";
 import useInventory from "../../contexts/InventoryContext";
@@ -68,23 +68,21 @@ const Edafa = () => {
   const suppliersList = useMemo(() => {
     const data = [];
     const getData = async () => {
-      const q = query(
-        collection(db, "accounts"),
-        where("type", "==", "Supplier"),
-        orderBy("number", "asc")
-      );
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-        const { englishName, arabicName, taxNumber } = doc.data();
+      const documentSnapshot = await getDoc(
+        doc(collection(db, "helper_data"), "Suppliers")
+      )
+      const suppliers = documentSnapshot.data().data;
+      suppliers.forEach((supplier) => {
+        const { englishName, arabicName, taxNumber, doc_id } = supplier;
         data.push({
-          id: doc.id,
+          id: doc_id,
           label: englishName,
           englishName,
           arabicName,
           taxNumber,
         });
         data.push({
-          id: doc.id,
+          id: doc_id,
           label: arabicName,
           englishName,
           arabicName,
@@ -112,17 +110,16 @@ const Edafa = () => {
       : { label: null };
     setEdafaData((prev) =>
       prev.map((item) => {
-        return { ...item, supplier};
+        return { ...item, supplier };
       })
     );
   };
 
   const supplierChange = (event, itemIndex, value) => {
-    const supplier = !!value ? value : {label: null}
+    const supplier = !!value ? value : { label: null };
     setEdafaData((prev) =>
       prev.map((item, index) => {
-        if (index === itemIndex)
-          return { ...item, supplier};
+        if (index === itemIndex) return { ...item, supplier };
         return item;
       })
     );

@@ -2,7 +2,11 @@ import { useState, useEffect } from "react";
 import useAccounts, { AccountsProvider } from "../../contexts/AccountsContext";
 
 import { db } from "../../firebase-config";
-import { where, query, getDocs, orderBy, collection } from "firebase/firestore";
+import {
+  getDoc,
+  collection,
+  doc,
+} from "firebase/firestore";
 
 import Header from "../../components/Header";
 
@@ -43,24 +47,15 @@ const AccountsWrapper = ({ type }) => {
 
   useEffect(() => {
     if (!!newAccount.id) {
-      addAccount(newAccount)
+      addAccount(newAccount);
     }
   }, [newAccount]);
-
+  
   useEffect(() => {
     const getData = async () => {
-      const q = query(
-        collection(db, "accounts"),
-        where("type", "==", type),
-        orderBy("number", "asc")
-      );
-      let newAccounts = [];
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) =>
-        newAccounts.push({ ...doc.data(), id: doc.id })
-      );
-      setAccounts(newAccounts);
-      console.log("here");
+      const q = doc(collection(db, "helper_data"), type + "s");
+      const documentSnapshot = await getDoc(q);
+      setAccounts(documentSnapshot.data().data);
     };
     getData();
   }, [type]);
