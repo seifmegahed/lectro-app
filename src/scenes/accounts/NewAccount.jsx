@@ -7,14 +7,14 @@ import FormContainer from "../../components/FormContainer";
 import AutoForm from "../../components/AutoForm";
 
 const NewAccount = ({ type }) => {
-  const { accountsLength, setNewAccount, setPage, PAGES } = useAccounts();
+  const { accountsLength, setPage, PAGES } = useAccounts();
 
   const newAccount = {
     number: accountsLength + 1,
     type: type,
   };
   const returnHome = (data) => {
-    if (!!data.id) setNewAccount(data);
+    // if (!!data.id) setNewAccount(data);
     setPage(PAGES.ALL_ACCOUNTS);
   };
   return (

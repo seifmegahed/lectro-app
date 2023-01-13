@@ -8,4 +8,4 @@ export const clients = [
   {id:7, name: "el Terssana6"},
 ]
 
-export const ADMIN = "I54vuaBUwyPgRHKl3UbyzfHRo3r1"
+export const ADMIN = "XQh2ccPrEohVUn33E1qzJOJ1ott2"
