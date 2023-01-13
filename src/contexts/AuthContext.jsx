@@ -37,9 +37,9 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      console.log(user.getIdTokenResult())
       setCurrentUser(user);
-       setAdmin(ADMIN === user.uid);
+
+      setAdmin(!!user ? ADMIN === user.uid : false);
     });
 
     return unsubscribe;

@@ -19,8 +19,11 @@ const NewAccount = ({ type }) => {
   };
   return (
     <FormContainer>
-      <Box sx={{ gridColumn: "span 4" }}>
-        <Typography variant="h3" mb="20px">
+      <Box display="flex" gap="20px" sx={{ gridColumn: "span 4" }}>
+        <Typography variant="h1">
+          {newAccount.number}
+        </Typography>
+        <Typography variant="h2" alignSelf="center">
           New Account
         </Typography>
       </Box>

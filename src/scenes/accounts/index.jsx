@@ -2,11 +2,7 @@ import { useState, useEffect } from "react";
 import useAccounts, { AccountsProvider } from "../../contexts/AccountsContext";
 
 import { db } from "../../firebase-config";
-import {
-  getDoc,
-  collection,
-  doc,
-} from "firebase/firestore";
+import { getDoc, collection, doc } from "firebase/firestore";
 
 import Header from "../../components/Header";
 
@@ -26,7 +22,7 @@ const Accounts = ({ type }) => {
 };
 
 const AccountsWrapper = ({ type }) => {
-  const { page, setPage, PAGES, newAccount } = useAccounts();
+  const { page, setPage, PAGES, newAccount, setAccountsLength } = useAccounts();
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [accounts, setAccounts] = useState([]);
 
@@ -50,14 +46,17 @@ const AccountsWrapper = ({ type }) => {
       addAccount(newAccount);
     }
   }, [newAccount]);
-  
+
   useEffect(() => {
     const getData = async () => {
       const q = doc(collection(db, "helper_data"), type + "s");
       const documentSnapshot = await getDoc(q);
-      setAccounts(documentSnapshot.data().data);
+      const documentData = documentSnapshot.data();
+      setAccountsLength(documentData.count);
+      setAccounts(documentData.data);
     };
     getData();
+    // eslint-disable-next-line
   }, [type]);
 
   const PageElements = () => {
