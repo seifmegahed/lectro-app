@@ -1,8 +1,7 @@
-import { Box, CircularProgress } from "@mui/material";
+// React
 import { useState } from "react";
 
-import { Upload } from "@mui/icons-material";
-
+// Storage
 import {
   getStorage,
   ref,
@@ -11,37 +10,68 @@ import {
   deleteObject,
 } from "firebase/storage";
 
-const ImageUpload = ({ returnImageData, storageFolder, initUrl }) => {
-  const [imageUrl, setImageUrl] = useState(initUrl || "");
-  const [imagePath, setImagePath] = useState();
-  const [loaded, setLoaded] = useState(false);
-  const borderRadius = "10px"
+// Material UI
+import { Box, CircularProgress } from "@mui/material";
 
+// Icons
+import { Upload } from "@mui/icons-material";
+
+// Global Styles
+const borderRadius = "10px";
+
+const ImageUpload = ({ returnImageData, storageFolder, initUrl }) => {
+  // Create State for Image URL and store initUrl if it Exists
+  const [imageUrl, setImageUrl] = useState(initUrl || "");
+
+  // Create State for Image Pat
+  const [imagePath, setImagePath] = useState();
+
+  // Create State for Image loaded used by Circular Progress
+  const [loaded, setLoaded] = useState(false);
+
+  // Image Upload Function
   const uploadImage = async (event) => {
     const file = event.target.files[0];
+    // check if file exists
     if (file.type === null) {
       console.log("Error not a file, try again");
       return;
-    } else if (!file.type.match("image.*")) {
+    }
+    // check if file is Image
+    else if (!file.type.match("image.*")) {
       console.log("Error not Image");
       return;
-    } else {
+    }
+    // File Exists and is Image
+    else {
       setLoaded(false);
+      // Check if an Image already exists
       if (!!imagePath) {
+        // Delete existing image
         await deleteObject(ref(getStorage(), imagePath))
           .then(() => {
+            // Successful Delete
             console.log("delete complete");
           })
           .catch((error) => {
+            // Handle unsuccessful delete
             throw new Error("File Delete Failed", error);
           });
       }
+      // Create File Path
       const filePath = `${storageFolder}/${file.name}`;
-      const newImageRef = ref(getStorage(), filePath);
-      const uploadTask = uploadBytesResumable(newImageRef, file);
+      // Upload Image
+      const uploadTask = uploadBytesResumable(
+        // Image Referance
+        ref(getStorage(), filePath),
+        // File to Upload
+        file
+      );
+      // Listen to upload status
       uploadTask.on(
         "state_changed",
         (snapshot) => {
+          // get progress in percent
           const progress = Math.round(
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100
           );
@@ -51,11 +81,17 @@ const ImageUpload = ({ returnImageData, storageFolder, initUrl }) => {
           // Handle unsuccessful uploads
           console.log("Failed to upload image", error);
         },
+        // Upload Successful
         () => {
+          // Get Image URL
           getDownloadURL(newImageRef).then((publicImageUrl) => {
+            // Store in state
             setImageUrl(publicImageUrl);
+            // Get URI from uploadTask metadata
             const fullPath = uploadTask._metadata.fullPath;
+            // Store URI in State
             setImagePath(fullPath);
+            // Return Image Data to parent
             returnImageData({
               imageUrl: publicImageUrl,
               imageUri: fullPath,
@@ -71,22 +107,20 @@ const ImageUpload = ({ returnImageData, storageFolder, initUrl }) => {
       display="flex"
       alignItems="center"
       justifyContent="center"
-      flexDirection="column"
+      height="100%"
       width="100%"
       maxWidth="100%"
-      height="100%"
-      gap="10px"
     >
       <Box
         position="relative"
         display="flex"
-        borderRadius={borderRadius}
+        alignItems="center"
+        justifyContent="center"
         height="max-content"
         width="max-content"
         maxHeight="100%"
         maxWidth="100%"
-        alignItems="center"
-        justifyContent="center"
+        borderRadius={borderRadius}
         onClick={() => {
           if (loaded) document.getElementById("fileInput").click();
         }}
@@ -106,21 +140,21 @@ const ImageUpload = ({ returnImageData, storageFolder, initUrl }) => {
         <img
           src={imageUrl || "/images/imageplaceholder.png"}
           style={{
-            borderRadius: `${borderRadius}`,
-            maxHeight: "220px",
             height: "max-content",
+            maxHeight: "220px",
             maxWidth: "100%",
+            borderRadius: `${borderRadius}`,
           }}
           alt=""
           onLoad={() => setLoaded(true)}
         />
         <Box
           position="absolute"
+          bottom="0"
+          p="8px"
           display="flex"
           alignItems="center"
           justifyContent="flex-end"
-          p="8px"
-          bottom="0"
           width="100%"
           borderRadius={`0 0 ${borderRadius} ${borderRadius}`}
           sx={{
@@ -128,7 +162,7 @@ const ImageUpload = ({ returnImageData, storageFolder, initUrl }) => {
             opacity: "0.3",
           }}
         >
-          <Upload sx={{ color: "white",fontSize: "30pt" }} />
+          <Upload sx={{ color: "white", fontSize: "30pt" }} />
           <input
             id="fileInput"
             hidden
