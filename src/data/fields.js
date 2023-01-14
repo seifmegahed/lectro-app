@@ -64,7 +64,6 @@ const notes = {
 
 const image = {
   name: "image",
-  input: "image",
 };
 
 const createdOn = {

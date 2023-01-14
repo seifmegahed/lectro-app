@@ -26,7 +26,7 @@ const AccountPage = () => {
       >
         <Box display="flex" width="100%" justifyContent="space-between">
           <Box display="flex">
-            <Box width="100px" display="flex" justifyContent="center">
+            <Box pr="10px" display="flex" justifyContent="center">
               <Typography
                 variant={isNonMobile ? "h1" : "h2"}
                 sx={{ cursor: "pointer" }}

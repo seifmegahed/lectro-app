@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Select,
   MenuItem,
   useTheme,
@@ -12,13 +11,10 @@ import {
   ToggleButtonGroup,
 } from "@mui/material";
 
-import { PhotoCamera } from "@mui/icons-material";
-
 import { tokens } from "../theme";
 
 
 const FieldSelector = ({
-  file,
   edit,
   field,
   value,
@@ -85,6 +81,7 @@ const FieldSelector = ({
               value={value || ""}
               onChange={handleChange}
               sx={{
+                height: "fit-content",
                 gridColumn: `span ${span || "2"}`,
                 backgroundColor: `${colors.grey[900]}`,
                 input: {
@@ -156,40 +153,6 @@ const FieldSelector = ({
                   </ToggleButton>
                 ))}
               </ToggleButtonGroup>
-            </Box>
-          );
-        case "image":
-          return (
-            <Box display="flex" gap="20px" sx={{ gridColumn: "span 4" }}>
-              <Button
-                variant="outlined"
-                component="label"
-                sx={{
-                  backgroundColor: `${colors.grey[900]}`,
-                  minWidth: "80px",
-                  minHeight: "52.71px",
-                }}
-              >
-                <PhotoCamera />
-                <input
-                  hidden
-                  accept="image/*"
-                  onChange={handleImageSelect}
-                  type="file"
-                />
-              </Button>
-              <TextField
-                disabled
-                label="File Name"
-                value={!!file ? file.name : ""}
-                sx={{
-                  width: "100%",
-                  input: {
-                    backgroundColor: `${colors.grey[900]}`,
-                    borderRadius: "4px",
-                  },
-                }}
-              />
             </Box>
           );
         default:

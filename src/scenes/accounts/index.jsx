@@ -3,10 +3,8 @@ import useAccounts, { AccountsProvider } from "../../contexts/AccountsContext";
 
 import { db } from "../../firebase-config";
 import {
-  getDoc,
   collection,
   doc,
-  QuerySnapshot,
   onSnapshot,
 } from "firebase/firestore";
 
