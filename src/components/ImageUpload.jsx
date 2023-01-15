@@ -1,7 +1,8 @@
+// IMPORTS
 // React
 import { useState } from "react";
 
-// Storage
+// Firebase
 import {
   getStorage,
   ref,
@@ -16,7 +17,7 @@ import { Box, CircularProgress } from "@mui/material";
 // Icons
 import { Upload } from "@mui/icons-material";
 
-// Global Styles
+// Global Values
 const borderRadius = "10px";
 
 const ImageUpload = ({ returnImageData, storageFolder, initUrl }) => {
@@ -60,10 +61,11 @@ const ImageUpload = ({ returnImageData, storageFolder, initUrl }) => {
       }
       // Create File Path
       const filePath = `${storageFolder}/${file.name}`;
+      // Image Referance
+      const newImageReferance = ref(getStorage(), filePath);
       // Upload Image
       const uploadTask = uploadBytesResumable(
-        // Image Referance
-        ref(getStorage(), filePath),
+        newImageReferance,
         // File to Upload
         file
       );
@@ -84,7 +86,7 @@ const ImageUpload = ({ returnImageData, storageFolder, initUrl }) => {
         // Upload Successful
         () => {
           // Get Image URL
-          getDownloadURL(newImageRef).then((publicImageUrl) => {
+          getDownloadURL(newImageReferance).then((publicImageUrl) => {
             // Store in state
             setImageUrl(publicImageUrl);
             // Get URI from uploadTask metadata
@@ -103,27 +105,37 @@ const ImageUpload = ({ returnImageData, storageFolder, initUrl }) => {
   };
 
   return (
+    // Box to fill grid and contain component
     <Box
+      // Flex
       display="flex"
       alignItems="center"
       justifyContent="center"
+      // Size
       height="100%"
       width="100%"
+      // Size Limits
       maxWidth="100%"
     >
+      {/* Box that contains Image */}
       <Box
         position="relative"
+        // Flex
         display="flex"
         alignItems="center"
         justifyContent="center"
+        // Size
         height="max-content"
         width="max-content"
+        // Size Limits
         maxHeight="100%"
         maxWidth="100%"
+        // Border
         borderRadius={borderRadius}
         onClick={() => {
           if (loaded) document.getElementById("fileInput").click();
         }}
+        // Style
         sx={{
           cursor: `${loaded ? "pointer" : "wait"}`,
           backgroundColor: `${loaded ? "" : "white"}`,
@@ -134,41 +146,71 @@ const ImageUpload = ({ returnImageData, storageFolder, initUrl }) => {
           },
         }}
       >
+        {/*
+         * Progress circle
+         * Displayed when loaded is false
+         */}
         <Box position="absolute" display={loaded ? "none" : "block"}>
           <CircularProgress />
         </Box>
+        {/*
+         * Image
+         * Accepts imageUrl
+         * Or displays placeholder
+         * When Image is loaded onLoaded()
+         * changes loaded state
+         */}
         <img
+          // Image Source
           src={imageUrl || "/images/imageplaceholder.png"}
+          alt=""
+          // On Loaded callback
+          onLoad={() => setLoaded(true)}
+          // Style
           style={{
+            // Size
             height: "max-content",
+            // Size Limits
             maxHeight: "220px",
             maxWidth: "100%",
+            // Border
             borderRadius: `${borderRadius}`,
           }}
-          alt=""
-          onLoad={() => setLoaded(true)}
         />
+        {/* Overlay Box that contains Icon */}
         <Box
+          // Positioning
           position="absolute"
           bottom="0"
-          p="8px"
+          // Flex
           display="flex"
           alignItems="center"
           justifyContent="flex-end"
+          // Size
           width="100%"
+          // Padding
+          p="8px"
+          // Border
           borderRadius={`0 0 ${borderRadius} ${borderRadius}`}
+          // Styles
           sx={{
             backgroundColor: "grey",
             opacity: "0.3",
           }}
         >
+          {/* Upload Icon */}
           <Upload sx={{ color: "white", fontSize: "30pt" }} />
+          {/* Hidden Input that accepts file */}
           <input
-            id="fileInput"
+            // id to trigger click on box click
             hidden
-            accept="image/*"
-            onChange={uploadImage}
+            id="fileInput"
+            // File Input Type
             type="file"
+            // Accept image files
+            accept="image/*"
+            // Trigger uploadImage funciton
+            onChange={uploadImage}
           />
         </Box>
       </Box>
@@ -176,4 +218,5 @@ const ImageUpload = ({ returnImageData, storageFolder, initUrl }) => {
   );
 };
 
+// Export Component
 export default ImageUpload;

@@ -1,29 +1,65 @@
-import {
-  Select,
-  Box,
-  InputLabel,
-  MenuItem,
-  FormControl,
-  useTheme,
-  Typography,
-} from "@mui/material";
 import { useEffect, useState } from "react";
 
-import { tokens } from "../../theme";
-import { itemFields } from "../../data/fields";
-import FormContainer from "../../components/FormContainer";
+// Firebase
+import { db } from "../../firebase-config";
+import { getStorage, ref, deleteObject } from "firebase/storage";
+import { collection, doc, serverTimestamp } from "firebase/firestore";
+import {
+  useFirestoreCollectionMutation,
+  useFirestoreDocumentMutation,
+  useFirestoreDocumentData,
+} from "@react-query-firebase/firestore";
 
-import AutoForm from "../../components/AutoForm";
+import { useAuth } from "../../contexts/AuthContext";
+
+import {
+  Box,
+  Select,
+  useTheme,
+  Backdrop,
+  MenuItem,
+  Typography,
+  InputLabel,
+  FormControl,
+  CircularProgress,
+} from "@mui/material";
+
+import { itemFields } from "../../data/fields";
+import { tokens } from "../../theme";
+
 import useInventory from "../../contexts/InventoryContext";
+import FormContainer from "../../components/FormContainer";
 import ImageUpload from "../../components/ImageUpload";
+import AutoForm from "../../components/AutoForm";
+
+const helperCollectionName = "helper_data";
+const itemsCollectionName = "items";
+const helperDocumentId = "Items";
 
 const NewItem = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const { currentUser } = useAuth();
+
   const { setPage, setItem, addItem, setSelectedItems, PAGES } = useInventory();
-  const [category, setCategory] = useState("");
+  const [image, setImage] = useState({ imageUrl: "", imageUri: "" });
   const [imageState, setImageState] = useState(false);
-  const [imageUrl, setImageUrl] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [category, setCategory] = useState("");
+
+  const itemsCollectionReferance = collection(db, itemsCollectionName);
+  const helperCollectionReferance = collection(db, helperCollectionName);
+  const helperDocumentReferance = doc(
+    helperCollectionReferance,
+    helperDocumentId
+  );
+
+  const helperItems = useFirestoreDocumentData(
+    [helperCollectionName, helperDocumentId],
+    helperDocumentReferance
+  ).data;
+  const createItem = useFirestoreCollectionMutation(itemsCollectionReferance);
+  const updateHelper = useFirestoreDocumentMutation(helperDocumentReferance);
 
   const handleCategoryChange = (event) => {
     setCategory(event.target.value);
@@ -44,10 +80,35 @@ const NewItem = () => {
     }
   }, [category]);
 
+  // eslint-disable-next-line
+  const deleteImage = async (imagePath) => {
+    // Delete existing image
+    await deleteObject(ref(getStorage(), imagePath))
+      .then(() => {
+        // Successful Delete
+        console.log("delete complete");
+      })
+      .catch((error) => {
+        // Handle unsuccessful delete
+        throw new Error("File Delete Failed", error);
+      });
+  };
+
+  useEffect(() => {
+    return () => {
+      // state not changing!!!!!!!!!!!!!!!!!!!!
+      console.log("mount");
+      if (image.imageUri !== "") {
+        console.log("unmount");
+        // deleteImage(image.imageUri);
+      }
+    };
+    // eslint-disable-next-line
+  }, []);
+
   const imageData = (data) => {
-    // console.log(data)
-    setImageUrl(data.imageUrl)
-  }
+    setImage(data);
+  };
 
   const returnHome = (data) => {
     addItem(data);
@@ -55,8 +116,43 @@ const NewItem = () => {
     setSelectedItems([]);
     setPage(PAGES.ITEM_PAGE);
   };
+  const handleHelper = (data) => {
+    updateHelper.mutate({
+      data: [data, ...helperItems.data],
+      count: helperItems.count + 1,
+    });
+  };
+  const handleSubmit = (data) => {
+    setLoading(true);
+    createItem.mutate(
+      {
+        ...data,
+        ...image,
+        createdBy: currentUser.displayName,
+        createdOn: serverTimestamp(),
+      },
+      {
+        onSuccess(response, values) {
+          const { name, mpn, make, imageUrl } = values;
+          const doc_id = response.id;
+          const data = { name, category, make, imageUrl, doc_id };
+          if (!!mpn) data.mpn = mpn;
+          handleHelper(data);
+          setLoading(false);
+        },
+        onError(error) {
+          setLoading(false);
+          throw new Error("Error Writing Helper Data", error);
+        },
+      }
+    );
+  };
+
   return (
     <FormContainer>
+      <Backdrop sx={{ color: "#fff", zIndex: "100000" }} open={loading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Box sx={{ gridColumn: "span 4" }}>
         <Typography variant="h3" mb="20px">
           New Item
@@ -64,10 +160,10 @@ const NewItem = () => {
       </Box>
       {imageState && (
         <Box sx={{ gridColumn: "span 2", gridRow: "span 3" }}>
-          <ImageUpload 
+          <ImageUpload
             storageFolder={`items/${category}`}
             returnImageData={imageData}
-            initUrl={imageUrl}
+            initUrl={image.imageUrl}
           />
         </Box>
       )}
@@ -95,9 +191,10 @@ const NewItem = () => {
       </FormControl>
       {!!category && (
         <AutoForm
-          initData={{ category: category }}
+          initData={{}}
           fields={itemFields[category]}
           returnHome={returnHome}
+          submitToParent={handleSubmit}
           collectionName="items"
         />
       )}
