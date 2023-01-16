@@ -1,5 +1,12 @@
 import { useMemo, useState, useEffect } from "react";
 
+import { db } from "../../firebase-config";
+import { collection, doc } from "firebase/firestore";
+
+import {
+  useFirestoreDocumentMutation,
+} from "@react-query-firebase/firestore";
+
 import {
   Box,
   Input,
@@ -25,18 +32,28 @@ export const ARABIC_MENU = {
   TALAB: "طلب شراء",
 };
 
+const helperCollectionName = "helper_data";
+const helperDocumentId = "Items";
+
+const helperCollectionReferance = collection(db, helperCollectionName);
+const helperDocumentReferance = doc(
+  helperCollectionReferance,
+  helperDocumentId
+);
+
 const itemsPerPage = 10;
 
-const AllItems = () => {
+const AllItems = ({ items }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
-  const { setPage, items, selectedItems, setSelectedItems, PAGES } =
-    useInventory();
+  const updateHelper = useFirestoreDocumentMutation(helperDocumentReferance);
+
+  const { setPage, selectedItems, setSelectedItems, PAGES } = useInventory();
 
   const [currentItems, setCurrentItems] = useState(
-    items.map((item) => ({ ...item, selected: false }))
+    !!items ? items.map((item) => ({ ...item, selected: false })) : []
   );
 
   const [moreMenu, setMoreMenu] = useState(null);
@@ -114,11 +131,18 @@ const AllItems = () => {
     setMoreMenu(null);
   };
 
+  const deleteHelperItem = (id) => {
+    const data = items.filter((item) => item.id !== id);
+    const count = data.length;
+    updateHelper.mutate({ data, count });
+  };
+
   useEffect(() => {
     selectedItems.forEach((item) => {
       setCurrentItems((prev) =>
         prev.map((stateItem) => {
-          if (item.id === stateItem.id) return { ...item, selected: true };
+          if (item.doc_id === stateItem.doc_id)
+            return { ...item, selected: true };
           else return stateItem;
         })
       );
@@ -202,6 +226,7 @@ const AllItems = () => {
             item={item}
             toggleSelected={toggleSelected}
             updateSelected={updateSelected}
+            deleteHelperItem={deleteHelperItem}
           />
         );
       })}

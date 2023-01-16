@@ -8,7 +8,6 @@ import {
   ref,
   uploadBytesResumable,
   getDownloadURL,
-  deleteObject,
 } from "firebase/storage";
 
 // Material UI
@@ -23,9 +22,6 @@ const borderRadius = "10px";
 const ImageUpload = ({ returnImageData, storageFolder, initUrl }) => {
   // Create State for Image URL and store initUrl if it Exists
   const [imageUrl, setImageUrl] = useState(initUrl || "");
-
-  // Create State for Image Pat
-  const [imagePath, setImagePath] = useState();
 
   // Create State for Image loaded used by Circular Progress
   const [loaded, setLoaded] = useState(false);
@@ -46,19 +42,6 @@ const ImageUpload = ({ returnImageData, storageFolder, initUrl }) => {
     // File Exists and is Image
     else {
       setLoaded(false);
-      // Check if an Image already exists
-      if (!!imagePath) {
-        // Delete existing image
-        await deleteObject(ref(getStorage(), imagePath))
-          .then(() => {
-            // Successful Delete
-            console.log("delete complete");
-          })
-          .catch((error) => {
-            // Handle unsuccessful delete
-            throw new Error("File Delete Failed", error);
-          });
-      }
       // Create File Path
       const filePath = `${storageFolder}/${file.name}`;
       // Image Referance
@@ -91,8 +74,6 @@ const ImageUpload = ({ returnImageData, storageFolder, initUrl }) => {
             setImageUrl(publicImageUrl);
             // Get URI from uploadTask metadata
             const fullPath = uploadTask._metadata.fullPath;
-            // Store URI in State
-            setImagePath(fullPath);
             // Return Image Data to parent
             returnImageData({
               imageUrl: publicImageUrl,

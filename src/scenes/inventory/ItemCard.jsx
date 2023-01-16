@@ -1,9 +1,10 @@
 import { useState } from "react";
 
 import { getStorage, deleteObject } from "firebase/storage";
-import { collection, doc } from "firebase/firestore";
-import { db } from "../../firebase-config";
+
 import { useFirestoreDocumentDeletion } from "@react-query-firebase/firestore";
+import { collection, doc, getDoc } from "firebase/firestore";
+import { db } from "../../firebase-config";
 
 import {
   Box,
@@ -21,23 +22,13 @@ import PopperMenu from "../../components/PopperMenu";
 import { ARABIC_MENU } from "./AllItems";
 import { useAuth } from "../../contexts/AuthContext";
 
-const ItemCard = ({ item, toggleSelected, updateSelected }) => {
+const ItemCard = ({ item, toggleSelected, updateSelected, deleteHelperItem }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const { admin } = useAuth();
-  const { setPage, setItem, removeItem, PAGES } =
-    useInventory();
+  const { setPage, setItem, PAGES } = useInventory();
   const [moreMenu, setMoreMenu] = useState(null);
-  const {
-    id,
-    imageUrl,
-    storageUri,
-    name,
-    make,
-    mpn,
-    category,
-    quantity,
-    selected,
-  } = item;
+  const { id, imageUrl, name, make, mpn, category, quantity, selected } =
+    item;
   const maxStringSize = 12;
   const maxSubStringSize = 18;
   const open = Boolean(moreMenu);
@@ -58,16 +49,22 @@ const ItemCard = ({ item, toggleSelected, updateSelected }) => {
 
   const deleteMutation = useFirestoreDocumentDeletion(documentReferance, {
     onSuccess() {
-      if (!!storageUri)
-        deleteObject(getStorage(), storageUri)
-          .then(() => removeItem(id))
+      deleteHelperItem(id)
+      if (!!imageUrl)
+        deleteObject(getStorage(), imageUrl)
+          .then(() => console.log("Image Deleted"))
           .catch((error) => console.log(error));
-      else removeItem(id);
     },
     onError(error) {
       console.log(error);
     },
   });
+
+  const getItem = async () => {
+    const document = await getDoc(doc(collection(db, "items"), id))
+    setItem({...document.data(), id: document.id})
+    setPage(PAGES.ITEM_PAGE);
+  }
 
   const handleMenu = (event) => {
     setMoreMenu(event.currentTarget);
@@ -78,9 +75,7 @@ const ItemCard = ({ item, toggleSelected, updateSelected }) => {
   };
 
   const visitItem = () => {
-    updateSelected();
-    setItem(item);
-    setPage(PAGES.ITEM_PAGE);
+    getItem();
   };
 
   const handleEditItem = () => {

@@ -12,16 +12,16 @@ import useInventory from "../../contexts/InventoryContext";
 
 import DataDisplay from "../../components/DataDisplay";
 import FormContainer from "../../components/FormContainer";
-import { itemFields } from "../../data/fields";
 import { Edit } from "@mui/icons-material";
 import { tokens } from "../../theme";
+import { itemFields } from "../../data/fields";
 
 const ItemPage = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const { item, setPage, PAGES } = useInventory();
   const isNonMobile = useMediaQuery("(min-width:600px)");
-
+  const category = item.category || "Other"
   return (
     <>
       <Box
@@ -93,7 +93,7 @@ const ItemPage = () => {
           sx={{ gridColumn: `span ${isNonMobile ? "3" : "4"}`, width: "100%" }}
         >
           <TableBody>
-            {itemFields[item.category].map(
+            {itemFields[category].map(
               (field) =>
                 !!item[field.name] && (
                   <DataDisplay

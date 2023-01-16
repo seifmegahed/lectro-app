@@ -46,6 +46,7 @@ const NewItem = () => {
   const [imageState, setImageState] = useState(false);
   const [loading, setLoading] = useState(false);
   const [category, setCategory] = useState("");
+  const [canceled, setCanceled] = useState(true);
 
   const itemsCollectionReferance = collection(db, itemsCollectionName);
   const helperCollectionReferance = collection(db, helperCollectionName);
@@ -80,33 +81,34 @@ const NewItem = () => {
     }
   }, [category]);
 
-  // eslint-disable-next-line
-  const deleteImage = async (imagePath) => {
-    // Delete existing image
-    await deleteObject(ref(getStorage(), imagePath))
-      .then(() => {
-        // Successful Delete
-        console.log("delete complete");
-      })
-      .catch((error) => {
-        // Handle unsuccessful delete
-        throw new Error("File Delete Failed", error);
-      });
+  const deleteImage = async (imageUri) => {
+    if (imageUri !== "") {
+      // Delete existing image
+      await deleteObject(ref(getStorage(), imageUri))
+        .then(() => {
+          // Successful Delete
+          console.log("Image delete complete");
+        })
+        .catch((error) => {
+          // Handle unsuccessful delete
+          throw new Error("File Delete Failed", error);
+        });
+    }
   };
 
   useEffect(() => {
+    console.log("mount");
     return () => {
-      // state not changing!!!!!!!!!!!!!!!!!!!!
-      console.log("mount");
-      if (image.imageUri !== "") {
-        console.log("unmount");
-        // deleteImage(image.imageUri);
+      const { imageUri } = image;
+      if (canceled) {
+        deleteImage(imageUri);
       }
     };
     // eslint-disable-next-line
-  }, []);
+  }, [image]);
 
   const imageData = (data) => {
+    console.log(data);
     setImage(data);
   };
 
@@ -133,12 +135,15 @@ const NewItem = () => {
       },
       {
         onSuccess(response, values) {
-          const { name, mpn, make, imageUrl } = values;
-          const doc_id = response.id;
-          const data = { name, category, make, imageUrl, doc_id };
+          setCanceled(false);
+          const { name, mpn, make, imageUrl, id } = values;
+          const data = { name, category, make, imageUrl, id };
           if (!!mpn) data.mpn = mpn;
           handleHelper(data);
+          setItem({ ...values, id: response.id, createdOn: new Date() });
+          setSelectedItems([]);
           setLoading(false);
+          setPage(PAGES.ITEM_PAGE);
         },
         onError(error) {
           setLoading(false);
