@@ -141,7 +141,7 @@ const AllItems = ({ items }) => {
     selectedItems.forEach((item) => {
       setCurrentItems((prev) =>
         prev.map((stateItem) => {
-          if (item.doc_id === stateItem.doc_id)
+          if (item.id === stateItem.id)
             return { ...item, selected: true };
           else return stateItem;
         })

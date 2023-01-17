@@ -96,16 +96,17 @@ const NewItem = () => {
     }
   };
 
-  useEffect(() => {
-    console.log("mount");
-    return () => {
-      const { imageUri } = image;
-      if (canceled) {
-        deleteImage(imageUri);
-      }
-    };
-    // eslint-disable-next-line
-  }, [image]);
+  // useEffect(() => {
+  //   console.log("mount");
+  //   return () => {
+  //     console.log(canceled)
+  //     const { imageUri } = image;
+  //     if (canceled === true) {
+  //       deleteImage(imageUri);
+  //     }
+  //   };
+  //   // eslint-disable-next-line
+  // }, [image, canceled]);
 
   const imageData = (data) => {
     console.log(data);
@@ -126,31 +127,43 @@ const NewItem = () => {
   };
   const handleSubmit = (data) => {
     setLoading(true);
-    createItem.mutate(
-      {
-        ...data,
-        ...image,
-        createdBy: currentUser.displayName,
-        createdOn: serverTimestamp(),
-      },
-      {
-        onSuccess(response, values) {
-          setCanceled(false);
-          const { name, mpn, make, imageUrl, id } = values;
-          const data = { name, category, make, imageUrl, id };
-          if (!!mpn) data.mpn = mpn;
-          handleHelper(data);
-          setItem({ ...values, id: response.id, createdOn: new Date() });
-          setSelectedItems([]);
-          setLoading(false);
-          setPage(PAGES.ITEM_PAGE);
+    const updateCancle = new Promise((resolve) => {
+      setCanceled(false);
+      resolve();
+    });
+    updateCancle.then(() => {
+      createItem.mutate(
+        {
+          ...data,
+          ...image,
+          createdBy: currentUser.displayName,
+          createdOn: serverTimestamp(),
         },
-        onError(error) {
-          setLoading(false);
-          throw new Error("Error Writing Helper Data", error);
-        },
-      }
-    );
+        {
+          onSuccess(response, values) {
+            const updateLocalValues = new Promise((resolve) => {
+              setItem({ ...values, id: response.id, createdOn: new Date() });
+              const id = response.id;
+              const { name, mpn, make, imageUrl } = values;
+              const data = { name, category, make, id };
+              if (!!mpn) data.mpn = mpn;
+              if (!!imageUrl) data.imageUrl = imageUrl;
+              resolve(data);
+            });
+            updateLocalValues.then((data) => {
+              console.log(data);
+              handleHelper(data);
+              setLoading(false);
+              setPage(PAGES.ITEM_PAGE);
+            });
+          },
+          onError(error) {
+            setLoading(false);
+            throw new Error("Error Writing Helper Data", error);
+          },
+        }
+      );
+    });
   };
 
   return (

@@ -22,13 +22,17 @@ import PopperMenu from "../../components/PopperMenu";
 import { ARABIC_MENU } from "./AllItems";
 import { useAuth } from "../../contexts/AuthContext";
 
-const ItemCard = ({ item, toggleSelected, updateSelected, deleteHelperItem }) => {
+const ItemCard = ({
+  item,
+  toggleSelected,
+  updateSelected,
+  deleteHelperItem,
+}) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const { admin } = useAuth();
-  const { setPage, setItem, PAGES } = useInventory();
+  const { setPage, setSelectedItems, setItem, PAGES } = useInventory();
   const [moreMenu, setMoreMenu] = useState(null);
-  const { id, imageUrl, name, make, mpn, category, quantity, selected } =
-    item;
+  const { id, imageUrl, name, make, mpn, category, quantity, selected } = item;
   const maxStringSize = 12;
   const maxSubStringSize = 18;
   const open = Boolean(moreMenu);
@@ -49,11 +53,12 @@ const ItemCard = ({ item, toggleSelected, updateSelected, deleteHelperItem }) =>
 
   const deleteMutation = useFirestoreDocumentDeletion(documentReferance, {
     onSuccess() {
-      deleteHelperItem(id)
-      if (!!imageUrl)
+      deleteHelperItem(id);
+      if (!!imageUrl) {
         deleteObject(getStorage(), imageUrl)
           .then(() => console.log("Image Deleted"))
           .catch((error) => console.log(error));
+      }
     },
     onError(error) {
       console.log(error);
@@ -61,10 +66,10 @@ const ItemCard = ({ item, toggleSelected, updateSelected, deleteHelperItem }) =>
   });
 
   const getItem = async () => {
-    const document = await getDoc(doc(collection(db, "items"), id))
-    setItem({...document.data(), id: document.id})
+    const document = await getDoc(doc(collection(db, "items"), id));
+    setItem({ ...document.data(), id: document.id });
     setPage(PAGES.ITEM_PAGE);
-  }
+  };
 
   const handleMenu = (event) => {
     setMoreMenu(event.currentTarget);
@@ -85,6 +90,7 @@ const ItemCard = ({ item, toggleSelected, updateSelected, deleteHelperItem }) =>
 
   const eznEdafa = () => {
     setItem(item);
+    setSelectedItems([]);
     setPage(PAGES.EZN_EDAFA);
   };
 
