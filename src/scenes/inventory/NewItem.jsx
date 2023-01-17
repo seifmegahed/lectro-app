@@ -41,12 +41,11 @@ const NewItem = () => {
   const colors = tokens(theme.palette.mode);
   const { currentUser } = useAuth();
 
-  const { setPage, setItem, addItem, setSelectedItems, PAGES } = useInventory();
+  const { setPage, setItem, setSelectedItems, PAGES } = useInventory();
   const [image, setImage] = useState({ imageUrl: "", imageUri: "" });
   const [imageState, setImageState] = useState(false);
   const [loading, setLoading] = useState(false);
   const [category, setCategory] = useState("");
-  const [canceled, setCanceled] = useState(true);
 
   const itemsCollectionReferance = collection(db, itemsCollectionName);
   const helperCollectionReferance = collection(db, helperCollectionName);
@@ -81,6 +80,7 @@ const NewItem = () => {
     }
   }, [category]);
 
+  // eslint-disable-next-line
   const deleteImage = async (imageUri) => {
     if (imageUri !== "") {
       // Delete existing image
@@ -96,29 +96,11 @@ const NewItem = () => {
     }
   };
 
-  // useEffect(() => {
-  //   console.log("mount");
-  //   return () => {
-  //     console.log(canceled)
-  //     const { imageUri } = image;
-  //     if (canceled === true) {
-  //       deleteImage(imageUri);
-  //     }
-  //   };
-  //   // eslint-disable-next-line
-  // }, [image, canceled]);
-
   const imageData = (data) => {
     console.log(data);
     setImage(data);
   };
 
-  const returnHome = (data) => {
-    addItem(data);
-    setItem(data);
-    setSelectedItems([]);
-    setPage(PAGES.ITEM_PAGE);
-  };
   const handleHelper = (data) => {
     updateHelper.mutate({
       data: [data, ...helperItems.data],
@@ -127,43 +109,38 @@ const NewItem = () => {
   };
   const handleSubmit = (data) => {
     setLoading(true);
-    const updateCancle = new Promise((resolve) => {
-      setCanceled(false);
-      resolve();
-    });
-    updateCancle.then(() => {
-      createItem.mutate(
-        {
-          ...data,
-          ...image,
-          createdBy: currentUser.displayName,
-          createdOn: serverTimestamp(),
-        },
-        {
-          onSuccess(response, values) {
-            const updateLocalValues = new Promise((resolve) => {
-              setItem({ ...values, id: response.id, createdOn: new Date() });
-              const id = response.id;
-              const { name, mpn, make, imageUrl } = values;
-              const data = { name, category, make, id };
-              if (!!mpn) data.mpn = mpn;
-              if (!!imageUrl) data.imageUrl = imageUrl;
-              resolve(data);
-            });
-            updateLocalValues.then((data) => {
-              console.log(data);
-              handleHelper(data);
-              setLoading(false);
-              setPage(PAGES.ITEM_PAGE);
-            });
-          },
-          onError(error) {
+    createItem.mutate(
+      {
+        ...data,
+        ...image,
+        createdBy: currentUser.displayName,
+        createdOn: serverTimestamp(),
+      },
+      {
+        onSuccess(response, values) {
+          const updateLocalValues = new Promise((resolve) => {
+            setItem({ ...values, id: response.id, createdOn: new Date() });
+            const id = response.id;
+            const { name, mpn, make, imageUrl } = values;
+            const data = { name, category, make, id };
+            if (!!mpn) data.mpn = mpn;
+            if (!!imageUrl) data.imageUrl = imageUrl;
+            resolve(data);
+          });
+          updateLocalValues.then((data) => {
+            console.log(data);
+            handleHelper(data);
             setLoading(false);
-            throw new Error("Error Writing Helper Data", error);
-          },
-        }
-      );
-    });
+            setSelectedItems([]);
+            setPage(PAGES.ITEM_PAGE);
+          });
+        },
+        onError(error) {
+          setLoading(false);
+          throw new Error("Error Writing Helper Data", error);
+        },
+      }
+    );
   };
 
   return (
@@ -211,9 +188,7 @@ const NewItem = () => {
         <AutoForm
           initData={{}}
           fields={itemFields[category]}
-          returnHome={returnHome}
           submitToParent={handleSubmit}
-          collectionName="items"
         />
       )}
     </FormContainer>

@@ -13,7 +13,6 @@ import {
 
 import { tokens } from "../theme";
 
-
 const FieldSelector = ({
   edit,
   field,
@@ -22,7 +21,6 @@ const FieldSelector = ({
   index,
   prevData,
   updateData,
-  handleImageSelect,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);

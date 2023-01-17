@@ -1,4 +1,4 @@
-import {useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import useInventory, {
   InventoryProvider,
@@ -7,7 +7,7 @@ import useInventory, {
 import { db } from "../../firebase-config";
 import { doc, collection, onSnapshot } from "firebase/firestore";
 
-import { Backdrop, Box, CircularProgress, IconButton } from "@mui/material";
+import { Box, IconButton } from "@mui/material";
 import { ChevronLeft } from "@mui/icons-material";
 
 import Header from "../../components/Header";
@@ -43,9 +43,10 @@ const InventoryWrapper = () => {
     const unsubscribe = onSnapshot(helperDocumentReferance, (document) => {
       const documentData = document.data();
       setItems(documentData.data);
-      setCount(documentData.count)
+      setCount(documentData.count);
     });
     return () => unsubscribe();
+    // eslint-disable-next-line
   }, []);
 
   const PageElements = () => {
@@ -65,14 +66,6 @@ const InventoryWrapper = () => {
         return <></>;
     }
   };
-
-  // if (helperItems.isLoading) {
-  //   return (
-  //     <Backdrop sx={{ color: "#fff", zIndex: "100000" }} open={true}>
-  //       <CircularProgress color="inherit" />
-  //     </Backdrop>
-  //   );
-  // }
 
   return (
     <Box display="flex" gap="10px" flexDirection="column">

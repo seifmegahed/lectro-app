@@ -1,27 +1,62 @@
+// Firebase
+import { db } from "../../firebase-config";
+import { collection, doc } from "firebase/firestore";
+import { useFirestoreDocumentData } from "@react-query-firebase/firestore";
+
+import useInventory from "../../contexts/InventoryContext";
+
 import {
   Fab,
   Box,
   Table,
+  Backdrop,
   useTheme,
   TableBody,
   Typography,
   useMediaQuery,
+  CircularProgress,
 } from "@mui/material";
+import { Edit } from "@mui/icons-material";
 
-import useInventory from "../../contexts/InventoryContext";
+import { tokens } from "../../theme";
+import { itemFields } from "../../data/fields";
 
 import DataDisplay from "../../components/DataDisplay";
 import FormContainer from "../../components/FormContainer";
-import { Edit } from "@mui/icons-material";
-import { tokens } from "../../theme";
-import { itemFields } from "../../data/fields";
+
+const itemsCollectionName = "items";
 
 const ItemPage = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const { item, setPage, PAGES } = useInventory();
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const category = item.category || "Other"
+
+  const { item, setPage, PAGES } = useInventory();
+  const { id, imageUrl, name, make } = item;
+  const category = item.category || "Other";
+
+  const itemsCollectionReferance = collection(db, itemsCollectionName);
+  const itemDocumentReferance = doc(itemsCollectionReferance, id);
+
+  const itemDetailsFetch = useFirestoreDocumentData(
+    [itemsCollectionName, id],
+    itemDocumentReferance,
+    {
+      subscribe: false,
+      source: "server",
+    }
+  );
+
+  const itemDetails = itemDetailsFetch.data;
+
+  if (itemDetailsFetch.isLoading || !item) {
+    return (
+      <Backdrop sx={{ color: "#fff", zIndex: "100000" }} open={true}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    );
+  }
+
   return (
     <>
       <Box
@@ -52,7 +87,7 @@ const ItemPage = () => {
           {isNonMobile && (
             <Box width="100px" display="flex" alignItems="center">
               <img
-                src={item.imageUrl || "/images/imageplaceholder.png"}
+                src={imageUrl || "/images/imageplaceholder.png"}
                 style={{ maxWidth: "100%", maxHeight: "100%" }}
                 alt=""
               />
@@ -66,10 +101,10 @@ const ItemPage = () => {
               alignItems="flex-start"
             >
               <Typography color="text.secondary" variant="h5">
-                {item.category}
+                {category}
               </Typography>
               <Typography color="text.primary" variant="h3">
-                {item.name}
+                {name}
               </Typography>
             </Box>
             {isNonMobile && (
@@ -79,9 +114,9 @@ const ItemPage = () => {
                 justifyContent="center"
                 alignItems="flex-end"
               >
-                <Typography color="text.secondary">{item.id}</Typography>
+                <Typography color="text.secondary">{id}</Typography>
                 <Typography color="text.secondary" variant="h5">
-                  {item.make}
+                  {make}
                 </Typography>
               </Box>
             )}
@@ -95,10 +130,10 @@ const ItemPage = () => {
           <TableBody>
             {itemFields[category].map(
               (field) =>
-                !!item[field.name] && (
+                !!itemDetails[field.name] && (
                   <DataDisplay
                     key={field.name}
-                    data={item[field.name]}
+                    data={itemDetails[field.name]}
                     details={field}
                   />
                 )
