@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { getStorage, deleteObject } from "firebase/storage";
 
@@ -30,6 +30,7 @@ const ItemCard = ({ item, toggleSelected, deleteHelperItem }) => {
   const { admin } = useAuth();
   const [moreMenu, setMoreMenu] = useState(null);
   const { id, imageUrl, name, make, mpn, category, quantity, selected } = item;
+  const navigate = useNavigate()
   
   const open = Boolean(moreMenu);
   
@@ -37,6 +38,7 @@ const ItemCard = ({ item, toggleSelected, deleteHelperItem }) => {
   const documentReferance = doc(collectionReferance, id);
   
   const itemUrl = `item/${id}`;
+  const editItemUrl = `item/${id}/edit`;
   
   const title = isNonMobile
     ? name
@@ -105,13 +107,13 @@ const ItemCard = ({ item, toggleSelected, deleteHelperItem }) => {
     },
     {
       label: "Details",
-      type: "Link",
-      href: itemUrl,
+      type: "Callback",
+      callback: () => navigate(itemUrl)
     },
     {
       label: "Edit",
-      type: "Link",
-      href: itemUrl+ "/edit",
+      type: "Callback",
+      callback: () => navigate(editItemUrl)
     },
     {
       label: "Delete",

@@ -2,10 +2,10 @@ import * as React from "react";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 
-const Loading = () => {
+const Loading = ({state}) => {
   return (
     <div>
-      <Backdrop sx={{ color: "#fff", zIndex: "10002" }} open={true}>
+      <Backdrop sx={{ color: "#fff", zIndex: "10002" }} open={state}>
         <CircularProgress color="inherit" />
       </Backdrop>
     </div>

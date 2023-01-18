@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 // Firebase
 import { db } from "../../firebase-config";
@@ -11,7 +11,7 @@ import {
 
 import { useAuth } from "../../contexts/AuthContext";
 
-import { Box, Backdrop, Typography, CircularProgress } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 import FormContainer from "../../components/FormContainer";
 import ImageUpload from "../../components/ImageUpload";
@@ -23,10 +23,12 @@ import Loading from "../../components/Loading";
 const helperCollectionName = "helper_data";
 const itemsCollectionName = "items";
 const helperDocumentId = "Items";
-
 const EditItem = () => {
   const { id } = useParams();
-
+  const itemUrl = `/items-new/item/${id}`
+  
+  const navigate = useNavigate();
+  
   const { currentUser } = useAuth();
   const [loading, setLoading] = useState(false);
 
@@ -82,7 +84,6 @@ const EditItem = () => {
 
   const handleSubmit = (data) => {
     setLoading(true);
-    console.log(data);
     let changesToCommit = false;
     let imageChange = false;
     let newData = {};
@@ -121,7 +122,7 @@ const EditItem = () => {
               { data: newHelperItems, count: newHelperItems.length },
               {
                 onSuccess() {
-                  // setPage(PAGES.ITEM_PAGE);
+                  navigate(itemUrl);
                 },
                 onError(error) {
                   console.log("Failed to update helperItems", error);
@@ -129,24 +130,22 @@ const EditItem = () => {
               }
             );
           } else {
-            // setPage(PAGES.ITEM_PAGE);
+            navigate(itemUrl);
           }
         },
       });
     } else {
-      // setPage(PAGES.ITEM_PAGE);
+      navigate(itemUrl);
     }
   };
 
   if (!itemDetails) {
-    return <Loading />;
+    return <Loading state={true} />;
   }
 
   return (
     <FormContainer>
-      <Backdrop sx={{ color: "#fff", zIndex: "100000" }} open={loading}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      <Loading state={loading} />
       <Box sx={{ gridColumn: "span 4" }}>
         <Box width="100%" display="flex" justifyContent="space-between">
           <Typography variant="h3" mb="20px">
