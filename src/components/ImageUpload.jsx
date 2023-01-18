@@ -19,9 +19,16 @@ import { Upload } from "@mui/icons-material";
 // Global Values
 const borderRadius = "10px";
 
-const ImageUpload = ({ returnImageData, storageFolder, initUrl }) => {
+const ImageUpload = ({
+  returnImageData,
+  storageFolder,
+  initUrl,
+  initImage,
+}) => {
   // Create State for Image URL and store initUrl if it Exists
-  const [imageUrl, setImageUrl] = useState(initUrl || "");
+  const [imageUrl, setImageUrl] = useState(
+    !!initImage ? initImage.imageUrl : initUrl || ""
+  );
 
   // Create State for Image loaded used by Circular Progress
   const [loaded, setLoaded] = useState(false);

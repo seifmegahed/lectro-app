@@ -28,6 +28,10 @@ const pages = {
       path: "/items",
     },
     {
+      title: "ItemsNew",
+      path: "/items-new",
+    },
+    {
       title: "Delivery Notes",
       path: "/delivery-notes",
     },

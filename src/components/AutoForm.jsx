@@ -55,7 +55,7 @@ const AutoForm = ({ edit, fields, initData, submitToParent }) => {
     <>
       {fields.map((field, index) => {
         const { name, input } = field;
-        if (!!input) {
+        if (!!input &&  !!name) {
           return (
             <FieldSelector
               key={name}

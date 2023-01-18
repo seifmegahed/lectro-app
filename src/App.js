@@ -20,6 +20,7 @@ const NewProject = lazy(() => import("./scenes/projects/newProject"));
 const Dashboard = lazy(() => import("./scenes/dashboard"));
 const Projects = lazy(() => import("./scenes/projects"));
 const Inventory = lazy(() => import("./scenes/inventory/"));
+const InventoryNew = lazy(() => import("./scenes/inventoryNew/"));
 const Accounts = lazy(() => import("./scenes/accounts/"));
 
 const Suppliers = () => <Accounts type="Supplier" />;
@@ -54,6 +55,7 @@ function App() {
                     <Route path="/clients" element={<Clients />} />
                     <Route path="/new-project" element={<NewProject />} />
                     <Route path="/items" element={<Inventory />} />
+                    <Route path="/items-new/*" element={<InventoryNew />} />
                     <Route path="/suppliers" element={<Suppliers />} />
                     <Route path="/*" element={<Navigate to="/" />} />
                   </Routes>
