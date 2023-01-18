@@ -1,6 +1,6 @@
-import { Breadcrumbs, Link } from "@mui/material";
+import { Breadcrumbs } from "@mui/material";
 import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 
 const ItemsNavigator = () => {
   const location = useLocation();
@@ -10,7 +10,20 @@ const ItemsNavigator = () => {
   }, [location]);
   return (
     <Breadcrumbs>
-      {pathArray.map((path) => <Link key={path}>{path}</Link>)}
+      {pathArray.map((path, index) => {
+        let pathUrl = "";
+        pathArray.forEach((innerPath, innerIndex) => {
+          if (innerIndex <= index) {
+            pathUrl += `/${innerPath}`;
+          }
+        });
+        if(path === "item") return;
+        return (
+          <Link to={pathUrl} key={path}>
+            {path}
+          </Link>
+        );
+      })}
     </Breadcrumbs>
   );
 };
