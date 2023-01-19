@@ -22,6 +22,7 @@ import { tokens } from "../../theme";
 import ItemCard from "./ItemCard";
 import PopperMenu from "../../components/PopperMenu";
 import Loading from "../../components/Loading";
+import { useNavigate } from "react-router-dom";
 
 export const ARABIC_MENU = {
   EDAFA: "إضافه",
@@ -45,6 +46,7 @@ const AllItems = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const navigate = useNavigate();
   const [items, setItems] = useState([]);
 
   const updateHelper = useFirestoreDocumentMutation(helperDocumentReferance);
@@ -198,7 +200,7 @@ const AllItems = () => {
           sx={{ minWidth: "110px" }}
           variant="contained"
           size="large"
-          // onClick={() => setPage(PAGES.NEW_ITEM)}
+          onClick={() => navigate("new-item")}
         >
           New Item
         </Button>

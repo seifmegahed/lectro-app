@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 // Firebase
 import { db } from "../../firebase-config";
-import { collection, doc, serverTimestamp } from "firebase/firestore";
+import { collection, doc, getDoc, serverTimestamp } from "firebase/firestore";
 import {
   useFirestoreDocumentMutation,
   useFirestoreDocumentData,
@@ -23,12 +23,13 @@ import Loading from "../../components/Loading";
 const helperCollectionName = "helper_data";
 const itemsCollectionName = "items";
 const helperDocumentId = "Items";
+
 const EditItem = () => {
   const { id } = useParams();
-  const itemUrl = `/items-new/item/${id}`
-  
+  const itemUrl = `/items-new/item/${id}`;
+  const [item, setItem] = useState({});
   const navigate = useNavigate();
-  
+
   const { currentUser } = useAuth();
   const [loading, setLoading] = useState(false);
 
@@ -36,15 +37,6 @@ const EditItem = () => {
   const itemDocumentReferance = doc(itemsCollectionReferance, id);
   const helperCollectionReferance = collection(db, helperCollectionName);
 
-  const itemDetailsFetch = useFirestoreDocumentData(
-    [itemsCollectionName, id],
-    itemDocumentReferance,
-    {
-      subscribe: false,
-      source: "server",
-    }
-  );
-  const itemDetails = itemDetailsFetch.data;
   const helperDocumentReferance = doc(
     helperCollectionReferance,
     helperDocumentId
@@ -59,19 +51,24 @@ const EditItem = () => {
   const [image, setImage] = useState({ imageUrl: "", imageUri: "" });
 
   useEffect(() => {
-    if (!!itemDetails) {
-      if (!!itemDetails.imageUrl) {
+    const getData = async () => {
+      const documentSnapshot = await getDoc(itemDocumentReferance);
+      return documentSnapshot.data();
+    };
+    getData().then((data) => {
+      setItem(data);
+      if (!!data?.imageUrl)
         setImage({
-          imageUrl: itemDetails.imageUrl,
-          imageUri: itemDetails.imageUri,
+          imageUrl: data.imageUrl,
+          imageUri: data.imageUri,
         });
-      }
-    }
-  }, [itemDetails]);
+    });
+    // eslint-disable-next-line
+  }, []);
 
   const imageState = () => {
     let doesNotIncludeImage = true;
-    itemFields[itemDetails.category].forEach(
+    itemFields[item.category].forEach(
       (field) => (doesNotIncludeImage &= field.name !== "image")
     );
     return !doesNotIncludeImage;
@@ -88,18 +85,18 @@ const EditItem = () => {
     let imageChange = false;
     let newData = {};
     // Image Changed
-    if (!!itemDetails.imageUrl && itemDetails.imageUrl !== image.imageUrl) {
+    if (item?.imageUrl !== "" && item?.imageUrl !== image.imageUrl) {
       changesToCommit = true;
       imageChange = true;
       console.log("Image Changed");
-      newData = { ...newData, imageDetails: itemDetails.imageUrl };
+      newData = { ...newData, imageDetails: item.imageUrl };
     }
 
     if (!!data) {
       changesToCommit = true;
       newData = { ...newData, ...data };
     } else {
-      newData = { ...itemDetails };
+      newData = { ...item };
     }
     if (changesToCommit) {
       newData = {
@@ -139,7 +136,7 @@ const EditItem = () => {
     }
   };
 
-  if (!itemDetails) {
+  if (!item?.name) {
     return <Loading state={true} />;
   }
 
@@ -152,14 +149,14 @@ const EditItem = () => {
             Edit Item
           </Typography>
           <Typography variant="h3" mb="20px">
-            {itemDetails.category}
+            {item.category}
           </Typography>
         </Box>
       </Box>
       {imageState && (
         <Box sx={{ gridColumn: "span 2", gridRow: "span 3" }}>
           <ImageUpload
-            storageFolder={`items/${itemDetails.category}`}
+            storageFolder={`items/${item.category}`}
             returnImageData={imageData}
             initImage={image}
           />
@@ -167,8 +164,8 @@ const EditItem = () => {
       )}
       <AutoForm
         edit={true}
-        initData={itemDetails}
-        fields={itemFields[itemDetails.category]}
+        initData={item}
+        fields={itemFields[item.category]}
         submitToParent={handleSubmit}
       />
     </FormContainer>

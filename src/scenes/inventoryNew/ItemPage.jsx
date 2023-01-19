@@ -1,9 +1,9 @@
+import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 // Firebase
 import { db } from "../../firebase-config";
-import { collection, doc } from "firebase/firestore";
-import { useFirestoreDocumentData } from "@react-query-firebase/firestore";
+import { collection, doc, onSnapshot } from "firebase/firestore";
 
 import {
   Fab,
@@ -23,6 +23,7 @@ import { itemFields } from "../../data/fields";
 
 import DataDisplay from "../../components/DataDisplay";
 import FormContainer from "../../components/FormContainer";
+import { useEffect } from "react";
 
 const itemsCollectionName = "items";
 
@@ -30,23 +31,25 @@ const ItemPage = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const [item, setItem] = useState({});
 
   const { id } = useParams();
 
   const itemsCollectionReferance = collection(db, itemsCollectionName);
   const itemDocumentReferance = doc(itemsCollectionReferance, id);
 
-  const itemDetailsFetch = useFirestoreDocumentData(
-    [itemsCollectionName, id],
-    itemDocumentReferance,
-    {
-      subscribe: false,
-      source: "server",
-    }
-  );
-  const itemDetails = itemDetailsFetch.data;
+  useEffect(() => {
+    const unsubscribe = onSnapshot(itemDocumentReferance, (document) => {
+      setItem(document.data());
+    });
+    return () => {
+      console.log("unsubscribe");
+      unsubscribe();
+    };
+    // eslint-disable-next-line
+  }, []);
 
-  if (itemDetailsFetch.isLoading || !itemDetails) {
+  if (!item?.name) {
     return (
       <Backdrop sx={{ color: "#fff", zIndex: "100000" }} open={true}>
         <CircularProgress color="inherit" />
@@ -85,7 +88,7 @@ const ItemPage = () => {
           {isNonMobile && (
             <Box width="100px" display="flex" alignItems="center">
               <img
-                src={itemDetails.imageUrl || "/images/imageplaceholder.png"}
+                src={item.imageUrl || "/images/imageplaceholder.png"}
                 style={{ maxWidth: "100%", maxHeight: "100%" }}
                 alt=""
               />
@@ -99,10 +102,10 @@ const ItemPage = () => {
               alignItems="flex-start"
             >
               <Typography color="text.secondary" variant="h5">
-                {itemDetails.category}
+                {item?.category}
               </Typography>
               <Typography color="text.primary" variant="h3">
-                {itemDetails.name}
+                {item?.name}
               </Typography>
             </Box>
             {isNonMobile && (
@@ -114,7 +117,7 @@ const ItemPage = () => {
               >
                 <Typography color="text.secondary">{id}</Typography>
                 <Typography color="text.secondary" variant="h5">
-                  {itemDetails.make}
+                  {item?.make}
                 </Typography>
               </Box>
             )}
@@ -126,12 +129,12 @@ const ItemPage = () => {
           sx={{ gridColumn: `span ${isNonMobile ? "3" : "4"}`, width: "100%" }}
         >
           <TableBody>
-            {itemFields[itemDetails.category].map(
+            {itemFields?.[item?.category].map(
               (field) =>
-                !!itemDetails[field.name] && (
+                !!item[field.name] && (
                   <DataDisplay
                     key={field.name}
-                    data={itemDetails[field.name]}
+                    data={item[field.name]}
                     details={field}
                   />
                 )
