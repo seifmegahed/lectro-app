@@ -27,7 +27,7 @@ const ImageUpload = ({
 }) => {
   // Create State for Image URL and store initUrl if it Exists
   const [imageUrl, setImageUrl] = useState(
-    !!initImage ? initImage.imageUrl : initUrl || ""
+    !!initImage ? initImage.imageUrl : initUrl ?? null
   );
 
   // Create State for Image loaded used by Circular Progress
@@ -150,7 +150,7 @@ const ImageUpload = ({
          */}
         <img
           // Image Source
-          src={imageUrl || "/images/imageplaceholder.png"}
+          src={imageUrl ?? "/images/imageplaceholder.png"}
           alt=""
           // On Loaded callback
           onLoad={() => setLoaded(true)}

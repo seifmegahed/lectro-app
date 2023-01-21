@@ -86,7 +86,7 @@ const ItemPage = () => {
           sx={{ gridColumn: "span 4" }}
         >
           {isNonMobile && (
-            <Box width="100px" display="flex" alignItems="center">
+            <Box width="220px" display="flex" alignItems="center">
               <img
                 src={item.imageUrl || "/images/imageplaceholder.png"}
                 style={{ maxWidth: "100%", maxHeight: "100%" }}

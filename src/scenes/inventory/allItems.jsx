@@ -60,7 +60,6 @@ const AllItems = () => {
     const unsubscribe = onSnapshot(helperDocumentReferance, (document) => {
       const documentData = document.data();
       setItems(documentData.data);
-      console.log(items.length);
     });
     return () => unsubscribe();
     // eslint-disable-next-line
@@ -162,8 +161,8 @@ const AllItems = () => {
     },
   ];
 
-  if (!items.length) {
-    return <Loading />;
+  if (items.length === 0) {
+    return <Loading state={true} />;
   }
 
   return (
@@ -217,11 +216,7 @@ const AllItems = () => {
 
       {pageContent.map((item, index) => {
         return (
-          <ItemCard
-            key={index}
-            item={item}
-            toggleSelected={toggleSelected}
-          />
+          <ItemCard key={index} item={item} toggleSelected={toggleSelected} />
         );
       })}
       {numberPages >= 1 && (
