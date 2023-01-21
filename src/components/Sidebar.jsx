@@ -25,11 +25,7 @@ const pages = {
   Inventory: [
     {
       title: "Items",
-      path: "/items",
-    },
-    {
-      title: "ItemsNew",
-      path: "/items-new",
+      path: "/inventory/",
     },
     {
       title: "Delivery Notes",

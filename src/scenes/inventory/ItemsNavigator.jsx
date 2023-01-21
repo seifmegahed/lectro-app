@@ -27,6 +27,7 @@ const ItemsNavigator = () => {
 
     if (!index) name = "Inventory";
     if (name === "edit") name = "Edit";
+    if (name === "edafa") name = "Edafa";
     if (name === "new-item") name = "New Item";
     if (name.length === 20) name = "Item";
 

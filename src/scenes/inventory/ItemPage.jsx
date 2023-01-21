@@ -1,9 +1,9 @@
+import { useState } from "react";
+import { Link, useParams } from "react-router-dom";
+
 // Firebase
 import { db } from "../../firebase-config";
-import { collection, doc } from "firebase/firestore";
-import { useFirestoreDocumentData } from "@react-query-firebase/firestore";
-
-import useInventory from "../../contexts/InventoryContext";
+import { collection, doc, onSnapshot } from "firebase/firestore";
 
 import {
   Fab,
@@ -23,6 +23,7 @@ import { itemFields } from "../../data/fields";
 
 import DataDisplay from "../../components/DataDisplay";
 import FormContainer from "../../components/FormContainer";
+import { useEffect } from "react";
 
 const itemsCollectionName = "items";
 
@@ -30,26 +31,25 @@ const ItemPage = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const [item, setItem] = useState({});
 
-  const { item, setPage, PAGES } = useInventory();
-  const { id, imageUrl, name, make } = item;
-  const category = item.category || "Other";
+  const { id } = useParams();
 
   const itemsCollectionReferance = collection(db, itemsCollectionName);
   const itemDocumentReferance = doc(itemsCollectionReferance, id);
 
-  const itemDetailsFetch = useFirestoreDocumentData(
-    [itemsCollectionName, id],
-    itemDocumentReferance,
-    {
-      subscribe: false,
-      source: "server",
-    }
-  );
+  useEffect(() => {
+    const unsubscribe = onSnapshot(itemDocumentReferance, (document) => {
+      setItem(document.data());
+    });
+    return () => {
+      console.log("unsubscribe");
+      unsubscribe();
+    };
+    // eslint-disable-next-line
+  }, []);
 
-  const itemDetails = itemDetailsFetch.data;
-
-  if (itemDetailsFetch.isLoading || !item) {
+  if (!item?.name) {
     return (
       <Backdrop sx={{ color: "#fff", zIndex: "100000" }} open={true}>
         <CircularProgress color="inherit" />
@@ -64,18 +64,19 @@ const ItemPage = () => {
         justifyContent="flex-end"
         sx={{ gridColumn: "span 4" }}
       >
-        <Fab
-          color="primary"
-          sx={{
-            top: "100px",
-            right: `${isNonMobile ? "30px" : "10px"}`,
-            position: "fixed",
-          }}
-          size="large"
-          onClick={() => setPage(PAGES.EDIT_ITEM)}
-        >
-          <Edit sx={{ color: `${colors.primary[700]}` }} fontSize="large" />
-        </Fab>
+        <Link to={`edit`}>
+          <Fab
+            color="primary"
+            sx={{
+              top: "100px",
+              right: `${isNonMobile ? "30px" : "10px"}`,
+              position: "fixed",
+            }}
+            size="large"
+          >
+            <Edit sx={{ color: `${colors.primary[700]}` }} fontSize="large" />
+          </Fab>
+        </Link>
       </Box>
       <FormContainer>
         <Box
@@ -87,7 +88,7 @@ const ItemPage = () => {
           {isNonMobile && (
             <Box width="100px" display="flex" alignItems="center">
               <img
-                src={imageUrl || "/images/imageplaceholder.png"}
+                src={item.imageUrl || "/images/imageplaceholder.png"}
                 style={{ maxWidth: "100%", maxHeight: "100%" }}
                 alt=""
               />
@@ -101,10 +102,10 @@ const ItemPage = () => {
               alignItems="flex-start"
             >
               <Typography color="text.secondary" variant="h5">
-                {category}
+                {item?.category}
               </Typography>
               <Typography color="text.primary" variant="h3">
-                {name}
+                {item?.name}
               </Typography>
             </Box>
             {isNonMobile && (
@@ -116,7 +117,7 @@ const ItemPage = () => {
               >
                 <Typography color="text.secondary">{id}</Typography>
                 <Typography color="text.secondary" variant="h5">
-                  {make}
+                  {item?.make}
                 </Typography>
               </Box>
             )}
@@ -128,12 +129,12 @@ const ItemPage = () => {
           sx={{ gridColumn: `span ${isNonMobile ? "3" : "4"}`, width: "100%" }}
         >
           <TableBody>
-            {itemFields[category].map(
+            {itemFields?.[item?.category].map(
               (field) =>
-                !!itemDetails[field.name] && (
+                !!item[field.name] && (
                   <DataDisplay
                     key={field.name}
-                    data={itemDetails[field.name]}
+                    data={item[field.name]}
                     details={field}
                   />
                 )

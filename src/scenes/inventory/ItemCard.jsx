@@ -1,9 +1,10 @@
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 import { getStorage, deleteObject } from "firebase/storage";
 
 import { useFirestoreDocumentDeletion } from "@react-query-firebase/firestore";
-import { collection, doc, getDoc } from "firebase/firestore";
+import { collection, doc } from "firebase/firestore";
 import { db } from "../../firebase-config";
 
 import {
@@ -15,29 +16,29 @@ import {
 } from "@mui/material";
 import { MoreVert } from "@mui/icons-material";
 
-import useInventory from "../../contexts/InventoryContext";
 import FormContainer from "../../components/FormContainer";
 import PopperMenu from "../../components/PopperMenu";
 
 import { ARABIC_MENU } from "./AllItems";
 import { useAuth } from "../../contexts/AuthContext";
 
-const ItemCard = ({
-  item,
-  toggleSelected,
-  updateSelected,
-  deleteHelperItem,
-}) => {
+const maxStringSize = 12;
+const maxSubStringSize = 18;
+
+const ItemCard = ({ item, toggleSelected, deleteHelperItem }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const { admin } = useAuth();
-  const { setPage, setSelectedItems, setItem, PAGES } = useInventory();
   const [moreMenu, setMoreMenu] = useState(null);
   const { id, imageUrl, name, make, mpn, category, quantity, selected } = item;
-  const maxStringSize = 12;
-  const maxSubStringSize = 18;
+  const navigate = useNavigate();
+
   const open = Boolean(moreMenu);
+
   const collectionReferance = collection(db, "items");
   const documentReferance = doc(collectionReferance, id);
+
+  const itemUrl = `item/${id}`;
+  const editItemUrl = `item/${id}/edit`;
 
   const title = isNonMobile
     ? name
@@ -65,12 +66,6 @@ const ItemCard = ({
     },
   });
 
-  const getItem = async () => {
-    const document = await getDoc(doc(collection(db, "items"), id));
-    setItem({ ...document.data(), id: document.id });
-    setPage(PAGES.ITEM_PAGE);
-  };
-
   const handleMenu = (event) => {
     setMoreMenu(event.currentTarget);
   };
@@ -79,52 +74,48 @@ const ItemCard = ({
     setMoreMenu(null);
   };
 
-  const visitItem = () => {
-    getItem();
-  };
-
-  const handleEditItem = () => {
-    setItem(item);
-    setPage(PAGES.EDIT_ITEM);
-  };
-
   const eznEdafa = () => {
-    setItem(item);
-    setSelectedItems([]);
-    setPage(PAGES.EZN_EDAFA);
+    navigate("edafa", { state: { selectedItems: [item] } });
   };
 
   const menuItems = [
     {
       label: ARABIC_MENU.EDAFA,
       arabic: true,
+      type: "Callback",
       callback: eznEdafa,
     },
     {
       label: ARABIC_MENU.SARF,
       arabic: true,
+      type: "Callback",
       callback: () => console.log("SARF"),
     },
     {
       label: ARABIC_MENU.TALAB,
       arabic: true,
+      type: "Callback",
       callback: () => console.log("TALAB"),
     },
     {
       label: ARABIC_MENU.KHOROOG,
       arabic: true,
+      type: "Callback",
       callback: () => console.log("KHOROOG"),
     },
     {
       label: "Details",
-      callback: visitItem,
+      type: "Callback",
+      callback: () => navigate(itemUrl),
     },
     {
       label: "Edit",
-      callback: handleEditItem,
+      type: "Callback",
+      callback: () => navigate(editItemUrl),
     },
     {
       label: "Delete",
+      type: "Callback",
       callback: () => deleteMutation.mutate(),
       color: "error",
       disabled: !admin,
@@ -164,16 +155,20 @@ const ItemCard = ({
         )}
         <Box display="flex" justifyContent="space-between" width="100%">
           <Box>
-            <Typography
-              variant={isNonMobile ? "h3" : "h4"}
-              onClick={visitItem}
-              sx={{ cursor: "pointer" }}
+            <Link
+              to={itemUrl}
+              style={{ textDecoration: "none", color: "inherit" }}
             >
-              {title}
-            </Typography>
-            <Typography variant={isNonMobile ? "h5" : "h6"}>
-              {subTitle}
-            </Typography>
+              <Typography
+                variant={isNonMobile ? "h3" : "h4"}
+                sx={{ cursor: "pointer" }}
+              >
+                {title}
+              </Typography>
+              <Typography variant={isNonMobile ? "h5" : "h6"}>
+                {subTitle}
+              </Typography>
+            </Link>
           </Box>
           {isNonMobile && (
             <Box display="flex" flexDirection="column" textAlign="right">

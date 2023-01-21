@@ -1,3 +1,9 @@
+import { useState, useMemo } from "react";
+import { useLocation } from "react-router-dom";
+
+import { db } from "../../firebase-config";
+import { collection, doc, getDoc } from "firebase/firestore";
+
 import {
   Autocomplete,
   Box,
@@ -8,12 +14,9 @@ import {
   Button,
   useMediaQuery,
 } from "@mui/material";
-import { collection, doc, getDoc } from "firebase/firestore";
-import { useState, useMemo } from "react";
-import FormContainer from "../../components/FormContainer";
-import useInventory from "../../contexts/InventoryContext";
-import { db } from "../../firebase-config";
+
 import { tokens } from "../../theme";
+import FormContainer from "../../components/FormContainer";
 
 const title = "إذن إضافه";
 
@@ -21,7 +24,10 @@ const Edafa = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const { selectedItems, item } = useInventory();
+
+  const location = useLocation();
+  const { selectedItems } = location.state;
+
   const [errors, setErrors] = useState(
     selectedItems.length > 0
       ? selectedItems.map(() => ({
@@ -35,34 +41,20 @@ const Edafa = () => {
           },
         ]
   );
+
   const [edafaData, setEdafaData] = useState(
-    selectedItems.length > 0
-      ? selectedItems.map((currentItem) => ({
-          itemData: {
-            id: currentItem.id,
-            mpn: currentItem.mpn,
-            name: currentItem.name,
-            make: currentItem.make,
-            category: currentItem.category,
-          },
-          quantity: "",
-          notes: "",
-          supplier: {},
-        }))
-      : [
-          {
-            itemData: {
-              id: item.id,
-              mpn: item.mpn,
-              name: item.name,
-              make: item.make,
-              category: item.category,
-            },
-            quantity: "",
-            notes: "",
-            supplier: {},
-          },
-        ]
+    selectedItems.map((currentItem) => ({
+      itemData: {
+        id: currentItem.id,
+        mpn: currentItem.mpn,
+        name: currentItem.name,
+        make: currentItem.make,
+        category: currentItem.category,
+      },
+      quantity: "",
+      notes: "",
+      supplier: {},
+    }))
   );
 
   const suppliersList = useMemo(() => {
@@ -70,7 +62,7 @@ const Edafa = () => {
     const getData = async () => {
       const documentSnapshot = await getDoc(
         doc(collection(db, "helper_data"), "Suppliers")
-      )
+      );
       const suppliers = documentSnapshot.data().data;
       suppliers.forEach((supplier) => {
         const { englishName, arabicName, taxNumber, doc_id } = supplier;
@@ -167,6 +159,7 @@ const Edafa = () => {
       }
     });
   };
+
   return (
     <FormContainer>
       <Box

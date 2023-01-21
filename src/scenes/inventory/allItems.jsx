@@ -1,29 +1,28 @@
 import { useMemo, useState, useEffect } from "react";
 
 import { db } from "../../firebase-config";
-import { collection, doc } from "firebase/firestore";
+import { collection, doc, onSnapshot } from "firebase/firestore";
 
-import {
-  useFirestoreDocumentMutation,
-} from "@react-query-firebase/firestore";
+import { useFirestoreDocumentMutation } from "@react-query-firebase/firestore";
 
 import {
   Box,
+  Chip,
   Input,
   Button,
   useTheme,
   IconButton,
   Pagination,
   useMediaQuery,
-  Chip,
 } from "@mui/material";
 import { Search } from "@mui/icons-material";
 
 import { tokens } from "../../theme";
-import useInventory from "../../contexts/InventoryContext";
 
 import ItemCard from "./ItemCard";
 import PopperMenu from "../../components/PopperMenu";
+import Loading from "../../components/Loading";
+import { useNavigate } from "react-router-dom";
 
 export const ARABIC_MENU = {
   EDAFA: "إضافه",
@@ -43,14 +42,14 @@ const helperDocumentReferance = doc(
 
 const itemsPerPage = 10;
 
-const AllItems = ({ items }) => {
+const AllItems = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const navigate = useNavigate();
+  const [items, setItems] = useState([]);
 
   const updateHelper = useFirestoreDocumentMutation(helperDocumentReferance);
-
-  const { setPage, selectedItems, setSelectedItems, PAGES } = useInventory();
 
   const [currentItems, setCurrentItems] = useState(
     !!items ? items.map((item) => ({ ...item, selected: false })) : []
@@ -60,6 +59,16 @@ const AllItems = ({ items }) => {
   const [searchkey, setSearchkey] = useState("");
   const [page, setCurrentPage] = useState(1);
   const open = Boolean(moreMenu);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(helperDocumentReferance, (document) => {
+      const documentData = document.data();
+      setItems(documentData.data);
+      console.log(items.length);
+    });
+    return () => unsubscribe();
+    // eslint-disable-next-line
+  }, []);
 
   const filteredItems = useMemo(
     () =>
@@ -85,7 +94,7 @@ const AllItems = ({ items }) => {
     return filteredItems.slice(firstItemIndex, lastItemIndex);
   }, [filteredItems, page]);
 
-  const selected = useMemo(() => {
+  const selectedCount = useMemo(() => {
     let temp = 0;
     currentItems.forEach((item) => {
       if (item.selected) temp++;
@@ -104,17 +113,16 @@ const AllItems = ({ items }) => {
     );
   };
 
-  const updateSelected = () => {
+  const getSelected = () => {
     const temp = [];
     currentItems.forEach((item) => {
       if (item.selected) temp.push(item);
     });
-    setSelectedItems(temp);
+    return temp;
   };
 
   const eznEdafa = () => {
-    updateSelected();
-    setPage(PAGES.EZN_EDAFA);
+    navigate("edafa", { state: { selectedItems: getSelected() } });
   };
 
   const clearSelected = () => {
@@ -138,16 +146,8 @@ const AllItems = ({ items }) => {
   };
 
   useEffect(() => {
-    selectedItems.forEach((item) => {
-      setCurrentItems((prev) =>
-        prev.map((stateItem) => {
-          if (item.id === stateItem.id)
-            return { ...item, selected: true };
-          else return stateItem;
-        })
-      );
-    });
-  }, [selectedItems]);
+    setCurrentItems(items.map((item) => ({ ...item, selected: false })));
+  }, [items]);
 
   const menuItems = [
     {
@@ -172,6 +172,10 @@ const AllItems = ({ items }) => {
     },
   ];
 
+  if (!items.length) {
+    return <Loading />;
+  }
+
   return (
     <Box display="grid" gap="20px">
       <Box display="flex" justifyContent="space-between" gap="20px">
@@ -195,12 +199,12 @@ const AllItems = ({ items }) => {
           sx={{ minWidth: "110px" }}
           variant="contained"
           size="large"
-          onClick={() => setPage(PAGES.NEW_ITEM)}
+          onClick={() => navigate("new-item")}
         >
           New Item
         </Button>
       </Box>
-      {selected > 0 && (
+      {selectedCount > 0 && (
         <Box display="flex" justifyContent="flex-start" gap="20px">
           <Chip
             id="moreMenuButton"
@@ -209,7 +213,9 @@ const AllItems = ({ items }) => {
             aria-expanded={open ? "true" : undefined}
             onClick={handleMenu}
             onDelete={clearSelected}
-            label={`${selected} Item${selected === 1 ? "" : "s"} Selected`}
+            label={`${selectedCount} Item${
+              selectedCount === 1 ? "" : "s"
+            } Selected`}
           />
           <PopperMenu
             handleClose={handleMenuClose}
@@ -225,7 +231,7 @@ const AllItems = ({ items }) => {
             key={index}
             item={item}
             toggleSelected={toggleSelected}
-            updateSelected={updateSelected}
+            getSelected={getSelected}
             deleteHelperItem={deleteHelperItem}
           />
         );

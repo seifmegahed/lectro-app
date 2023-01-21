@@ -1,85 +1,26 @@
-import { useEffect, useState } from "react";
+import { Routes, Route } from "react-router-dom";
 
-import useInventory, {
-  InventoryProvider,
-} from "../../contexts/InventoryContext";
-
-import { db } from "../../firebase-config";
-import { doc, collection, onSnapshot } from "firebase/firestore";
-
-import { Box, IconButton } from "@mui/material";
-import { ChevronLeft } from "@mui/icons-material";
-
-import Header from "../../components/Header";
-import NewItem from "./NewItem";
+import ItemsNavigator from "./ItemsNavigator";
 import AllItems from "./AllItems";
 import ItemPage from "./ItemPage";
 import EditItem from "./EditItem";
+import NewItem from "./NewItem";
 import Edafa from "./Edafa";
 
 const Inventory = () => {
   return (
-    <InventoryProvider>
-      <InventoryWrapper />
-    </InventoryProvider>
-  );
-};
-
-const helperCollectionName = "helper_data";
-const helperDocumentId = "Items";
-
-const InventoryWrapper = () => {
-  const { page, setPage, PAGES } = useInventory();
-  const [items, setItems] = useState([]);
-  const [count, setCount] = useState(0);
-
-  const helperCollectionReferance = collection(db, helperCollectionName);
-  const helperDocumentReferance = doc(
-    helperCollectionReferance,
-    helperDocumentId
-  );
-
-  useEffect(() => {
-    const unsubscribe = onSnapshot(helperDocumentReferance, (document) => {
-      const documentData = document.data();
-      setItems(documentData.data);
-      setCount(documentData.count);
-    });
-    return () => unsubscribe();
-    // eslint-disable-next-line
-  }, []);
-
-  const PageElements = () => {
-    switch (page) {
-      case PAGES.ALL_ITEMS:
-        return <AllItems items={items} />;
-      case PAGES.NEW_ITEM:
-        return <NewItem />;
-      case PAGES.ITEM_PAGE:
-        return <ItemPage />;
-      case PAGES.EDIT_ITEM:
-        return <EditItem />;
-      case PAGES.EZN_EDAFA:
-        return <Edafa />;
-      default:
-        console.log(`Page ${page} does not exist`);
-        return <></>;
-    }
-  };
-
-  return (
-    <Box display="flex" gap="10px" flexDirection="column">
-      <Box display="flex" alignItems="center">
-        {page !== PAGES.ALL_ITEMS && (
-          <IconButton onClick={() => setPage(PAGES.ALL_ITEMS)}>
-            <ChevronLeft fontSize="large" />
-          </IconButton>
-        )}
-        <Header title="Inventory" />
-        {count}
-      </Box>
-      <PageElements />
-    </Box>
+    <>
+      <Routes>
+        <Route path="/*" element={<ItemsNavigator />} />
+      </Routes>
+      <Routes>
+        <Route path="/" element={<AllItems />} />
+        <Route path="/item/:id" element={<ItemPage />} />
+        <Route path="/item/:id/edit" element={<EditItem />} />
+        <Route path="/new-item" element={<NewItem />} />
+        <Route path="/edafa" element={<Edafa />} />
+      </Routes>
+    </>
   );
 };
 

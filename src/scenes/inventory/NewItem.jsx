@@ -16,21 +16,20 @@ import {
   Box,
   Select,
   useTheme,
-  Backdrop,
   MenuItem,
   Typography,
   InputLabel,
   FormControl,
-  CircularProgress,
 } from "@mui/material";
 
 import { itemFields } from "../../data/fields";
 import { tokens } from "../../theme";
 
-import useInventory from "../../contexts/InventoryContext";
 import FormContainer from "../../components/FormContainer";
 import ImageUpload from "../../components/ImageUpload";
 import AutoForm from "../../components/AutoForm";
+import { useNavigate } from "react-router-dom";
+import Loading from "../../components/Loading";
 
 const helperCollectionName = "helper_data";
 const itemsCollectionName = "items";
@@ -39,9 +38,9 @@ const helperDocumentId = "Items";
 const NewItem = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const navigate = useNavigate();
   const { currentUser } = useAuth();
 
-  const { setPage, setItem, setSelectedItems, PAGES } = useInventory();
   const [image, setImage] = useState({ imageUrl: "", imageUri: "" });
   const [imageState, setImageState] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -111,6 +110,7 @@ const NewItem = () => {
     setLoading(true);
     createItem.mutate(
       {
+        category,
         ...data,
         ...image,
         createdBy: currentUser.displayName,
@@ -119,7 +119,6 @@ const NewItem = () => {
       {
         onSuccess(response, values) {
           const updateLocalValues = new Promise((resolve) => {
-            setItem({ ...values, id: response.id, createdOn: new Date() });
             const id = response.id;
             const { name, mpn, make, imageUrl } = values;
             const data = { name, category, make, id };
@@ -131,8 +130,7 @@ const NewItem = () => {
             console.log(data);
             handleHelper(data);
             setLoading(false);
-            setSelectedItems([]);
-            setPage(PAGES.ITEM_PAGE);
+            navigate(`item/${data.id}`)
           });
         },
         onError(error) {
@@ -145,9 +143,7 @@ const NewItem = () => {
 
   return (
     <FormContainer>
-      <Backdrop sx={{ color: "#fff", zIndex: "100000" }} open={loading}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      <Loading state={loading} />
       <Box sx={{ gridColumn: "span 4" }}>
         <Typography variant="h3" mb="20px">
           New Item
