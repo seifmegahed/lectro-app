@@ -130,7 +130,7 @@ const NewItem = () => {
             console.log(data);
             handleHelper(data);
             setLoading(false);
-            navigate(`item/${data.id}`)
+            navigate(`/inventory/item/${data.id}`)
           });
         },
         onError(error) {

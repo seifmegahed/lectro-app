@@ -81,14 +81,13 @@ const EditItem = () => {
     let changesToCommit = false;
     let newData = {};
 
-    
     if (!!data) {
       changesToCommit = true;
       newData = { ...newData, ...data };
     } else {
       newData = { ...item };
     }
-    
+
     if (imageChange) {
       changesToCommit = true;
       console.log("Image Changed");
@@ -105,30 +104,27 @@ const EditItem = () => {
         lastModifiedOn: serverTimestamp(),
         modifiedBy: currentUser.displayName,
       };
-      console.log(newData)
+      console.log(newData);
       try {
         await runTransaction(db, async (transaction) => {
           const helperDocument = await transaction.get(helperDocumentReferance);
           const itemDocument = await transaction.get(itemDocumentReferance);
 
-          const newHelperItems = helperDocument.data().data.map((item) => {
-            if (item.id === itemDocument.id) {
-              let newHelperItem = {
-                ...item,
-                name: newData.name,
-              };
-              if (imageChange) {
-                newHelperItem = {
-                  ...newHelperItem,
-                  imageUrl: image.imageUrl,
-                  imageUri: image.imageUri,
+          const newHelperItems = helperDocument
+            .data()
+            .data.map((helperItem) => {
+              if (helperItem.id === itemDocument.id) {
+                let newHelperItem = {
+                  ...helperItem,
+                  name: newData.name,
                 };
+                if (imageChange) newHelperItem.imageUrl = image.imageUrl;
+
+                if (!!newData.mpn) newHelperItem.mpn = newData.mpn;
+                return newHelperItem;
               }
-              if (!!newData.mpn) newHelperItem.mpn = newData.mpn;
-              return newHelperItem;
-            }
-            return item;
-          });
+              return helperItem;
+            });
           transaction.update(helperDocumentReferance, {
             data: newHelperItems,
             count: newHelperItems.length,
@@ -137,11 +133,11 @@ const EditItem = () => {
             ...itemDocument.data(),
             ...newData,
           });
-          console.log("Transaction successfully committed!");
+          console.log(`Edit ${id} Transaction successfully committed!`);
           navigate(itemUrl, { replace: true });
         });
       } catch (error) {
-        console.log("Transaction failed: ", error);
+        console.log(`Edit ${id} Transaction failed!`, error);
         setLoading(false);
         // Modal
       }

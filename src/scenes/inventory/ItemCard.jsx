@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import { getStorage, deleteObject } from "firebase/storage";
+import { getStorage, ref, deleteObject } from "firebase/storage";
 
-import { useFirestoreDocumentDeletion } from "@react-query-firebase/firestore";
-import { collection, doc } from "firebase/firestore";
+import { collection, doc, runTransaction } from "firebase/firestore";
 import { db } from "../../firebase-config";
 
 import {
@@ -25,6 +24,10 @@ import { useAuth } from "../../contexts/AuthContext";
 const maxStringSize = 12;
 const maxSubStringSize = 18;
 
+const helperCollectionName = "helper_data";
+const itemsCollectionName = "items";
+const helperDocumentId = "Items";
+
 const ItemCard = ({ item, toggleSelected, deleteHelperItem }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const { admin } = useAuth();
@@ -34,8 +37,14 @@ const ItemCard = ({ item, toggleSelected, deleteHelperItem }) => {
 
   const open = Boolean(moreMenu);
 
-  const collectionReferance = collection(db, "items");
-  const documentReferance = doc(collectionReferance, id);
+  const collectionReferance = collection(db, itemsCollectionName);
+  const helperCollectionReferance = collection(db, helperCollectionName);
+
+  const itemDocumentReferance = doc(collectionReferance, id);
+  const helperDocumentReferance = doc(
+    helperCollectionReferance,
+    helperDocumentId
+  );
 
   const itemUrl = `item/${id}`;
   const editItemUrl = `item/${id}/edit`;
@@ -52,19 +61,38 @@ const ItemCard = ({ item, toggleSelected, deleteHelperItem }) => {
     ? temp.substring(0, maxSubStringSize).trimEnd() + "..."
     : temp;
 
-  const deleteMutation = useFirestoreDocumentDeletion(documentReferance, {
-    onSuccess() {
-      deleteHelperItem(id);
-      if (!!imageUrl) {
-        deleteObject(getStorage(), imageUrl)
-          .then(() => console.log("Image Deleted"))
-          .catch((error) => console.log(error));
-      }
-    },
-    onError(error) {
-      console.log(error);
-    },
-  });
+  const deleteItem = async () => {
+    try {
+      runTransaction(db, async (transaction) => {
+        const helperDocument = await transaction.get(helperDocumentReferance);
+        const itemDocument = await transaction.get(itemDocumentReferance);
+
+        const newHelperItems = helperDocument
+          .data()
+          .data.filter((helperItem) => helperItem.id !== itemDocument.id);
+
+        transaction.update(helperDocumentReferance, {
+          data: newHelperItems,
+          count: newHelperItems.length,
+        });
+        transaction.delete(itemDocumentReferance);
+
+        if (!!itemDocument.data()?.imageUri) {
+          const imageRef = ref(getStorage(), itemDocument.data()?.imageUri);
+          deleteObject(imageRef).catch((error) => {
+            console.log(
+              `failed to delete image ${itemDocument.data()?.imageUri}`,
+              error
+            );
+          });
+        }
+      });
+      console.log(`Delete ${id} Transaction successfully committed!`);
+    } catch (error) {
+      console.log(`Delete ${id} Transaction failed!`, error);
+      // Modal
+    }
+  };
 
   const handleMenu = (event) => {
     setMoreMenu(event.currentTarget);
@@ -116,7 +144,7 @@ const ItemCard = ({ item, toggleSelected, deleteHelperItem }) => {
     {
       label: "Delete",
       type: "Callback",
-      callback: () => deleteMutation.mutate(),
+      callback: () => deleteItem(),
       color: "error",
       disabled: !admin,
     },
