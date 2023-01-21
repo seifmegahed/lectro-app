@@ -28,7 +28,7 @@ const helperCollectionName = "helper_data";
 const itemsCollectionName = "items";
 const helperDocumentId = "Items";
 
-const ItemCard = ({ item, toggleSelected, deleteHelperItem }) => {
+const ItemCard = ({ item, toggleSelected }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const { admin } = useAuth();
   const [moreMenu, setMoreMenu] = useState(null);

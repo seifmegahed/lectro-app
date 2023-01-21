@@ -133,11 +133,11 @@ const EditItem = () => {
             ...itemDocument.data(),
             ...newData,
           });
-          console.log(`Edit ${id} Transaction successfully committed!`);
+          console.log(`Edit ${id} Transaction Successfully Committed!`);
           navigate(itemUrl, { replace: true });
         });
       } catch (error) {
-        console.log(`Edit ${id} Transaction failed!`, error);
+        console.log(`Edit ${id} Transaction Failed!`, error);
         setLoading(false);
         // Modal
       }

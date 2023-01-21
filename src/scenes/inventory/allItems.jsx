@@ -3,8 +3,6 @@ import { useMemo, useState, useEffect } from "react";
 import { db } from "../../firebase-config";
 import { collection, doc, onSnapshot } from "firebase/firestore";
 
-import { useFirestoreDocumentMutation } from "@react-query-firebase/firestore";
-
 import {
   Box,
   Chip,
@@ -48,8 +46,6 @@ const AllItems = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
-
-  const updateHelper = useFirestoreDocumentMutation(helperDocumentReferance);
 
   const [currentItems, setCurrentItems] = useState(
     !!items ? items.map((item) => ({ ...item, selected: false })) : []
@@ -139,12 +135,6 @@ const AllItems = () => {
     setMoreMenu(null);
   };
 
-  const deleteHelperItem = (id) => {
-    const data = items.filter((item) => item.id !== id);
-    const count = data.length;
-    updateHelper.mutate({ data, count });
-  };
-
   useEffect(() => {
     setCurrentItems(items.map((item) => ({ ...item, selected: false })));
   }, [items]);
@@ -231,8 +221,6 @@ const AllItems = () => {
             key={index}
             item={item}
             toggleSelected={toggleSelected}
-            getSelected={getSelected}
-            deleteHelperItem={deleteHelperItem}
           />
         );
       })}

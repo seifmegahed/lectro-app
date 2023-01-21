@@ -3,12 +3,12 @@ import { useEffect, useState } from "react";
 // Firebase
 import { db } from "../../firebase-config";
 import { getStorage, ref, deleteObject } from "firebase/storage";
-import { collection, doc, serverTimestamp } from "firebase/firestore";
 import {
-  useFirestoreCollectionMutation,
-  useFirestoreDocumentMutation,
-  useFirestoreDocumentData,
-} from "@react-query-firebase/firestore";
+  collection,
+  doc,
+  serverTimestamp,
+  runTransaction,
+} from "firebase/firestore";
 
 import { useAuth } from "../../contexts/AuthContext";
 
@@ -53,13 +53,6 @@ const NewItem = () => {
     helperDocumentId
   );
 
-  const helperItems = useFirestoreDocumentData(
-    [helperCollectionName, helperDocumentId],
-    helperDocumentReferance
-  ).data;
-  const createItem = useFirestoreCollectionMutation(itemsCollectionReferance);
-  const updateHelper = useFirestoreDocumentMutation(helperDocumentReferance);
-
   const handleCategoryChange = (event) => {
     setCategory(event.target.value);
   };
@@ -100,45 +93,50 @@ const NewItem = () => {
     setImage(data);
   };
 
-  const handleHelper = (data) => {
-    updateHelper.mutate({
-      data: [data, ...helperItems.data],
-      count: helperItems.count + 1,
-    });
-  };
-  const handleSubmit = (data) => {
+  const handleSubmit = async (data) => {
     setLoading(true);
-    createItem.mutate(
-      {
-        category,
-        ...data,
-        ...image,
-        createdBy: currentUser.displayName,
-        createdOn: serverTimestamp(),
-      },
-      {
-        onSuccess(response, values) {
-          const updateLocalValues = new Promise((resolve) => {
-            const id = response.id;
-            const { name, mpn, make, imageUrl } = values;
-            const data = { name, category, make, id };
-            if (!!mpn) data.mpn = mpn;
-            if (!!imageUrl) data.imageUrl = imageUrl;
-            resolve(data);
-          });
-          updateLocalValues.then((data) => {
-            console.log(data);
-            handleHelper(data);
-            setLoading(false);
-            navigate(`/inventory/item/${data.id}`)
-          });
-        },
-        onError(error) {
-          setLoading(false);
-          throw new Error("Error Writing Helper Data", error);
-        },
-      }
-    );
+    try {
+      await runTransaction(db, async (transaction) => {
+        const helperItemsDocument = await transaction.get(
+          helperDocumentReferance
+        );
+        const newItemDocumentReferance = doc(itemsCollectionReferance);
+        const id = newItemDocumentReferance.id
+        let newHelperItem = {
+          id,
+          name: data.name,
+          make: data.make,
+          category,
+        };
+        if (!!data.mpn) newHelperItem.mpn = data.mpn;
+        if (!!image.imageUrl) newHelperItem.imageUrl = image.imageUrl;
+
+        let newHelperItems = helperItemsDocument.data().data;
+        newHelperItems.unshift(newHelperItem);
+
+        transaction.update(helperDocumentReferance, {
+          data: newHelperItems,
+          count: newHelperItems.length,
+        });
+
+        transaction.set(newItemDocumentReferance, {
+          category,
+          ...data,
+          ...image,
+          createdBy: currentUser.displayName,
+          createdOn: serverTimestamp(),
+        });
+
+        console.log(
+          `Item Document ${id} Creation Transaction Successful`
+        );
+        navigate(`/inventory/item/${id}`);
+      });
+    } catch (error) {
+      setLoading(false);
+      console.log(`New Item Transaction Failed!`, error);
+      // Modal
+    }
   };
 
   return (
