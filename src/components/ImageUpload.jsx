@@ -53,43 +53,58 @@ const ImageUpload = ({
       const filePath = `${storageFolder}/${file.name}`;
       // Image Referance
       const newImageReferance = ref(getStorage(), filePath);
-      //Check if referance exists !!!!
-      // Upload Image
-      const uploadTask = uploadBytesResumable(
-        newImageReferance,
-        // File to Upload
-        file
-      );
-      // Listen to upload status
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          // get progress in percent
-          const progress = Math.round(
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-          );
-          console.log(progress);
-        },
-        (error) => {
-          // Handle unsuccessful uploads
-          console.log("Failed to upload image", error);
-        },
-        // Upload Successful
-        () => {
-          // Get Image URL
-          getDownloadURL(newImageReferance).then((publicImageUrl) => {
-            // Store in state
-            setImageUrl(publicImageUrl);
-            // Get URI from uploadTask metadata
-            const fullPath = uploadTask._metadata.fullPath;
-            // Return Image Data to parent
-            returnImageData({
-              imageUrl: publicImageUrl,
-              imageUri: fullPath,
+
+      getDownloadURL(newImageReferance).then(onResolve, onReject);
+
+      function onResolve(publicImageUrl) {
+        console.log("image exists");
+        // Store in state
+        setImageUrl(publicImageUrl);
+        // Return Image Data to parent
+        returnImageData({
+          imageUrl: publicImageUrl,
+          imageUri: filePath,
+        });
+        setLoaded(true);
+      }
+      function onReject() {
+        // Upload Image
+        const uploadTask = uploadBytesResumable(
+          newImageReferance,
+          // File to Upload
+          file
+        );
+        // Listen to upload status
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            // get progress in percent
+            const progress = Math.round(
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+            );
+            console.log(progress);
+          },
+          (error) => {
+            // Handle unsuccessful uploads
+            console.log("Failed to upload image", error);
+          },
+          // Upload Successful
+          () => {
+            // Get Image URL
+            getDownloadURL(newImageReferance).then((publicImageUrl) => {
+              // Store in state
+              setImageUrl(publicImageUrl);
+              // Get URI from uploadTask metadata
+              const fullPath = uploadTask._metadata.fullPath;
+              // Return Image Data to parent
+              returnImageData({
+                imageUrl: publicImageUrl,
+                imageUri: fullPath,
+              });
             });
-          });
-        }
-      );
+          }
+        );
+      }
     }
   };
 
