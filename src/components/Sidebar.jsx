@@ -28,12 +28,20 @@ const pages = {
       path: "/inventory/",
     },
     {
+      title: "Edafa",
+      path: "/inventory/edafa",
+    },
+    {
+      title: "Finished Goods",
+      path: "/inventory",
+    },
+    {
       title: "Delivery Notes",
-      path: "/delivery-notes",
+      path: "/inventory",
     },
     {
       title: "Products",
-      path: "/products",
+      path: "/inventory",
     },
   ],
   Purchasing: [

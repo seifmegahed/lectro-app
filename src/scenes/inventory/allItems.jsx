@@ -33,7 +33,7 @@ const helperCollectionName = "helper_data";
 const helperDocumentId = "Items";
 
 const helperCollectionReferance = collection(db, helperCollectionName);
-const helperDocumentReferance = doc(
+const itemsHelperDocumentReferance = doc(
   helperCollectionReferance,
   helperDocumentId
 );
@@ -57,8 +57,8 @@ const AllItems = () => {
   const open = Boolean(moreMenu);
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(helperDocumentReferance, (document) => {
-      const documentData = document.data();
+    const unsubscribe = onSnapshot(itemsHelperDocumentReferance, (snapshot) => {
+      const documentData = snapshot.data();
       setItems(documentData.data);
     });
     return () => unsubscribe();
@@ -117,7 +117,7 @@ const AllItems = () => {
   };
 
   const eznEdafa = () => {
-    navigate("edafa", { state: { selectedItems: getSelected() } });
+    navigate("new-edafa", { state: { selectedItems: getSelected() } });
   };
 
   const clearSelected = () => {
@@ -161,9 +161,7 @@ const AllItems = () => {
     },
   ];
 
-  if (items.length === 0) {
-    return <Loading state={true} />;
-  }
+  if (items.length === 0) return <Loading state={true} />;
 
   return (
     <Box display="grid" gap="20px">

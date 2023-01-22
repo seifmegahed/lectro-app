@@ -28,8 +28,9 @@ const ItemsNavigator = () => {
     if (!index) name = "Inventory";
     if (name === "edit") name = "Edit";
     if (name === "edafa") name = "Edafa";
-    if (name === "new-item") name = "New Item";
     if (name.length === 20) name = "Item";
+    if (name === "new-item") name = "New Item";
+    if (name === "new-edafa") name = "New Edafa";
 
     if (index + 1 === pathArray.length) return { name, url, last: true };
     return { name, url };

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { db } from "../../firebase-config";
+import { db } from "../../../firebase-config";
 import {
   collection,
   doc,
@@ -21,10 +21,10 @@ import {
   useMediaQuery,
 } from "@mui/material";
 
-import { tokens } from "../../theme";
-import FormContainer from "../../components/FormContainer";
-import Loading from "../../components/Loading";
-import { useAuth } from "../../contexts/AuthContext";
+import { tokens } from "../../../theme";
+import FormContainer from "../../../components/FormContainer";
+import Loading from "../../../components/Loading";
+import { useAuth } from "../../../contexts/AuthContext";
 
 const title = "إذن إضافه";
 
@@ -36,7 +36,7 @@ const itemsHelperDocumentId = "Items";
 const edafaHelperDocumentId = "Edafa";
 const suppliersHelperDocumentId = "Suppliers";
 
-const Edafa = () => {
+const NewEdafa = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -402,4 +402,4 @@ const Edafa = () => {
   );
 };
 
-export default Edafa;
+export default NewEdafa;

@@ -103,7 +103,7 @@ const ItemCard = ({ item, toggleSelected }) => {
   };
 
   const eznEdafa = () => {
-    navigate("edafa", { state: { selectedItems: [item] } });
+    navigate("new-edafa", { state: { selectedItems: [item] } });
   };
 
   const menuItems = [

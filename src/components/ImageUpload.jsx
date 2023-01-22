@@ -53,6 +53,7 @@ const ImageUpload = ({
       const filePath = `${storageFolder}/${file.name}`;
       // Image Referance
       const newImageReferance = ref(getStorage(), filePath);
+      //Check if referance exists !!!!
       // Upload Image
       const uploadTask = uploadBytesResumable(
         newImageReferance,
