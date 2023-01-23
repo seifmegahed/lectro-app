@@ -41,7 +41,7 @@ const NewItem = () => {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
 
-  const [image, setImage] = useState({ imageUrl: "", imageUri: "" });
+  const [image, setImage] = useState({ imageUrl: null, imageUri: null });
   const [imageState, setImageState] = useState(false);
   const [loading, setLoading] = useState(false);
   const [category, setCategory] = useState("");

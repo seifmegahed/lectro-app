@@ -272,7 +272,7 @@ const NewEdafa = () => {
 
         console.log("Edafa Transaction Success");
         setLoading(false);
-        navigate("/inventory");
+        navigate("/inventory/edafa");
       } catch (error) {
         setLoading(false);
         console.log("Edafa Transaction Failed", error);
