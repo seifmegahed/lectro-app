@@ -2,6 +2,17 @@ const display = true;
 const required = true;
 const editable = true;
 
+const quantity = {
+  name: "quantity",
+  label: "Opening Quantity",
+  type: "number",
+  input: "textField",
+  editable,
+  display,
+  required,
+  span: "2",
+};
+
 const name = {
   name: "name",
   label: "Name",
@@ -123,16 +134,12 @@ const weight = {
   span: "1",
   display,
 };
-const userData = [
-  modifiedBy,
-  lastModifiedOn,
-  createdBy,
-  createdOn
-]
+const userData = [modifiedBy, lastModifiedOn, createdBy, createdOn];
 export const itemFields = {
   Driver: [
     name,
     partNumber,
+    quantity,
     make,
     { ...country, required },
     power,
@@ -218,6 +225,7 @@ export const itemFields = {
   LED: [
     name,
     partNumber,
+    quantity,
     make,
     { ...country, required },
     power,
@@ -295,6 +303,7 @@ export const itemFields = {
     name,
     partNumber,
     make,
+    quantity,
     { ...country, required },
     {
       name: "angle",
@@ -336,17 +345,12 @@ export const itemFields = {
     ...userData,
     notes,
   ],
-  Screws: [
-    name,
-    make,
-    country,
-    ...userData,
-    notes,
-  ],
+  Screws: [name, make, quantity, country, ...userData, notes],
   Products: [
     name,
     make,
     country,
+    quantity,
     length,
     width,
     thickness,
@@ -354,29 +358,9 @@ export const itemFields = {
     ...userData,
     notes,
   ],
-  Cables: [
-    name,
-    make,
-    country,
-    ...userData,
-    notes,
-  ],
-  Tools: [
-    name,
-    make,
-    country,
-    ...userData,
-    notes,
-    image,
-  ],
-  Other: [
-    name,
-    make,
-    country,
-    ...userData,
-    notes,
-    image,
-  ],
+  Cables: [name, make, quantity, country, ...userData, notes],
+  Tools: [name, make, quantity, country, ...userData, notes, image],
+  Other: [name, make, quantity, country, ...userData, notes, image],
 };
 
 export const accountFields = [

@@ -4,7 +4,7 @@ import { Box, Pagination } from "@mui/material";
 
 import EdafaCard from "./EdafaCard";
 
-const itemsPerPage = 5;
+const itemsPerPage = 10;
 
 const AllEdafa = ({ data, searchkey }) => {
   const [currentPage, setCurrentPage] = useState(1);
