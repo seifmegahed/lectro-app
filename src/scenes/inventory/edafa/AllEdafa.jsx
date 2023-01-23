@@ -57,10 +57,10 @@ const AllEdafa = ({ data, searchkey }) => {
 
   return (
     <>
-      {pageContent.map((edafaItem) => (
-        <EdafaCard item={edafaItem} />
+      {pageContent.map((edafaItem, index) => (
+        <EdafaCard key={index} item={edafaItem} />
       ))}
-      {numberPages > 1  && (
+      {numberPages > 1 && (
         <Box display="flex" justifyContent="center">
           <Pagination
             count={numberPages}
