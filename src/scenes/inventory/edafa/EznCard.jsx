@@ -28,8 +28,9 @@ const EznCard = ({ edafaItem }) => {
         <h2>{getFormatedDate(edafaDate)}</h2>
       </Box>
       {open &&
-        items.map((item) => (
+        items.map((item, index) => (
           <Box
+            key={index}
             display="flex"
             justifyContent="space-between"
             width="100%"

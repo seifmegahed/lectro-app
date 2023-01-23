@@ -28,16 +28,16 @@ const pages = {
       path: "/inventory/edafa",
     },
     {
+      title: "Products",
+      path: "/inventory/products/",
+    },
+    {
       title: "Finished Goods",
       path: "/inventory/finished-goods/",
     },
     {
       title: "Delivery Notes",
       path: "/inventory/delivery-notes/",
-    },
-    {
-      title: "Products",
-      path: "/inventory/products/",
     },
   ],
   Purchasing: [
@@ -92,7 +92,7 @@ const Sidebar = ({ isCollapsed, toggle }) => {
   const { currentUser } = useAuth();
 
   useEffect(() => {
-    setCurrentLocation(location.pathname);
+  setCurrentLocation(location.pathname);
   }, [location]);
 
   return (
