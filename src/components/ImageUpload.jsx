@@ -51,10 +51,10 @@ const ImageUpload = ({
       setLoaded(false);
       // Create File Path
       const filePath = `${storageFolder}/${file.name}`;
-      // Image Referance
-      const newImageReferance = ref(getStorage(), filePath);
+      // Image Reference
+      const newImageReference = ref(getStorage(), filePath);
 
-      getDownloadURL(newImageReferance).then(onResolve, onReject);
+      getDownloadURL(newImageReference).then(onResolve, onReject);
 
       function onResolve(publicImageUrl) {
         console.log("image exists");
@@ -70,7 +70,7 @@ const ImageUpload = ({
       function onReject() {
         // Upload Image
         const uploadTask = uploadBytesResumable(
-          newImageReferance,
+          newImageReference,
           // File to Upload
           file
         );
@@ -91,7 +91,7 @@ const ImageUpload = ({
           // Upload Successful
           () => {
             // Get Image URL
-            getDownloadURL(newImageReferance).then((publicImageUrl) => {
+            getDownloadURL(newImageReference).then((publicImageUrl) => {
               // Store in state
               setImageUrl(publicImageUrl);
               // Get URI from uploadTask metadata
@@ -213,7 +213,7 @@ const ImageUpload = ({
             type="file"
             // Accept image files
             accept="image/*"
-            // Trigger uploadImage funciton
+            // Trigger uploadImage function
             onChange={uploadImage}
           />
         </Box>

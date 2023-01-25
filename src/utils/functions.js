@@ -28,3 +28,15 @@ export function pad(num, size) {
   while (num.length < size) num = "0" + num;
   return num;
 }
+
+export function descendingSort(array, field) {
+  return array.sort(function (a, b) {
+    if (a[field] > b[field]) {
+      return 1;
+    }
+    if (b[field] > a[field]) {
+      return -1;
+    }
+    return 0;
+  });
+}

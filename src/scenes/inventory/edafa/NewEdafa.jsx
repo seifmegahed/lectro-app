@@ -25,8 +25,9 @@ import { tokens } from "../../../theme";
 import FormContainer from "../../../components/FormContainer";
 import Loading from "../../../components/Loading";
 import { useAuth } from "../../../contexts/AuthContext";
+import { descendingSort } from "../../../utils/functions";
 
-const title = "إذن إضافه";
+const title = "إذن إضافة";
 
 const edafaCollectionName = "edafa";
 const itemsCollectionName = "items";
@@ -35,6 +36,92 @@ const helperCollectionName = "helper_data";
 const itemsHelperDocumentId = "Items";
 const edafaHelperDocumentId = "Edafa";
 const suppliersHelperDocumentId = "Suppliers";
+
+const getSupplierShort = (supplier) => {
+  const { id, arabicName, englishName } = supplier;
+  return { id, arabicName, englishName };
+};
+
+const getMaterialItemShort = (materialItem) => {
+  const { id, category, name, make, mpn, imageUrl } = materialItem;
+  return { id, category, name, make, mpn, imageUrl };
+};
+
+const extractEdafaMaterial = (materialItem, edafaId) => {
+  const { quantity, item } = materialItem;
+  return { quantity, edafaId, ...getMaterialItemShort(item) };
+};
+
+const extractHelperEdafa = (
+  currentCount,
+  edafaData,
+  edafaReferences,
+  supplier
+) => ({
+  edafaNumber: parseInt(currentCount) + 1,
+  edafaDate: new Date(),
+  supplier: getSupplierShort(supplier),
+  items: edafaData.map((edafaItem, index) =>
+    extractEdafaMaterial(edafaItem, edafaReferences[index].id)
+  ),
+});
+
+const updateEdafaHelpers = ({
+  edafaItems,
+  edafaData,
+  edafaReferences,
+  supplier,
+}) => ({
+  data: [
+    extractHelperEdafa(edafaItems.count, edafaData, edafaReferences, supplier),
+    ...edafaItems.data,
+  ],
+  count: parseInt(edafaItems.count) + 1,
+});
+
+const extractEdafaItemDetails = (
+  edafaItem,
+  edafaNumber,
+  userName,
+  supplier
+) => ({
+  edafaNumber,
+  date: serverTimestamp(),
+  createdBy: userName,
+  invoiceLinked: false,
+  notes: edafaItem.notes,
+  quantity: edafaItem.quantity,
+  supplier: getSupplierShort(supplier),
+  item: getMaterialItemShort(edafaItem.item),
+});
+
+const updateItemsHelper = (edafaData, helperItems) => ({
+  data: helperItems.data.map((item) => {
+    let newItem = {};
+    edafaData.forEach((edafaItem) => {
+      if (edafaItem.item.id === item.id) {
+        newItem = {
+          ...item,
+          quantity: parseInt(item.quantity) + parseInt(edafaItem.quantity),
+        };
+        return;
+      } else if (!newItem?.id) newItem = item;
+    });
+    return newItem;
+  }),
+  count: helperItems.count + 1,
+});
+
+const getSupplierOption = (supplier, label) => {
+  const { englishName, arabicName, taxNumber, doc_id } = supplier;
+  return {
+    id: doc_id,
+    label: supplier[label],
+    englishName,
+    arabicName,
+    taxNumber,
+  };
+};
 
 const NewEdafa = () => {
   const theme = useTheme();
@@ -48,25 +135,25 @@ const NewEdafa = () => {
   const { currentUser } = useAuth();
   const [errors, setErrors] = useState(selectedItems.map(() => false));
   const [supplier, setSupplier] = useState({ label: null });
-  const [supplierError, setsupplierError] = useState(false);
+  const [supplierError, setSupplierError] = useState(false);
   const [suppliers, setSuppliers] = useState([]);
 
-  const helperCollectionReferance = collection(db, helperCollectionName);
-  const itemsCollectionReferance = collection(db, itemsCollectionName);
-  const edafaCollectionReferance = collection(db, edafaCollectionName);
+  const helperCollectionReference = collection(db, helperCollectionName);
+  const itemsCollectionReference = collection(db, itemsCollectionName);
+  const edafaCollectionReference = collection(db, edafaCollectionName);
 
-  const suppliersHelperDocumentReferance = doc(
-    helperCollectionReferance,
+  const suppliersHelperDocumentReference = doc(
+    helperCollectionReference,
     suppliersHelperDocumentId
   );
 
-  const edafaHelperDocumentReferance = doc(
-    helperCollectionReferance,
+  const edafaHelperDocumentReference = doc(
+    helperCollectionReference,
     edafaHelperDocumentId
   );
 
-  const itemsHelperDocumentReferance = doc(
-    helperCollectionReferance,
+  const itemsHelperDocumentReference = doc(
+    helperCollectionReference,
     itemsHelperDocumentId
   );
 
@@ -88,34 +175,13 @@ const NewEdafa = () => {
   useEffect(() => {
     const getData = async () => {
       let data = [];
-      const documentSnapshot = await getDoc(suppliersHelperDocumentReferance);
+      const documentSnapshot = await getDoc(suppliersHelperDocumentReference);
       const supplierDocuments = documentSnapshot.data().data;
       supplierDocuments.forEach((supplier) => {
-        const { englishName, arabicName, taxNumber, doc_id } = supplier;
-        data.push({
-          id: doc_id,
-          label: englishName,
-          englishName,
-          arabicName,
-          taxNumber,
-        });
-        data.push({
-          id: doc_id,
-          label: arabicName,
-          englishName,
-          arabicName,
-          taxNumber,
-        });
+        data.push(getSupplierOption(supplier, "englishName"));
+        data.push(getSupplierOption(supplier, "arabicName"));
       });
-      data.sort(function (a, b) {
-        if (a.label > b.label) {
-          return 1;
-        }
-        if (b.label > a.label) {
-          return -1;
-        }
-        return 0;
-      });
+      data = descendingSort(data, "label");
       setSuppliers(data);
     };
     getData();
@@ -136,12 +202,12 @@ const NewEdafa = () => {
     let allValid = true;
 
     //Reset Errors
-    setsupplierError(false);
+    setSupplierError(false);
     setErrors((prev) => prev.map(() => false));
 
     //Check Supplier Validity
     if (!supplier.label) {
-      setsupplierError(true);
+      setSupplierError(true);
       allValid = false;
     }
 
@@ -163,119 +229,67 @@ const NewEdafa = () => {
   const handleSubmit = async () => {
     if (checkValidity()) {
       setLoading(true);
-      const userName = currentUser.displayName;
-      const edafaReferances = edafaData.map(() =>
-        doc(edafaCollectionReferance)
+      const edafaReferences = edafaData.map(() =>
+        doc(edafaCollectionReference)
       );
 
       try {
         await runTransaction(db, async (transaction) => {
           // get and create new Helper Edafas
           const newEdafaHelper = await transaction
-            .get(edafaHelperDocumentReferance)
-            .then((response) => ({
-              data: [
-                {
-                  edafaNumber: parseInt(response.data().count) + 1,
-                  edafaDate: new Date(),
-                  supplier: {
-                    id: supplier.id,
-                    arabicName: supplier.arabicName,
-                    englishName: supplier.englishName,
-                  },
-                  items: edafaData.map((edafaItem, index) => ({
-                    edafaId: edafaReferances[index].id,
-                    itemId: edafaItem.item.id,
-                    category: edafaItem.item.category,
-                    quantity: edafaItem.quantity,
-                    name: edafaItem.item.name,
-                    make: edafaItem.item.make,
-                    mpn: edafaItem.item.mpn,
-                  })),
-                },
-                ...response.data().data,
-              ],
-              count: parseInt(response.data().count) + 1,
-            }));
+            .get(edafaHelperDocumentReference)
+            .then((response) =>
+              updateEdafaHelpers(
+                response.data(),
+                edafaData,
+                edafaReferences,
+                supplier
+              )
+            );
 
           // get and create New Helper Items
           const newHelperItems = await transaction
-            .get(itemsHelperDocumentReferance)
-            .then((response) => {
-
-              return {
-                data: response.data().data.map((item) => {
-                  let newItem = {};
-                  edafaData.forEach((edafaItem) => {
-                    if (edafaItem.item.id === item.id) {
-                      newItem = {
-                        ...item,
-                        quantity:
-                          parseInt(item.quantity) +
-                          parseInt(edafaItem.quantity),
-                      };
-                      return;
-                    } else {
-                      if (!newItem?.id) newItem = item;
-                    }
-                  });
-                  return newItem;
-                }),
-                count: parseInt(response.data().count) + 1,
-              };
-            });
+            .get(itemsHelperDocumentReference)
+            .then((response) => updateItemsHelper(edafaData, response.data()));
 
           // update Helper Edafa
-          transaction.set(edafaHelperDocumentReferance, newEdafaHelper);
+          transaction.set(edafaHelperDocumentReference, newEdafaHelper);
 
           // update Helper Items
-          transaction.set(itemsHelperDocumentReferance, newHelperItems);
+          transaction.set(itemsHelperDocumentReference, newHelperItems);
 
-          // Create Each Edafa Item in list, and update corisponding item
-          edafaReferances.forEach((referance, index) => {
+          // Create Each Edafa Item in list, and update corresponding item
+          edafaReferences.forEach((reference, index) => {
             const thisEdafaItem = edafaData[index];
             const edafaItemId = thisEdafaItem.item.id;
             const itemInHelper = newHelperItems.data.find(
               (helperItem) => helperItem.id === edafaItemId
             );
-            const quantity = itemInHelper.quantity;
 
             // update Item
-            transaction.update(doc(itemsCollectionReferance, edafaItemId), {
-              quantity: quantity,
+            transaction.update(doc(itemsCollectionReference, edafaItemId), {
+              quantity: itemInHelper.quantity,
             });
 
             // create Edafa
-            transaction.set(referance, {
-              createdBy: userName,
-              invoiceLinked: false,
-              date: serverTimestamp(),
-              notes: thisEdafaItem.notes,
-              quantity: thisEdafaItem.quantity,
-              edafaNumber: newEdafaHelper.count,
-              supplier: {
-                id: supplier.id,
-                arabicName: supplier.arabicName,
-                englishName: supplier.englishName,
-              },
-              item: {
-                id: thisEdafaItem.item.id,
-                mpn: thisEdafaItem.item.mpn,
-                name: thisEdafaItem.item.name,
-                make: thisEdafaItem.item.make,
-                category: thisEdafaItem.item.category,
-                imageUrl: thisEdafaItem.item.imageUrl,
-              },
-            });
+            transaction.set(
+              reference,
+              extractEdafaItemDetails(
+                thisEdafaItem,
+                newEdafaHelper.count,
+                currentUser.displayName,
+                supplier
+              )
+            );
           });
         });
 
         console.log("Edafa Transaction Success");
-        setLoading(false);
         navigate("/inventory/edafa");
       } catch (error) {
-        setLoading(false);
         console.log("Edafa Transaction Failed", error);
+      } finally {
+        setLoading(false);
       }
     }
   };
